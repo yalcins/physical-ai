@@ -1,0 +1,8 @@
+build/
+install/
+log/
+.venv/
+*/models/
+__pycache__/
+*.pyc
+*.log
