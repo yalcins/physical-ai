@@ -22,10 +22,13 @@ def main():
     p.add_argument('--out', default='models/ppo_pai')
     p.add_argument('--no-moving', action='store_true',
                    help='hareketli engeller olmadan egit (kolay mufredat)')
+    p.add_argument('--frames', type=int, default=1,
+                   help='kac adimlik hafiza (3 = son 3 olcumu gor)')
     a = p.parse_args()
 
     env = make_vec_env(ArenaEnv, n_envs=a.envs,
-                       env_kwargs={'moving_obstacles': not a.no_moving})
+                       env_kwargs={'moving_obstacles': not a.no_moving,
+                                'frames': a.frames})
     model = PPO('MlpPolicy', env, verbose=1, n_steps=512, batch_size=256,
                 learning_rate=3e-4, gamma=0.99, ent_coef=0.01, device='cpu')
     t0 = time.time()

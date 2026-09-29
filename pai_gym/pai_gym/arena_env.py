@@ -1,6 +1,9 @@
 """Gymnasium ortami: pai_bot engellere carpmadan arenada dolasmayi ogrenir.
 
-Gozlem : 3 ToF mesafesi (sol, orta, sag), 0-1 arasina olceklenmis
+Gozlem : 3 ToF mesafesi (sol, orta, sag), 0-1 arasina olceklenmis.
+         frames > 1 ise robot onceki adimlari da "hatirlar": gozlem
+         [simdi, 1 adim once, 2 adim once, ...] seklinde arka arkaya dizilir.
+         Boylece hareketli bir engelin yaklasip yaklasmadigi anlasilir.
 Eylem  : 5 ayrik hareket (asagidaki ACTIONS tablosu)
 Odul   : ileri gittikce +, yerinde donerken kucuk -, engele cok yaklasinca -,
          carpinca buyuk - ve bolum biter
@@ -29,7 +32,8 @@ class ArenaEnv(gym.Env):
     metadata = {'render_modes': ['human', 'rgb_array'], 'render_fps': 20}
 
     def __init__(self, render_mode=None, dt=0.05, max_steps=1000,
-                 random_start=True, sensor_noise=True, moving_obstacles=True):
+                 random_start=True, sensor_noise=True, moving_obstacles=True,
+                 frames=1):
         super().__init__()
         self.render_mode = render_mode
         self.dt = dt
@@ -37,8 +41,10 @@ class ArenaEnv(gym.Env):
         self.random_start = random_start
         self.sensor_noise = sensor_noise
         self.moving_obstacles = moving_obstacles
+        self.frames = frames                # kac adimlik hafiza (1 = hafiza yok)
+        self.history = []                   # son olcumler, en yenisi basta
         self.action_space = spaces.Discrete(len(ACTIONS))
-        self.observation_space = spaces.Box(0.0, 1.0, shape=(3,), dtype=np.float32)
+        self.observation_space = spaces.Box(0.0, 1.0, shape=(3 * frames,), dtype=np.float32)
         self.world = None
         self.renderer = None
         self.steps = 0
@@ -47,8 +53,14 @@ class ArenaEnv(gym.Env):
         self.episode_return = 0.0
 
     def _obs(self):
-        r = np.array(self.last_ranges, dtype=np.float32)
+        # Hafizadaki tum olcumleri tek bir uzun listeye birlestir
+        r = np.concatenate(self.history).astype(np.float32)
         return np.clip(r / OBS_RANGE, 0.0, 1.0)
+
+    def _remember(self):
+        # En yeni olcumu basa ekle, eskilerden fazlasini at
+        self.history.insert(0, np.array(self.last_ranges))
+        del self.history[self.frames:]
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
@@ -64,6 +76,8 @@ class ArenaEnv(gym.Env):
         self.steps = 0
         self.episode_return = 0.0
         self.last_ranges = self.world.read_tof()
+        # Basta hafiza bos: ilk olcumu tum hafiza yerlerine kopyala
+        self.history = [np.array(self.last_ranges)] * self.frames
         if self.render_mode == 'human':
             self.render()
         return self._obs(), {}
@@ -74,6 +88,7 @@ class ArenaEnv(gym.Env):
         self.world.step(v, w, self.dt)
         self.steps += 1
         self.last_ranges = self.world.read_tof()
+        self._remember()
 
         crashed = self.world.collided()
         nearest = min(self.last_ranges)

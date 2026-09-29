@@ -46,9 +46,12 @@ def main():
     p.add_argument('--model', default='models/ppo_pai')
     p.add_argument('--episodes', type=int, default=5)
     p.add_argument('--no-moving', action='store_true')
+    p.add_argument('--frames', type=int, default=1,
+                   help='modelin egitildigi hafiza uzunlugu')
     a = p.parse_args()
 
-    env = ArenaEnv(render_mode='human', moving_obstacles=not a.no_moving)
+    env = ArenaEnv(render_mode='human', moving_obstacles=not a.no_moving,
+                   frames=a.frames)
     model = None
     if a.mode == 'model':
         from stable_baselines3 import PPO
