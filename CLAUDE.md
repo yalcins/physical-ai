@@ -63,3 +63,37 @@ python train.py --steps 150000 [--no-moving]
 - [ ] Pi 4 sürücüsü (ROS 2 node) ve Pico 2 W firmware (MicroPython + UDP)
 - [ ] Pico robot kartı (KiCad, fab lab'da frezelenecek)
 - [ ] Senaryo sistemi (hareketli objeler için tanım dosyası)
+
+
+## Site ve deney kayıtları (docs/)
+Site: https://yalcins.github.io/physical-ai/ (GitHub Pages, `docs/` klasörü). Site VERİYLE çalışır:
+`docs/index.html` koduna dokunmadan sadece `docs/data/` dosyaları güncellenir.
+
+| Dosya | Kim yazar | İçerik |
+|---|---|---|
+| `docs/data/experiments.json` | `pai_gym/evaluate.py` | her deneyin çarpışma oranları (sabit ve hareketli engel) |
+| `docs/data/findings.json` | `pai_gym/log_finding.py` | analizler, kararlar, donanım notları |
+| `docs/data/policy_latest.json` | `evaluate.py --export` | sitedeki "Öğrenmiş" modunun sinir ağı |
+| `docs/data/robot.json` | `pai_gym/export_site_config.py` (world.py'den üretir) | sensör düzenleri |
+
+### Kurallar
+- Her eğitim ya da deneyden sonra `evaluate.py` ile ÖLÇ. ArenaEnv'e yeni bir seçenek eklersen
+  `evaluate.py`'yi değiştirme: seçeneği `--env-kwargs '{"secenek": deger}'` ile ver, sitede "ayarlar" olarak görünür.
+- Bir analiz, sonuç ya da karar çıkınca `log_finding.py` ile kaydet. Sayıları yalnızca gerçekten ölçtüklerinden yaz.
+- Yeni bir sensör düzeni eklenince `robot.json`'u `world.py`'deki tanımdan ÜRET (elle yazma), deneyde `--layout <id>` ver.
+- `docs/` altındaki VERİ değişiklikleri sorulmadan yayınlanır: `./publish.sh` (yalnızca `docs/`'u commit + push eder).
+  Bir Stop hook'u bunu her turun sonunda otomatik yapar. Kod değişiklikleri için push'tan önce yine bana sor.
+- `docs/` içine öğrenci verisi, isim, fotoğraf, video KOYMA. Repo herkese açık.
+- `docs/index.html`'in veri şemasını bozma. Yeni bir veri türü gerekirse önce bana söyle.
+
+### robot.json biçimi (açı derece, uzunluk metre)
+```json
+{"default": "front3", "layouts": [
+  {"id": "front3", "name": "3 ön sensör", "sensors": [
+    {"name": "Sol",  "fwd": 0.040, "side":  0.030, "angle":  30},
+    {"name": "Orta", "fwd": 0.047, "side":  0.000, "angle":   0},
+    {"name": "Sağ",  "fwd": 0.040, "side": -0.030, "angle": -30}]}
+]}
+```
+Kural: ilk üç sensör her zaman ön sol/orta/sağ olmalı (kurallı kontrolcü bunları kullanır).
+Gözlem vektörü = sensörler sırayla, en yeni kare başta (`frames` > 1 ise geçmiş kareler arkasına eklenir).
