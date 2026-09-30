@@ -90,5 +90,27 @@
           <material><ambient>0.85 0.3 0.25 1</ambient><diffuse>0.85 0.3 0.25 1</diffuse></material></visual>
       </link>
     </model>
+
+    <!-- Hareketli engeller ("sahadaki Pico robotlar"). Hareketi moving_obstacles_node verir;
+         yaricap ve baslangic konumu pai_gym/world.py default_obstacles() ile ayni olmali. -->
+    <model name="moving_1">
+      <static>true</static>
+      <pose>0.3 -0.4 0.06 0 0 0</pose>
+      <link name="link">
+        <collision name="c"><geometry><cylinder><radius>0.05</radius><length>0.12</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.05</radius><length>0.12</length></cylinder></geometry>
+          <material><ambient>0.82 0.31 0.24 1</ambient><diffuse>0.82 0.31 0.24 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <model name="moving_2">
+      <static>true</static>
+      <pose>-0.5 0 0.06 0 0 0</pose>
+      <link name="link">
+        <collision name="c"><geometry><cylinder><radius>0.05</radius><length>0.12</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.05</radius><length>0.12</length></cylinder></geometry>
+          <material><ambient>0.82 0.31 0.24 1</ambient><diffuse>0.82 0.31 0.24 1</diffuse></material></visual>
+      </link>
+    </model>
   </world>
 </sdf>

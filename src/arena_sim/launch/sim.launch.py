@@ -52,4 +52,12 @@ def generate_launch_description():
         output='screen',
     )
 
-    return LaunchDescription([gazebo, robot_state_publisher, spawn, bridge, tof])
+    # Hareketli engeller (moving_1, moving_2) duvarlardan seker
+    moving = Node(
+        package='arena_sim',
+        executable='moving_obstacles_node',
+        parameters=[{'use_sim_time': True}],
+        output='screen',
+    )
+
+    return LaunchDescription([gazebo, robot_state_publisher, spawn, bridge, tof, moving])

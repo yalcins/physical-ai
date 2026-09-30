@@ -58,7 +58,7 @@ python train.py --steps 150000 [--no-moving]
 ## Yol haritası
 - [x] Gymnasium 2D simülatör + PPO eğitim
 - [x] Gazebo arena + pai_bot modeli
-- [ ] Hareketli engelleri Gazebo'ya ekle (küçük sanal robotlar)
+- [x] Hareketli engelleri Gazebo'ya ekle (`moving_obstacles_node`, world.py ile aynı hız/yarıçap)
 - [ ] Ortak Python arayüzü: SimRobot / GazeboRobot / RealRobot
 - [ ] Pi 4 sürücüsü (ROS 2 node) ve Pico 2 W firmware (MicroPython + UDP)
 - [ ] Pico robot kartı (KiCad, fab lab'da frezelenecek)

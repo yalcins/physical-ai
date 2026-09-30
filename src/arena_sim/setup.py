@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'tof_range_node = arena_sim.tof_range_node:main',
+            'moving_obstacles_node = arena_sim.moving_obstacles_node:main',
         ],
     },
 )
