@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Physical AI Arena · Hisar School</title>
+<meta name="description" content="Kamerasız robotlar, 2 x 2 metrelik bir arena ve deneyerek öğrenen yapay zekâ. Tarayıcıda robotu sür.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mat: #2f5d50;          /* fab lab kesim matı */
+    --mat-line: rgba(255,255,255,.08);
+    --ply: #d9b77e;          /* kontrplak */
+    --ply-dark: #b48a4b;
+    --ink: #1d2b2a;
+    --paper: #eef2ee;
+    --sensor: #39c5bb;
+    --laser: #e5484d;
+    --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+    --body: "Atkinson Hyperlegible", "Segoe UI", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 18px/1.6 var(--body);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--sensor); outline-offset: 3px; }
+
+  /* ---------- hero: kesim matı ---------- */
+  .hero {
+    background-color: var(--mat);
+    background-image:
+      linear-gradient(var(--mat-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--mat-line) 1px, transparent 1px);
+    background-size: 24px 24px;
+    color: #f3f7f3;
+    padding: calc(env(safe-area-inset-top, 0px) + 20px) 20px 56px;
+  }
+  .topbar {
+    max-width: 1120px; margin: 0 auto 40px; display: flex;
+    justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .brand { font: 800 20px/1 var(--display); letter-spacing: -.01em; }
+  .brand small { font: 400 14px var(--body); opacity: .75; margin-left: 8px; }
+  .topbar nav { display: flex; gap: 20px; font-size: 16px; }
+  .topbar nav a { text-decoration: none; opacity: .85; white-space: nowrap; }
+  .topbar nav a:hover { opacity: 1; text-decoration: underline; }
+
+  .hero-grid {
+    max-width: 1120px; margin: 0 auto; display: grid; gap: 48px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 560px); align-items: start;
+  }
+  h1 {
+    font: 800 clamp(40px, 6vw, 72px)/0.98 var(--display);
+    letter-spacing: -.03em; margin: 8px 0 24px;
+  }
+  .lede { font-size: 20px; max-width: 34ch; margin: 0 0 28px; opacity: .92; }
+  .how { margin: 0; padding: 0; list-style: none; max-width: 40ch; }
+  .how li { padding: 10px 0; border-top: 1px solid rgba(255,255,255,.18); font-size: 17px; }
+  .how b { color: var(--ply); }
+
+  /* ---------- simülatör ---------- */
+  .sim { display: flex; flex-direction: column; gap: 14px; }
+  .stage { position: relative; }
+  canvas {
+    width: 100%; aspect-ratio: 1 / 1; display: block; border-radius: 6px;
+    box-shadow: 0 18px 40px rgba(0,0,0,.35); touch-action: none; background: var(--ply);
+  }
+  .flash {
+    position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+    font: 800 44px var(--display); color: #fff; background: rgba(229,72,77,.55);
+    border-radius: 6px; opacity: 0; transition: opacity .15s;
+  }
+  .flash.on { opacity: 1; }
+  .modes { display: flex; flex-wrap: wrap; gap: 8px; }
+  .modes button, .tool {
+    font: 700 16px var(--body); border: 2px solid rgba(255,255,255,.35); color: #fff;
+    background: transparent; padding: 8px 14px; border-radius: 999px; cursor: pointer;
+  }
+  .modes button:disabled { opacity: .4; cursor: not-allowed; }
+  .modes button[aria-pressed="true"] { background: var(--ply); border-color: var(--ply); color: var(--ink); }
+  .modes .tool[aria-pressed="true"] { background: var(--sensor); border-color: var(--sensor); color: var(--ink); }
+  .readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 10px; }
+  .modes[hidden] { display: none; }
+  .gauge { background: rgba(0,0,0,.22); border-radius: 6px; padding: 10px 12px; }
+  .gauge span { display: block; font-size: 14px; opacity: .8; }
+  .gauge strong { font: 800 clamp(17px, 1.9vw, 26px) var(--display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bar { height: 6px; background: rgba(255,255,255,.15); border-radius: 3px; margin-top: 6px; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 100%; background: var(--sensor); transition: background .1s; }
+  .bar i.near { background: var(--laser); }
+  .stats { display: flex; justify-content: space-between; font-size: 15px; opacity: .85; flex-wrap: wrap; gap: 8px; }
+  .pad { display: none; grid-template-columns: repeat(3, 56px); gap: 8px; justify-content: center; }
+  .pad button {
+    height: 56px; border-radius: 12px; border: 0; background: rgba(255,255,255,.14);
+    color: #fff; font-size: 24px; touch-action: none; user-select: none;
+  }
+  .pad button:active { background: var(--ply); color: var(--ink); }
+  .pad.on { display: grid; }
+  .hint { font-size: 15px; opacity: .8; margin: 0; }
+
+  /* ---------- içerik ---------- */
+  main section { padding: 72px 20px; }
+  main section:nth-child(even) { background: #e3e9e3; }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  h2 { font: 800 clamp(30px, 4vw, 44px)/1.05 var(--display); letter-spacing: -.02em; margin: 0 0 16px; }
+  .intro { max-width: 60ch; margin: 0 0 40px; }
+  .worlds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .worlds h3 { font: 800 22px var(--display); margin: 0 0 8px; }
+  .worlds p { margin: 0; max-width: 34ch; }
+  .worlds .tag { display: inline-block; font-size: 14px; background: var(--ink); color: var(--paper); padding: 2px 10px; border-radius: 4px; margin-bottom: 12px; }
+
+  .robot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+  .robot svg { width: 100%; max-width: 460px; height: auto; }
+  .specs { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 10px 24px; }
+  .specs dt { font-weight: 700; }
+  .specs dd { margin: 0; }
+
+  .plan { list-style: none; margin: 0; padding: 0; counter-reset: step; display: grid; gap: 0; }
+  .plan li {
+    counter-increment: step; display: grid; grid-template-columns: 64px 1fr; gap: 16px;
+    padding: 20px 0; border-top: 2px solid var(--ink);
+  }
+  .plan li::before { content: counter(step); font: 800 40px/1 var(--display); color: var(--mat); }
+  .plan h3 { font: 800 21px var(--display); margin: 0 0 4px; }
+  .plan p { margin: 0; max-width: 62ch; }
+  .note { font-size: 15px; opacity: .7; margin-top: 16px; }
+
+  .chart { width: 100%; max-width: 860px; margin: 0 0 32px; }
+  .chart svg { width: 100%; height: auto; display: block; }
+  .legend { display: flex; gap: 20px; font-size: 15px; margin-bottom: 12px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; }
+  .table-wrap { overflow-x: auto; max-width: 100%; }
+  table { border-collapse: collapse; font-size: 16px; min-width: 720px; }
+  th, td { text-align: left; padding: 10px 14px 10px 0; border-bottom: 1px solid rgba(29,43,42,.2); vertical-align: top; }
+  th { font-weight: 700; border-bottom: 2px solid var(--ink); }
+  td.num { font-variant-numeric: tabular-nums; }
+  td:nth-child(9) { white-space: nowrap; }
+  tr.live td:first-child::after { content: " (sitede sürüyor)"; font-size: 14px; color: var(--mat); font-weight: 700; }
+  .finding { display: grid; grid-template-columns: 170px 1fr; gap: 24px; padding: 24px 0; border-top: 2px solid var(--ink); max-width: 860px; }
+  .finding .when { font-size: 15px; }
+  .finding .tag { display: inline-block; font-size: 13px; background: var(--ink); color: var(--paper); padding: 1px 9px; border-radius: 4px; margin-top: 6px; }
+  .finding h3 { font: 800 22px/1.2 var(--display); margin: 0 0 8px; }
+  .finding p { margin: 0; max-width: 62ch; }
+  .metrics { display: flex; gap: 32px; flex-wrap: wrap; margin-top: 14px; }
+  .metrics strong { display: block; font: 800 30px/1 var(--display); color: var(--mat); font-variant-numeric: tabular-nums; }
+  .metrics span { font-size: 14px; }
+  .related { font-size: 14px; opacity: .75; margin-top: 10px; }
+  .empty { padding: 24px; background: #fff; border-radius: 6px; max-width: 60ch; }
+  pre {
+    background: var(--ink); color: #e7efe9; padding: 18px 20px; border-radius: 6px;
+    overflow-x: auto; font-size: 15px; line-height: 1.55; max-width: 760px;
+  }
+  footer { background: var(--ink); color: #cfd9d3; padding: 32px 20px; font-size: 15px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .hero-grid, .robot { grid-template-columns: 1fr; }
+    .worlds { grid-template-columns: 1fr; }
+    .finding { grid-template-columns: 1fr; gap: 8px; }
+    .hero { padding-bottom: 40px; }
+    .topbar { margin-bottom: 24px; }
+    .topbar nav { width: 100%; overflow-x: auto; gap: 16px; font-size: 15px; padding-bottom: 4px; }
+    .sim { order: -1; }
+    h1 { margin-top: 0; }
+  }
+  @media (pointer: coarse) { .pad { display: grid; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="topbar">
+    <div class="brand">Physical AI Arena <small>Hisar School · Advanced AI</small></div>
+    <nav>
+      <a href="#dunyalar">Üç dünya</a>
+      <a href="#deneyler">Deneyler</a>
+      <a href="#bulgular">Bulgular</a>
+      <a href="#robot">Robot</a>
+      <a href="#plan">Dönem planı</a>
+      <a href="#basla">Başla</a>
+      <a href="https://github.com/yalcins/physical-ai">GitHub</a>
+    </nav>
+  </div>
+
+  <div class="hero-grid">
+    <div>
+      <h1>Üç sayıyla dünyayı gör.</h1>
+      <p class="lede">Robotumuzun kamerası yok. Önüne ve iki yanına bakan üç lazer sensörü var. Bu dönem ona bu üç sayıyla yolunu bulmayı öğreteceğiz: önce burada, sonra 2 x 2 metrelik gerçek arenada.</p>
+      <ul class="how">
+        <li><b>Sen sür:</b> ok tuşlarıyla ya da ekrandaki düğmelerle robotu kullan.</li>
+        <li><b>Kör mod:</b> arenayı gizle, sadece üç sayıya bakarak sürmeyi dene.</li>
+        <li><b>Kurallı:</b> birkaç satır "eğer-ise" kuralıyla robot kendi kendine dolaşır. Nerede başarısız oluyor?</li>
+        <li><b>Öğrenmiş:</b> sınıfta deneyerek eğittiğimiz yapay sinir ağı sürer.</li>
+      </ul>
+    </div>
+
+    <div class="sim" aria-label="Arena simülatörü">
+      <div class="modes" role="group" aria-label="Kontrol modu">
+        <button type="button" data-mode="manual" aria-pressed="false">Sen sür</button>
+        <button type="button" data-mode="rule" aria-pressed="true">Kurallı</button>
+        <button type="button" data-mode="random" aria-pressed="false">Rastgele</button>
+        <button type="button" data-mode="model" aria-pressed="false" id="modelBtn" disabled title="Henüz yayınlanmış model yok">Öğrenmiş</button>
+        <button type="button" class="tool" id="blind" aria-pressed="false">Kör mod</button>
+        <button type="button" class="tool" id="moving" aria-pressed="true">Hareketli engeller</button>
+      </div>
+      <div class="stage">
+        <canvas id="arena" tabindex="0" aria-label="Arena. Ok tuşlarıyla sürmek için tıkla."></canvas>
+        <div class="flash" id="flash">Çarptı!</div>
+      </div>
+      <div class="modes" id="layouts" role="group" aria-label="Sensör düzeni" hidden></div>
+      <div class="readout" id="readout" aria-live="off"></div>
+      <div class="pad" id="pad" aria-label="Yön düğmeleri">
+        <button type="button" data-key="ul" aria-label="Sol ileri">↖</button>
+        <button type="button" data-key="u" aria-label="İleri">↑</button>
+        <button type="button" data-key="ur" aria-label="Sağ ileri">↗</button>
+        <button type="button" data-key="l" aria-label="Sola dön">↺</button>
+        <span></span>
+        <button type="button" data-key="r" aria-label="Sağa dön">↻</button>
+      </div>
+      <div class="stats">
+        <span>Çarpmadan geçen süre: <strong id="t">0.0</strong> sn</span>
+        <span>En iyi: <strong id="best">0.0</strong> sn</span>
+        <span>Çarpışma: <strong id="crashes">0</strong></span>
+      </div>
+      <p class="hint" id="simnote" role="status"></p>
+      <p class="hint">Klavyeyle sürmek için önce arenaya tıkla. Kırmızı daireler hareketli engeller.</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="dunyalar">
+    <div class="wrap">
+      <h2>Üç dünya, tek beyin</h2>
+      <p class="intro">Robotun "beyni" dizüstü bilgisayarda çalışır. Aynı kod önce hızlı bir simülasyonda denenir, sonra 3D dijital ikizde, en sonunda gerçek robotta. Simülasyonda öğrenileni gerçeğe taşımaya <b>sim-to-real</b> diyoruz ve bu dersin kalbi bu.</p>
+      <div class="worlds">
+        <div>
+          <span class="tag">1. Hızlı simülasyon</span>
+          <h3>Python ve Gymnasium</h3>
+          <p>Bu sayfadaki arenanın aynısı. Saniyede binlerce adım atar, böylece robot bir ders saatinde binlerce kez deneyip öğrenebilir.</p>
+        </div>
+        <div>
+          <span class="tag">2. Dijital ikiz</span>
+          <h3>ROS 2 ve Gazebo</h3>
+          <p>Gerçek fizik ve 3D görüntüyle aynı arena. Endüstride robotlar tam olarak böyle test ediliyor.</p>
+        </div>
+        <div>
+          <span class="tag">3. Gerçek dünya</span>
+          <h3>Pi 4 ve Pico robotlar</h3>
+          <p>Fab lab'da kendi yaptığımız dört robot. İkisinin beyni Raspberry Pi 4, ikisininki Pico 2 W; hepsi aynı komutları anlıyor.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="deneyler">
+    <div class="wrap">
+      <h2>Deneyler</h2>
+      <p class="intro">Eğittiğimiz her modeli aynı 100 test bölümünde ölçüyoruz: önce sadece sabit engellerle, sonra hareketli engellerle. Bir bölüm, robot çarparsa ya da 50 saniye dolarsa biter. Yeni bir deney yapıldığında bu bölüm kendiliğinden güncellenir.</p>
+      <div id="exp-body"><p class="empty">Deney sonuçları yükleniyor.</p></div>
+      <p class="note" id="exp-updated"></p>
+    </div>
+  </section>
+
+  <section id="bulgular">
+    <div class="wrap">
+      <h2>Bulgular</h2>
+      <p class="intro">Deneylerden çıkan sonuçlar, kararlar ve donanım notları. Robotu neden bu şekilde tasarladığımızın günlüğü.</p>
+      <div id="find-body"><p class="empty">Bulgular yükleniyor.</p></div>
+    </div>
+  </section>
+
+  <section id="robot">
+    <div class="wrap robot">
+      <div>
+        <h2>Robotu tanı</h2>
+        <p class="intro">Simülasyondaki robotla gerçek robot aynı ölçülere sahip. Bir milimetrelik fark bile, simülasyonda öğrenilen davranışın gerçekte bozulmasına yol açabilir.</p>
+        <dl class="specs">
+          <dt>Tekerlek</dt><dd>43 mm çap, iki tekerlek arası 115 mm</dd>
+          <dt>Sürüş</dt><dd>Diferansiyel: iki motor, arkada bilyeli sarhoş teker</dd>
+          <dt>Motor</dt><dd>N20 enkoderli, 6 V, ~300 devir/dakika</dd>
+          <dt>Mesafe</dt><dd>3 x VL53L1X lazer sensör: 27° görüş, 4 cm – 4 m</dd>
+          <dt>Denge</dt><dd>MPU6050 ivme ve dönüş sensörü</dd>
+          <dt>Beyin</dt><dd>Raspberry Pi 4 ya da Pico 2 W, Wi-Fi ile laptopa bağlı</dd>
+        </dl>
+      </div>
+      <svg viewBox="0 0 400 360" role="img" aria-labelledby="rtitle rdesc">
+        <title id="rtitle">Robotun üstten görünümü</title>
+        <desc id="rdesc">Gövde, iki tekerlek, arkadaki sarhoş teker ve öne bakan üç sensörün 27 derecelik görüş konileri.</desc>
+        <path d="M250 180 L390 100 L390 150 Z" fill="#39c5bb" opacity=".25"/>
+        <path d="M262 170 L390 138 L390 222 Z" fill="#39c5bb" opacity=".35"/>
+        <path d="M250 180 L390 210 L390 260 Z" fill="#39c5bb" opacity=".25"/>
+        <rect x="70" y="115" width="190" height="130" rx="10" fill="#d9b77e" stroke="#1d2b2a" stroke-width="3"/>
+        <rect x="150" y="80" width="56" height="28" rx="6" fill="#1d2b2a"/>
+        <rect x="150" y="252" width="56" height="28" rx="6" fill="#1d2b2a"/>
+        <circle cx="95" cy="180" r="14" fill="#fff" stroke="#1d2b2a" stroke-width="3"/>
+        <rect x="248" y="130" width="10" height="22" rx="2" fill="#39c5bb" stroke="#1d2b2a" stroke-width="2" transform="rotate(-30 253 141)"/>
+        <rect x="258" y="169" width="10" height="22" rx="2" fill="#39c5bb" stroke="#1d2b2a" stroke-width="2"/>
+        <rect x="248" y="208" width="10" height="22" rx="2" fill="#39c5bb" stroke="#1d2b2a" stroke-width="2" transform="rotate(30 253 219)"/>
+        <line x1="178" y1="60" x2="178" y2="300" stroke="#1d2b2a" stroke-dasharray="4 4" stroke-width="1.5"/>
+        <text x="186" y="52" font-family="Atkinson Hyperlegible, sans-serif" font-size="15" fill="#1d2b2a">tekerlek ekseni</text>
+        <text x="20" y="330" font-family="Atkinson Hyperlegible, sans-serif" font-size="15" fill="#1d2b2a">sarhoş teker</text>
+        <line x1="60" y1="318" x2="92" y2="196" stroke="#1d2b2a" stroke-width="1.2"/>
+        <text x="300" y="300" font-family="Atkinson Hyperlegible, sans-serif" font-size="15" fill="#1d2b2a">3 sensör, ±30°</text>
+      </svg>
+    </div>
+  </section>
+
+  <section id="plan">
+    <div class="wrap">
+      <h2>Dönem planı</h2>
+      <p class="intro">Her aşama bir öncekinin üzerine kuruluyor. Simülasyonda başlıyor, gerçek robotla bitiyor.</p>
+      <ol class="plan">
+        <li><div><h3>Algı: robot dünyayı nasıl görür?</h3><p>Sensörler, mesafe ölçümü ve gürültü. Kör modda sürme yarışması.</p></div></li>
+        <li><div><h3>Kurallar: robotu biz programlarız</h3><p>"Eğer-ise" kurallarıyla engelden kaçan robot. Kuralların nerede yetmediğini keşfetme.</p></div></li>
+        <li><div><h3>Öğrenme: robot deneyerek öğrenir</h3><p>Pekiştirmeli öğrenme, ödül tasarımı ve eğitim. Robota iyi ile kötüyü nasıl anlatırız?</p></div></li>
+        <li><div><h3>Sim-to-real: gerçek dünyaya geçiş</h3><p>Robotları fab lab'da yapma, simülasyonda öğrenilen davranışı gerçek robotta deneme ve farkları inceleme.</p></div></li>
+        <li><div><h3>Senaryolar: kendi dünyanı tasarla</h3><p>Hareketli engeller, görevler ve takım projeleri. Her takım arenaya kendi senaryosunu getirir.</p></div></li>
+      </ol>
+      <p class="note">Plan dönem boyunca sınıfın ilerleyişine göre güncellenecek.</p>
+    </div>
+  </section>
+
+  <section id="basla">
+    <div class="wrap">
+      <h2>Kendi bilgisayarında çalıştır</h2>
+      <p class="intro">Bu sayfadaki simülatörün Python sürümü, robotu eğitmek için kullandığımız asıl araç. Python 3.10 veya üstü yeterli; Windows, Mac ve Linux'ta çalışır.</p>
+<pre><code>git clone https://github.com/yalcins/physical-ai.git
+cd physical-ai
+python3 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install -r pai_gym/requirements.txt
+cd pai_gym
+python play.py --mode manual     # robotu sen sür
+python train.py                  # robotu eğit
+python play.py --mode model      # eğitilmiş robotu izle</code></pre>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Hisar School · Advanced AI · 11. ve 12. sınıflar</span>
+    <span>Sedat Yalçın · <a href="https://github.com/yalcins/physical-ai">github.com/yalcins/physical-ai</a></span>
+  </div>
+</footer>
+
+<script>
+/* ======================================================================
+   pai_gym/world.py'nin JavaScript hali. Ölçüler gerçek robotla aynı.
+   ====================================================================== */
+const D = Math.PI / 180;
+const HALF = 1.0, ROBOT_R = 0.075;
+let TOF = [[0.040, 0.030, 30 * D], [0.047, 0.0, 0], [0.040, -0.030, -30 * D]];
+let SENSOR_NAMES = ['Sol', 'Orta', 'Sağ'];
+const FOV = 27 * D, RAYS = 5, TMIN = 0.04, TMAX = 4.0, NOISE = 0.01, OBS_RANGE = 1.5;
+const ACTIONS = [[0.20, 0], [0.12, 1.5], [0.12, -1.5], [0, 2.5], [0, -2.5]];
+const DT = 0.05;
+
+const WALLS = [[[-1, -1], [1, -1]], [[1, -1], [1, 1]], [[1, 1], [-1, 1]], [[-1, 1], [-1, -1]]];
+
+function makeObstacles(withMoving) {
+  const obs = [
+    { kind: 'box', x: 0.45, y: 0.35, w: 0.15, h: 0.15 },
+    { kind: 'circle', x: -0.35, y: 0.5, r: 0.06, vx: 0, vy: 0 },
+  ];
+  if (withMoving) {
+    obs.push({ kind: 'circle', x: 0.3, y: -0.4, r: 0.05, vx: 0.08, vy: 0.05 });
+    obs.push({ kind: 'circle', x: -0.5, y: 0.0, r: 0.05, vx: -0.05, vy: 0.09 });
+  }
+  return obs;
+}
+
+function boxSegments(b) {
+  const x0 = b.x - b.w / 2, x1 = b.x + b.w / 2, y0 = b.y - b.h / 2, y1 = b.y + b.h / 2;
+  return [[[x0, y0], [x1, y0]], [[x1, y0], [x1, y1]], [[x1, y1], [x0, y1]], [[x0, y1], [x0, y0]]];
+}
+
+function raySeg(ox, oy, dx, dy, [[x1, y1], [x2, y2]]) {
+  const ex = x2 - x1, ey = y2 - y1, den = dx * ey - dy * ex;
+  if (Math.abs(den) < 1e-12) return null;
+  const t = ((x1 - ox) * ey - (y1 - oy) * ex) / den;
+  const u = ((x1 - ox) * dy - (y1 - oy) * dx) / den;
+  return (t >= 0 && u >= 0 && u <= 1) ? t : null;
+}
+
+function rayCircle(ox, oy, dx, dy, c) {
+  const fx = ox - c.x, fy = oy - c.y, b = fx * dx + fy * dy;
+  const disc = b * b - (fx * fx + fy * fy - c.r * c.r);
+  if (disc < 0) return null;
+  const s = Math.sqrt(disc);
+  if (-b - s >= 0) return -b - s;
+  if (-b + s >= 0) return -b + s;
+  return null;
+}
+
+function gauss() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+const world = {
+  x: -0.6, y: -0.6, th: Math.PI / 4, obstacles: makeObstacles(true), ranges: [TMAX, TMAX, TMAX],
+
+  clearance(x, y) {
+    let d = Math.min(HALF - Math.abs(x), HALF - Math.abs(y));
+    for (const o of this.obstacles) {
+      if (o.kind === 'circle') d = Math.min(d, Math.hypot(x - o.x, y - o.y) - o.r);
+      else d = Math.min(d, Math.hypot(Math.max(Math.abs(x - o.x) - o.w / 2, 0), Math.max(Math.abs(y - o.y) - o.h / 2, 0)));
+    }
+    return d - ROBOT_R;
+  },
+
+  randomPose() {
+    for (let i = 0; i < 200; i++) {
+      const x = (Math.random() * 2 - 1) * 0.88, y = (Math.random() * 2 - 1) * 0.88;
+      if (this.clearance(x, y) > 0.12) { this.x = x; this.y = y; this.th = (Math.random() * 2 - 1) * Math.PI; return; }
+    }
+    this.x = -0.6; this.y = -0.6; this.th = Math.PI / 4;
+  },
+
+  step(v, w) {
+    this.th += w * DT;
+    this.th = Math.atan2(Math.sin(this.th), Math.cos(this.th));
+    this.x += v * Math.cos(this.th) * DT;
+    this.y += v * Math.sin(this.th) * DT;
+    for (const o of this.obstacles) {
+      if (o.kind !== 'circle' || (o.vx === 0 && o.vy === 0)) continue;
+      o.x += o.vx * DT; o.y += o.vy * DT;
+      if (Math.abs(o.x) > HALF - o.r) { o.vx = -o.vx; o.x = Math.sign(o.x) * (HALF - o.r); }
+      if (Math.abs(o.y) > HALF - o.r) { o.vy = -o.vy; o.y = Math.sign(o.y) * (HALF - o.r); }
+    }
+  },
+
+  sensorOrigin([fwd, side, ang]) {
+    const c = Math.cos(this.th), s = Math.sin(this.th);
+    return [this.x + fwd * c - side * s, this.y + fwd * s + side * c, this.th + ang];
+  },
+
+  cast(ox, oy, a) {
+    const dx = Math.cos(a), dy = Math.sin(a);
+    let best = TMAX;
+    for (const seg of WALLS) { const t = raySeg(ox, oy, dx, dy, seg); if (t !== null && t < best) best = t; }
+    for (const o of this.obstacles) {
+      if (o.kind === 'circle') { const t = rayCircle(ox, oy, dx, dy, o); if (t !== null && t < best) best = t; }
+      else for (const seg of boxSegments(o)) { const t = raySeg(ox, oy, dx, dy, seg); if (t !== null && t < best) best = t; }
+    }
+    return best;
+  },
+
+  readTof() {
+    this.ranges = TOF.map(s => {
+      const [ox, oy, h] = this.sensorOrigin(s);
+      let d = TMAX;
+      for (let i = 0; i < RAYS; i++) d = Math.min(d, this.cast(ox, oy, h - FOV / 2 + FOV * i / (RAYS - 1)));
+      return Math.min(TMAX, Math.max(TMIN, d + gauss() * NOISE));
+    });
+    return this.ranges;
+  },
+};
+
+/* play.py'deki kural tabanlı kontrolcünün aynısı */
+function rulePolicy([l, c, r]) {
+  if (c < 0.15 || Math.min(l, r) < 0.08) return l > r ? 3 : 4;
+  if (l < 0.2) return 2;
+  if (r < 0.2) return 1;
+  return 0;
+}
+
+/* ---------------- öğrenmiş model (docs/data/policy_latest.json) ---------------- */
+let policy = null, history = [];
+
+function policyFits() {
+  if (!policy) return false;
+  return policy.layers[0].W[0].length === TOF.length * (policy.frames || 1);
+}
+
+function policyAction(obs) {
+  const f = policy.frames || 1;
+  history.unshift(obs);
+  while (history.length < f) history.push(obs);   // bölüm başında ilk kareyi tekrarla
+  history.length = f;
+  let x = history.flat();                          // en yeni kare başta
+  for (const L of policy.layers) {
+    const y = L.b.map((b, i) => { let s = b; const row = L.W[i]; for (let j = 0; j < row.length; j++) s += row[j] * x[j]; return s; });
+    x = L.act === 'tanh' ? y.map(Math.tanh) : L.act === 'relu' ? y.map(v => Math.max(0, v)) : y;
+  }
+  return x.indexOf(Math.max(...x));
+}
+
+fetch('data/policy_latest.json').then(r => r.ok ? r.json() : null).then(p => {
+  if (!p || !p.layers) return;
+  policy = p;
+  const b = document.getElementById('modelBtn');
+  b.disabled = false; b.title = p.name;
+  const row = document.querySelector(`tr[data-id="${CSS.escape(p.id)}"]`);
+  if (row) row.classList.add('live');
+}).catch(() => {});
+
+/* ---------------- deney sonuçları (docs/data/experiments.json) ---------------- */
+function el(tag, attrs = {}, text) {
+  const e = document.createElementNS(tag === 'svg' || attrs._svg ? 'http://www.w3.org/2000/svg' : 'http://www.w3.org/1999/xhtml', tag);
+  for (const [k, v] of Object.entries(attrs)) if (k !== '_svg') e.setAttribute(k, v);
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+function renderExperiments(data) {
+  const body = document.getElementById('exp-body');
+  body.textContent = '';
+  const exps = data.experiments || [];
+  if (!exps.length) { body.append(el('p', { class: 'empty' }, 'Henüz deney yok. İlk deney yapıldığında sonuçlar burada görünecek.')); return; }
+
+  const legend = el('div', { class: 'legend' });
+  legend.innerHTML = '<span><i style="background:#2f5d50"></i>Sabit engeller</span><span><i style="background:#e5484d"></i>Hareketli engeller</span><span>Çubuk: çarpışma oranı (düşük olan iyi)</span>';
+  const W = 860, LABEL = 250, ROW = 58, BAR = 18, H = exps.length * ROW + 30;
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Deneylere göre çarpışma oranları' });
+  const scale = v => v * (W - LABEL - 70);
+  for (let t = 0; t <= 100; t += 25) {
+    const x = LABEL + scale(t / 100);
+    svg.append(el('line', { _svg: 1, x1: x, x2: x, y1: 0, y2: H - 24, stroke: 'rgba(29,43,42,.15)' }));
+    svg.append(el('text', { _svg: 1, x, y: H - 6, 'text-anchor': 'middle', 'font-size': 14, fill: '#1d2b2a' }, `%${t}`));
+  }
+  exps.forEach((e, i) => {
+    const y = i * ROW + 8;
+    svg.append(el('text', { _svg: 1, x: 0, y: y + BAR + 4, 'font-size': 16, 'font-weight': 700, fill: '#1d2b2a' }, e.name.length > 28 ? e.name.slice(0, 27) + '…' : e.name));
+    [['static', '#2f5d50', 0], ['moving', '#e5484d', BAR + 4]].forEach(([k, col, dy]) => {
+      const v = e.results?.[k]?.crash_rate ?? 0;
+      svg.append(el('rect', { _svg: 1, x: LABEL, y: y + dy, width: Math.max(2, scale(v)), height: BAR, rx: 3, fill: col }));
+      svg.append(el('text', { _svg: 1, x: LABEL + Math.max(2, scale(v)) + 8, y: y + dy + 14, 'font-size': 14, fill: '#1d2b2a' }, `%${(v * 100).toFixed(0)}`));
+    });
+  });
+  const chart = el('div', { class: 'chart' }); chart.append(legend, svg);
+
+  const table = el('table');
+  const head = el('tr');
+  ['Deney', 'Tür', 'Sensör düzeni', 'Eğitim adımı', 'Hafıza (kare)', 'Çarpışma: sabit', 'Çarpışma: hareketli', 'Ort. süre: hareketli', 'Tarih', 'Not']
+    .forEach(h => head.append(el('th', {}, h)));
+  table.append(el('thead')); table.firstChild.append(head);
+  const tb = el('tbody');
+  exps.forEach(e => {
+    const tr = el('tr', { 'data-id': e.id });
+    const r = e.results || {};
+    const pct = k => r[k] ? `%${(r[k].crash_rate * 100).toFixed(0)}` : '–';
+    const extra = Object.entries(e.params || {}).filter(([k]) => k !== 'steps' && k !== 'frames').map(([k, v]) => `${k}=${v}`).join(', ');
+    [e.name, e.kind === 'baseline' ? 'Temel' : 'Öğrenmiş', e.layout || 'front3',
+     e.params?.steps ? e.params.steps.toLocaleString('tr-TR') : '–', e.params?.frames ?? 1,
+     pct('static'), pct('moving'), r.moving ? `${(r.moving.mean_steps * 0.05).toFixed(1)} sn` : '–',
+     e.date || '', [e.notes, extra && `[${extra}]`].filter(Boolean).join(' ')]
+      .forEach((v, j) => tr.append(el('td', j >= 3 && j <= 7 ? { class: 'num' } : {}, String(v))));
+    tb.append(tr);
+  });
+  table.append(tb);
+  const wrap = el('div', { class: 'table-wrap' }); wrap.append(table);
+  body.append(chart, wrap);
+  if (data.updated) document.getElementById('exp-updated').textContent =
+    `Son güncelleme: ${new Date(data.updated).toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'short' })} · Her deney ${data.episodes || 100} bölüm.`;
+  if (policy) { const row = document.querySelector(`tr[data-id="${CSS.escape(policy.id)}"]`); if (row) row.classList.add('live'); }
+}
+
+fetch('data/experiments.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Promise.reject())
+  .then(renderExperiments)
+  .catch(() => {
+    const body = document.getElementById('exp-body');
+    body.textContent = '';
+    body.append(el('p', { class: 'empty' }, 'Deney sonuçları henüz yayınlanmadı. İlk deney yapıldığında burada görünecek.'));
+  });
+
+/* ---------------- sensör düzenleri (docs/data/robot.json) ---------------- */
+let layouts = [], currentLayout = 'front3';
+
+function buildReadout() {
+  const box = document.getElementById('readout');
+  box.textContent = '';
+  els.d.length = 0; els.b.length = 0;
+  SENSOR_NAMES.forEach(n => {
+    const g = el('div', { class: 'gauge' });
+    g.append(el('span', {}, n + ' sensör'));
+    const d = el('strong', {}, '–'); g.append(d);
+    const bar = el('div', { class: 'bar' }); const i = el('i'); bar.append(i); g.append(bar);
+    box.append(g); els.d.push(d); els.b.push(i);
+  });
+}
+
+function setLayout(id) {
+  const L = layouts.find(l => l.id === id);
+  if (!L) return;
+  currentLayout = id;
+  TOF = L.sensors.map(s => [s.fwd, s.side, s.angle * D]);
+  SENSOR_NAMES = L.sensors.map(s => s.name);
+  buildReadout(); world.readTof(); history = [];
+  document.querySelectorAll('[data-layout]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.layout === id)));
+  if (mode === 'model' && !policyFits()) { mode = 'rule'; setModeButtons(); note('Bu model farklı bir sensör düzeni için eğitildi; kurallı moda geçtim.'); }
+}
+
+function applyPolicyLayout() {
+  if (policy && policy.sensor_layout && policy.sensor_layout !== currentLayout && layouts.some(l => l.id === policy.sensor_layout)) setLayout(policy.sensor_layout);
+}
+
+function setModeButtons() {
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+}
+
+fetch('data/robot.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(cfg => {
+  if (!cfg || !cfg.layouts || !cfg.layouts.length) return;
+  layouts = cfg.layouts;
+  const box = document.getElementById('layouts');
+  if (layouts.length > 1) {
+    layouts.forEach(l => {
+      const b = el('button', { type: 'button', 'data-layout': l.id, 'aria-pressed': 'false' }, l.name);
+      b.addEventListener('click', () => setLayout(l.id));
+      box.append(b);
+    });
+    box.hidden = false;
+  }
+  setLayout(cfg.default || layouts[0].id);
+}).catch(() => {});
+
+/* ---------------- bulgular (docs/data/findings.json) ---------------- */
+const TYPE_TR = { bulgu: 'Bulgu', karar: 'Karar', donanim: 'Donanım' };
+fetch('data/findings.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Promise.reject()).then(data => {
+  const body = document.getElementById('find-body'); body.textContent = '';
+  const list = data.findings || [];
+  if (!list.length) { body.append(el('p', { class: 'empty' }, 'Henüz bulgu yok. İlk analiz yapıldığında burada görünecek.')); return; }
+  list.forEach(f => {
+    const art = el('article', { class: 'finding' });
+    const when = el('div', { class: 'when' }, new Date(f.date).toLocaleDateString('tr-TR', { dateStyle: 'long' }));
+    when.append(el('br'), el('span', { class: 'tag' }, TYPE_TR[f.type] || f.type));
+    const main = el('div');
+    main.append(el('h3', {}, f.title), el('p', {}, f.text));
+    if (f.metrics && f.metrics.length) {
+      const m = el('div', { class: 'metrics' });
+      f.metrics.forEach(x => { const c = el('div'); c.append(el('strong', {}, x.value), el('span', {}, x.label)); m.append(c); });
+      main.append(m);
+    }
+    if (f.related && f.related.length) main.append(el('p', { class: 'related' }, 'İlgili deneyler: ' + f.related.join(', ')));
+    art.append(when, main); body.append(art);
+  });
+}).catch(() => {
+  const body = document.getElementById('find-body'); body.textContent = '';
+  body.append(el('p', { class: 'empty' }, 'Henüz bulgu yayınlanmadı. İlk analiz yapıldığında burada görünecek.'));
+});
+
+/* ---------------- arayüz ---------------- */
+const canvas = document.getElementById('arena');
+const ctx = canvas.getContext('2d');
+const flash = document.getElementById('flash');
+const els = {
+  d: [], b: [],
+  t: document.getElementById('t'), best: document.getElementById('best'), crashes: document.getElementById('crashes'),
+};
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let mode = 'rule', blind = false, moving = true;
+let aliveTime = 0, bestTime = 0, crashes = 0, frozenUntil = 0, lastAction = 0;
+const keys = new Set();
+
+function note(t) { document.getElementById('simnote').textContent = t || ''; }
+
+function setMode(m) {
+  if (m === 'model') {
+    applyPolicyLayout();
+    if (!policyFits()) { note('Bu model farklı bir sensör düzeni için eğitildi. Sensör düzenini değiştirmeyi dene.'); return; }
+    note('');
+  }
+  mode = m; history = [];
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+  if (m === 'manual') canvas.focus();
+}
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+document.getElementById('blind').addEventListener('click', e => {
+  blind = !blind; e.currentTarget.setAttribute('aria-pressed', String(blind));
+});
+document.getElementById('moving').addEventListener('click', e => {
+  moving = !moving; e.currentTarget.setAttribute('aria-pressed', String(moving));
+  world.obstacles = makeObstacles(moving); resetRobot();
+});
+
+const KEYMAP = { ArrowUp: 'u', ArrowLeft: 'l', ArrowRight: 'r', w: 'u', a: 'l', d: 'r' };
+canvas.addEventListener('keydown', e => {
+  const k = KEYMAP[e.key]; if (!k) return;
+  e.preventDefault(); keys.add(k); if (mode !== 'manual') setMode('manual');
+});
+canvas.addEventListener('keyup', e => { const k = KEYMAP[e.key]; if (k) keys.delete(k); });
+canvas.addEventListener('blur', () => keys.clear());
+
+document.querySelectorAll('#pad button').forEach(btn => {
+  const k = btn.dataset.key;
+  const down = e => { e.preventDefault(); if (mode !== 'manual') setMode('manual'); keys.add(k); };
+  const up = () => keys.delete(k);
+  btn.addEventListener('pointerdown', down);
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, up));
+});
+
+function manualAction() {
+  const u = keys.has('u') || keys.has('ul') || keys.has('ur');
+  if (keys.has('ul') || (u && keys.has('l'))) return 1;
+  if (keys.has('ur') || (u && keys.has('r'))) return 2;
+  if (keys.has('l')) return 3;
+  if (keys.has('r')) return 4;
+  if (u) return 0;
+  return null;
+}
+
+function resetRobot() { world.randomPose(); world.readTof(); aliveTime = 0; history = []; }
+
+function tick(now) {
+  if (now < frozenUntil) return;
+  const obs = world.ranges.map(d => Math.min(d / OBS_RANGE, 1));
+  let a;
+  if (mode === 'manual') a = manualAction();
+  else if (mode === 'random') a = Math.floor(Math.random() * ACTIONS.length);
+  else if (mode === 'model' && policy) a = policyAction(obs);
+  else a = rulePolicy(obs);
+  const [v, w] = a === null ? [0, 0] : ACTIONS[a];
+  if (a !== null) lastAction = a;
+  world.step(v, w);
+  world.readTof();
+  aliveTime += DT;
+  if (world.clearance(world.x, world.y) <= 0) {
+    crashes++; bestTime = Math.max(bestTime, aliveTime - DT);
+    flash.classList.add('on'); frozenUntil = now + 900;
+    setTimeout(() => { flash.classList.remove('on'); resetRobot(); }, 900);
+  }
+}
+
+/* ---------------- çizim ---------------- */
+function resize() {
+  const dpr = window.devicePixelRatio || 1, size = canvas.clientWidth;
+  canvas.width = Math.round(size * dpr); canvas.height = Math.round(size * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+window.addEventListener('resize', resize);
+
+function draw() {
+  const S = canvas.clientWidth, k = S / 2;
+  const P = (x, y) => [(x + 1) * k, (1 - y) * k];
+
+  if (blind) {
+    ctx.fillStyle = '#1d2b2a'; ctx.fillRect(0, 0, S, S);
+    const N = world.ranges.length;
+    ctx.textAlign = 'center';
+    world.ranges.forEach((d, i) => {
+      const cx = S * (i + 0.5) / N;
+      ctx.fillStyle = d < 0.15 ? '#e5484d' : '#39c5bb';
+      const h = (1 - Math.min(d, OBS_RANGE) / OBS_RANGE) * S * 0.45;
+      ctx.fillRect(cx - S * 0.4 / N, S * 0.78 - h, S * 0.8 / N, h);
+      ctx.fillStyle = '#f3f7f3';
+      ctx.font = `800 ${Math.round(S * (N > 3 ? 0.06 : 0.09))}px "Bricolage Grotesque", sans-serif`;
+      ctx.fillText(d.toFixed(2), cx, S * 0.25);
+      ctx.font = `400 ${Math.round(S * (N > 3 ? 0.032 : 0.04))}px "Atkinson Hyperlegible", sans-serif`;
+      ctx.fillText(SENSOR_NAMES[i].toLowerCase() + ' (m)', cx, S * 0.32);
+    });
+    ctx.fillStyle = 'rgba(243,247,243,.7)';
+    ctx.fillText('Arena gizli. Yakınlaşan engel sütunu yükseltir.', S / 2, S * 0.9);
+    return;
+  }
+
+  // kontrplak zemin ve duvar
+  ctx.fillStyle = '#d9b77e'; ctx.fillRect(0, 0, S, S);
+  ctx.strokeStyle = 'rgba(29,43,42,.08)'; ctx.lineWidth = 1;
+  for (let i = 1; i < 10; i++) {
+    const p = i * S / 10;
+    ctx.beginPath(); ctx.moveTo(p, 0); ctx.lineTo(p, S); ctx.moveTo(0, p); ctx.lineTo(S, p); ctx.stroke();
+  }
+  ctx.strokeStyle = '#8a6636'; ctx.lineWidth = S * 0.018; ctx.strokeRect(0, 0, S, S);
+
+  // engeller
+  for (const o of world.obstacles) {
+    if (o.kind === 'box') {
+      const [x0, y0] = P(o.x - o.w / 2, o.y + o.h / 2);
+      ctx.fillStyle = '#2f5d50'; ctx.fillRect(x0, y0, o.w * k, o.h * k);
+    } else {
+      const [cx, cy] = P(o.x, o.y);
+      ctx.fillStyle = (o.vx || o.vy) ? '#e5484d' : '#2f5d50';
+      ctx.beginPath(); ctx.arc(cx, cy, o.r * k, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  // sensör konileri
+  TOF.forEach((s, i) => {
+    const [ox, oy, h] = world.sensorOrigin(s), d = world.ranges[i];
+    const near = d < 0.15;
+    ctx.fillStyle = near ? 'rgba(229,72,77,.3)' : 'rgba(57,197,187,.28)';
+    ctx.beginPath(); ctx.moveTo(...P(ox, oy));
+    for (let j = 0; j <= 8; j++) {
+      const a = h - FOV / 2 + FOV * j / 8;
+      ctx.lineTo(...P(ox + d * Math.cos(a), oy + d * Math.sin(a)));
+    }
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = near ? '#e5484d' : '#1f8f87'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(...P(ox, oy)); ctx.lineTo(...P(ox + d * Math.cos(h), oy + d * Math.sin(h))); ctx.stroke();
+  });
+
+  // robot
+  const [rx, ry] = P(world.x, world.y);
+  ctx.fillStyle = '#b48a4b'; ctx.strokeStyle = '#1d2b2a'; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.arc(rx, ry, ROBOT_R * k, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(rx, ry);
+  ctx.lineTo(...P(world.x + ROBOT_R * Math.cos(world.th), world.y + ROBOT_R * Math.sin(world.th))); ctx.stroke();
+}
+
+function updateReadout() {
+  world.ranges.forEach((d, i) => {
+    els.d[i].textContent = d.toFixed(2) + ' m';
+    els.b[i].style.width = (Math.min(d, OBS_RANGE) / OBS_RANGE * 100) + '%';
+    els.b[i].classList.toggle('near', d < 0.15);
+  });
+  els.t.textContent = aliveTime.toFixed(1);
+  els.best.textContent = Math.max(bestTime, aliveTime).toFixed(1);
+  els.crashes.textContent = crashes;
+}
+
+let acc = 0, last = performance.now();
+function loop(now) {
+  acc += Math.min(now - last, 250) / 1000; last = now;
+  while (acc >= DT) { tick(now); acc -= DT; }
+  draw(); updateReadout();
+  requestAnimationFrame(loop);
+}
+
+resize();
+buildReadout();
+world.readTof();
+if (reduceMotion) setMode('manual');
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

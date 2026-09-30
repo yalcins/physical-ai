@@ -1,0 +1,29 @@
+{
+  "default": "front3",
+  "layouts": [
+    {
+      "id": "front3",
+      "name": "3 ön sensör",
+      "sensors": [
+        {
+          "name": "Sol",
+          "fwd": 0.04,
+          "side": 0.03,
+          "angle": 30
+        },
+        {
+          "name": "Orta",
+          "fwd": 0.047,
+          "side": 0.0,
+          "angle": 0
+        },
+        {
+          "name": "Sağ",
+          "fwd": 0.04,
+          "side": -0.03,
+          "angle": -30
+        }
+      ]
+    }
+  ]
+}

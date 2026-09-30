@@ -1,0 +1,122 @@
+{
+  "experiments": [
+    {
+      "id": "random",
+      "name": "Rastgele",
+      "kind": "baseline",
+      "date": "2026-09-30",
+      "notes": "Temel ölçüm: rastgele eylemler",
+      "layout": "front3",
+      "params": {
+        "steps": 0
+      },
+      "results": {
+        "static": {
+          "crash_rate": 1.0,
+          "mean_steps": 232.3,
+          "mean_return": 4.12
+        },
+        "moving": {
+          "crash_rate": 1.0,
+          "mean_steps": 210.8,
+          "mean_return": 2.83
+        }
+      }
+    },
+    {
+      "id": "rule",
+      "name": "Kurallı kontrolcü",
+      "kind": "baseline",
+      "date": "2026-09-30",
+      "notes": "Temel ölçüm: elle yazılmış kurallar (play.py rule_policy)",
+      "layout": "front3",
+      "params": {
+        "steps": 0
+      },
+      "results": {
+        "static": {
+          "crash_rate": 0.0,
+          "mean_steps": 1000.0,
+          "mean_return": 116.85
+        },
+        "moving": {
+          "crash_rate": 0.44,
+          "mean_steps": 797.1,
+          "mean_return": 89.39
+        }
+      }
+    },
+    {
+      "id": "ppo-150k",
+      "name": "PPO, 150 bin adım",
+      "kind": "learned",
+      "date": "2026-09-30",
+      "notes": "",
+      "layout": "front3",
+      "params": {
+        "steps": 151552
+      },
+      "results": {
+        "static": {
+          "crash_rate": 0.04,
+          "mean_steps": 961.4,
+          "mean_return": 180.47
+        },
+        "moving": {
+          "crash_rate": 0.48,
+          "mean_steps": 648.5,
+          "mean_return": 116.13
+        }
+      }
+    },
+    {
+      "id": "ppo-500k",
+      "name": "PPO, 500 bin adım",
+      "kind": "learned",
+      "date": "2026-09-30",
+      "notes": "",
+      "layout": "front3",
+      "params": {
+        "steps": 503808
+      },
+      "results": {
+        "static": {
+          "crash_rate": 0.02,
+          "mean_steps": 980.4,
+          "mean_return": 183.39
+        },
+        "moving": {
+          "crash_rate": 0.49,
+          "mean_steps": 666.6,
+          "mean_return": 118.39
+        }
+      }
+    },
+    {
+      "id": "ppo-500k-f3",
+      "name": "PPO, 500 bin adım, 3 kare hafıza",
+      "kind": "learned",
+      "date": "2026-09-30",
+      "notes": "Son 3 sensör okuması gözleme eklendi",
+      "layout": "front3",
+      "params": {
+        "steps": 503808,
+        "frames": 3
+      },
+      "results": {
+        "static": {
+          "crash_rate": 0.02,
+          "mean_steps": 980.4,
+          "mean_return": 183.49
+        },
+        "moving": {
+          "crash_rate": 0.46,
+          "mean_steps": 675.9,
+          "mean_return": 120.23
+        }
+      }
+    }
+  ],
+  "episodes": 100,
+  "updated": "2026-09-30T07:39"
+}
