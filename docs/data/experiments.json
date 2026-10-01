@@ -70,6 +70,30 @@
       }
     },
     {
+      "id": "ppo-500k-side5",
+      "name": "PPO, 500 bin adım, 3 ön + 2 yan sensör",
+      "kind": "learned",
+      "date": "2026-10-01",
+      "notes": "Üç ön sensöre ek olarak iki yan sensör (±90°); yan sensör konumları tahmini",
+      "layout": "side5",
+      "params": {
+        "steps": 500000,
+        "layout": "side5"
+      },
+      "results": {
+        "static": {
+          "crash_rate": 0.03,
+          "mean_steps": 971.7,
+          "mean_return": 171.39
+        },
+        "moving": {
+          "crash_rate": 0.69,
+          "mean_steps": 856.6,
+          "mean_return": 141.26
+        }
+      }
+    },
+    {
       "id": "ppo-500k",
       "name": "PPO, 500 bin adım",
       "kind": "learned",
@@ -118,5 +142,5 @@
     }
   ],
   "episodes": 100,
-  "updated": "2026-09-30T07:39"
+  "updated": "2026-10-01T10:14"
 }
