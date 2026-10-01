@@ -1,4 +1,40 @@
 {
-  "findings": [],
-  "updated": "2026-10-01T09:40"
+  "findings": [
+    {
+      "id": "hareketli-engel-plato",
+      "date": "2026-10-01",
+      "type": "bulgu",
+      "title": "Daha uzun eğitim ve hafıza, hareketli engelde çarpmayı azaltmadı",
+      "text": "Sabit engellerde öğrenmiş politika kurallı kontrolcüden daha yüksek getiri elde etti (183 / 117), ama hareketli engellerde çarpma oranı kurallı kontrolcünün (%44) altına inmedi. Eğitimi 150 binden 500 bin adıma çıkarmak (%48 → %49) ve gözleme son 3 sensör okumasını eklemek (%46) çarpma oranını anlamlı ölçüde değiştirmedi. 100'er bölümlük ölçümler; farkların tesadüf olup olmadığı ayrıca test edilmedi.",
+      "metrics": [
+        {
+          "label": "Kurallı, hareketli çarpma",
+          "value": "%44"
+        },
+        {
+          "label": "PPO 150 bin",
+          "value": "%48"
+        },
+        {
+          "label": "PPO 500 bin",
+          "value": "%49"
+        },
+        {
+          "label": "PPO 500 bin + 3 kare",
+          "value": "%46"
+        },
+        {
+          "label": "Sabit engel getirisi (PPO 500 bin / kurallı)",
+          "value": "183,4 / 116,9"
+        }
+      ],
+      "related": [
+        "rule",
+        "ppo-150k",
+        "ppo-500k",
+        "ppo-500k-f3"
+      ]
+    }
+  ],
+  "updated": "2026-10-01T09:42"
 }
