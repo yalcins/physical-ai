@@ -127,7 +127,41 @@
         "ppo-500k",
         "ppo-500k-f3"
       ]
+    },
+    {
+      "id": "egitim-maliyeti",
+      "date": "2026-10-01",
+      "type": "bulgu",
+      "title": "Eğitim süresi 3,7 kat arttı, hareketli engelde kazanç olmadı",
+      "text": "Eğitim kayıtlarına göre 150 bin adımlık eğitim 114 saniye, 500 bin adımlık eğitim 418 saniye (yaklaşık 3,7 kat), 3 kare hafızalı 500 bin adımlık eğitim ise 487 saniye sürdü. Buna karşılık hareketli engelde çarpma oranı %48'den %49'a ve %46'ya gitti; sabit engelde çarpma %4'ten %2'ye indi. Yani ek eğitim süresi esas olarak sabit engeldeki küçük bir iyileşmeye gitti. Süreler tek bir çalıştırmadan alınmıştır (aynı bilgisayarda tekrar ölçülmedi) ve çarpma oranları 100'er bölümlük ölçümlerdir.",
+      "metrics": [
+        {
+          "label": "150 bin adım, süre",
+          "value": "114 sn"
+        },
+        {
+          "label": "500 bin adım, süre",
+          "value": "418 sn"
+        },
+        {
+          "label": "500 bin + 3 kare, süre",
+          "value": "487 sn"
+        },
+        {
+          "label": "Sabit çarpma (150 bin → 500 bin)",
+          "value": "%4 → %2"
+        },
+        {
+          "label": "Hareketli çarpma (150 bin → 500 bin)",
+          "value": "%48 → %49"
+        }
+      ],
+      "related": [
+        "ppo-150k",
+        "ppo-500k",
+        "ppo-500k-f3"
+      ]
     }
   ],
-  "updated": "2026-10-01T09:46"
+  "updated": "2026-10-01T09:47"
 }
