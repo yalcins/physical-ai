@@ -24,6 +24,42 @@
           "angle": -30
         }
       ]
+    },
+    {
+      "id": "side5",
+      "name": "3 ön + 2 yan sensör",
+      "sensors": [
+        {
+          "name": "Sol",
+          "fwd": 0.04,
+          "side": 0.03,
+          "angle": 30
+        },
+        {
+          "name": "Orta",
+          "fwd": 0.047,
+          "side": 0.0,
+          "angle": 0
+        },
+        {
+          "name": "Sağ",
+          "fwd": 0.04,
+          "side": -0.03,
+          "angle": -30
+        },
+        {
+          "name": "Sol yan",
+          "fwd": 0.02,
+          "side": 0.05,
+          "angle": 90
+        },
+        {
+          "name": "Sağ yan",
+          "fwd": 0.02,
+          "side": -0.05,
+          "angle": -90
+        }
+      ]
     }
   ]
 }

@@ -4,7 +4,7 @@ import math
 import numpy as np
 import pygame
 
-from .world import HALF, ROBOT_RADIUS, TOF_FOV, TOF_SENSORS, Box, Circle
+from .world import HALF, ROBOT_RADIUS, TOF_FOV, Box, Circle
 
 SIZE = 640          # arena piksel boyutu
 PANEL = 110         # alttaki bilgi paneli
@@ -54,7 +54,7 @@ class Renderer:
                 pygame.draw.rect(s, OBST, (x0, y0, int(ob.w * SCALE), int(ob.h * SCALE)))
 
         # ToF konileri
-        for (_, fwd, side, ang), d in zip(TOF_SENSORS, env.last_ranges):
+        for (_, fwd, side, ang), d in zip(env.sensors, env.last_ranges):
             ox, oy, heading = w.sensor_origin(fwd, side, ang)
             col = RAY_NEAR if d < 0.15 else RAY
             pts = [to_px(ox, oy)]
@@ -73,7 +73,7 @@ class Renderer:
 
         # bilgi paneli
         pygame.draw.rect(s, (250, 248, 243), (0, SIZE, SIZE, PANEL))
-        l, m, r = env.last_ranges
+        l, m, r = env.last_ranges[:3]
         lines = [
             f'ToF  sol: {l:4.2f} m   orta: {m:4.2f} m   sag: {r:4.2f} m',
             f'Eylem: {ACTIONS[env.last_action][0]:<10}  Adim: {env.steps:4d}   Toplam odul: {env.episode_return:6.2f}',

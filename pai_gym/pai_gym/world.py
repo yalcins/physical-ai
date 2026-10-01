@@ -14,11 +14,24 @@ WHEEL_SEPARATION = 0.115    # m (tekerlek merkezleri arasi)
 ROBOT_RADIUS = 0.075        # m (carpisma icin robotu daire kabul ediyoruz)
 
 # ToF sensorleri: (ad, ileri ofset, yan ofset, bakis acisi)
+# Kural: her duzenin ilk uc sensoru on sol / orta / sag olmali (kuralli kontrolcu bunlari kullanir).
 TOF_SENSORS = (
     ('left',   0.040,  0.030,  math.radians(30)),
     ('center', 0.047,  0.000,  0.0),
     ('right',  0.040, -0.030, -math.radians(30)),
 )
+
+# Deney: ayni uc on sensor + robotun iki yanina birer sensor (+/-90 derece).
+# Yan sensor konumlari tahminidir (sasi uzerinde henuz olculmedi).
+SIDE_SENSORS = (
+    ('left_side',   0.020,  0.050,  math.radians(90)),
+    ('right_side',  0.020, -0.050, -math.radians(90)),
+)
+
+SENSOR_LAYOUTS = {
+    'front3': TOF_SENSORS,
+    'side5': TOF_SENSORS + SIDE_SENSORS,
+}
 TOF_FOV = math.radians(27)   # TOF400C VL53L1X gorus acisi
 TOF_RAYS = 5                 # koniyi temsil eden isin sayisi
 TOF_MIN = 0.04               # m
@@ -101,10 +114,11 @@ def ray_circle(ox, oy, dx, dy, c):
 # ---------------- Dunya ----------------
 class World:
 
-    def __init__(self, obstacles=None, rng=None, sensor_noise=True):
+    def __init__(self, obstacles=None, rng=None, sensor_noise=True, sensors=TOF_SENSORS):
         self.rng = rng if rng is not None else np.random.default_rng()
         self.obstacles = obstacles if obstacles is not None else default_obstacles()
         self.sensor_noise = sensor_noise
+        self.sensors = sensors              # hangi sensor duzeni kullaniliyor
         self.x = self.y = self.theta = 0.0
         self.v = self.w = 0.0
 
@@ -188,9 +202,9 @@ class World:
         return ox, oy, self.theta + ang
 
     def read_tof(self):
-        """Uc ToF sensoru: her biri koni icindeki en yakin mesafeyi (m) dondurur."""
+        """ToF sensorleri: her biri koni icindeki en yakin mesafeyi (m) dondurur."""
         out = []
-        for _, fwd, side, ang in TOF_SENSORS:
+        for _, fwd, side, ang in self.sensors:
             ox, oy, heading = self.sensor_origin(fwd, side, ang)
             offsets = np.linspace(-TOF_FOV / 2, TOF_FOV / 2, TOF_RAYS)
             d = min(self.cast(ox, oy, heading + o) for o in offsets)

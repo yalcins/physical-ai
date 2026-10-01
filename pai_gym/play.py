@@ -48,10 +48,12 @@ def main():
     p.add_argument('--no-moving', action='store_true')
     p.add_argument('--frames', type=int, default=1,
                    help='modelin egitildigi hafiza uzunlugu')
+    p.add_argument('--layout', default='front3',
+                   help='sensor duzeni: front3 veya side5')
     a = p.parse_args()
 
     env = ArenaEnv(render_mode='human', moving_obstacles=not a.no_moving,
-                   frames=a.frames)
+                   frames=a.frames, layout=a.layout)
     model = None
     if a.mode == 'model':
         from stable_baselines3 import PPO
@@ -73,7 +75,7 @@ def main():
             elif a.mode == 'random':
                 action = env.action_space.sample()
             elif a.mode == 'rule':
-                action = rule_policy(obs)
+                action = rule_policy(obs[:3])   # ilk uc deger = on sol/orta/sag
             else:
                 action, _ = model.predict(obs, deterministic=True)
             obs, reward, terminated, truncated, info = env.step(action)

@@ -9,12 +9,13 @@ import json
 import math
 from pathlib import Path
 
-from pai_gym.world import TOF_SENSORS
+from pai_gym.world import SENSOR_LAYOUTS
 
 OUT = Path(__file__).resolve().parent.parent / 'docs' / 'data' / 'robot.json'
 
 # world.py'deki ingilizce ad -> sitede gorunecek Turkce ad
-TR_AD = {'left': 'Sol', 'center': 'Orta', 'right': 'Sağ'}
+TR_AD = {'left': 'Sol', 'center': 'Orta', 'right': 'Sağ',
+         'left_side': 'Sol yan', 'right_side': 'Sağ yan'}
 
 
 def layout_from_sensors(layout_id, name, sensors):
@@ -26,7 +27,8 @@ def layout_from_sensors(layout_id, name, sensors):
 
 def main():
     cfg = {'default': 'front3', 'layouts': [
-        layout_from_sensors('front3', '3 ön sensör', TOF_SENSORS),
+        layout_from_sensors('front3', '3 ön sensör', SENSOR_LAYOUTS['front3']),
+        layout_from_sensors('side5', '3 ön + 2 yan sensör', SENSOR_LAYOUTS['side5']),
     ]}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(cfg, ensure_ascii=False, indent=2))
