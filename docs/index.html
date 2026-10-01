@@ -115,6 +115,19 @@
   .worlds p { margin: 0; max-width: 34ch; }
   .worlds .tag { display: inline-block; font-size: 14px; background: var(--ink); color: var(--paper); padding: 2px 10px; border-radius: 4px; margin-bottom: 12px; }
 
+  .arch-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; margin-top: 40px; }
+  .arch h3 { font: 800 22px var(--display); margin: 0 0 12px; }
+  .flow { list-style: none; margin: 0 0 8px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; counter-reset: flow; }
+  .flow li { background: #fff; border: 2px solid var(--ink); border-radius: 6px; padding: 12px 14px; font-size: 15px; line-height: 1.4; counter-increment: flow; }
+  .flow li::before { content: counter(flow); display: block; font: 800 24px/1 var(--display); color: var(--mat); margin-bottom: 6px; }
+  .flow code, .arch code { font-size: .92em; }
+  .flow b { display: block; font-size: 16px; }
+  .status { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .status li { padding-left: 28px; position: relative; }
+  .status li::before { position: absolute; left: 0; top: 0; font-weight: 800; }
+  .status .done::before { content: "\2713"; color: var(--mat); }
+  .status .todo::before { content: "\25CB"; opacity: .6; }
+
   .robot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center; }
   .robot svg { width: 100%; max-width: 460px; height: auto; }
   .specs { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 10px 24px; }
@@ -162,6 +175,8 @@
   @media (max-width: 900px) {
     .hero-grid, .robot { grid-template-columns: 1fr; }
     .worlds { grid-template-columns: 1fr; }
+    .arch-cols { grid-template-columns: 1fr; gap: 32px; }
+    .flow { grid-template-columns: 1fr; }
     .finding { grid-template-columns: 1fr; gap: 8px; }
     .hero { padding-bottom: 40px; }
     .topbar { margin-bottom: 24px; }
@@ -179,6 +194,7 @@
     <div class="brand">Physical AI Arena <small>Hisar School · Advanced AI</small></div>
     <nav>
       <a href="#dunyalar">Üç dünya</a>
+      <a href="#mimari">Mimari</a>
       <a href="#deneyler">Deneyler</a>
       <a href="#bulgular">Bulgular</a>
       <a href="#robot">Robot</a>
@@ -256,6 +272,58 @@
           <p>Fab lab'da kendi yaptığımız dört robot. İkisinin beyni Raspberry Pi 4, ikisininki Pico 2 W; hepsi aynı komutları anlıyor.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section id="mimari">
+    <div class="wrap arch">
+      <h2>Mimari: beyin nasıl çalışıyor?</h2>
+      <p class="intro">Robotun beyni, her adımda üç şeyi tekrarlayan küçük bir döngü: sensörleri <b>oku</b>, bir eylem <b>seç</b>, tekerlekleri <b>sür</b>. Aynı döngü üç dünyada da çalışır; yalnızca sensörlerin ve tekerleklerin ardındaki "dünya" değişir.</p>
+
+      <h3>Veri nereden nereye gidiyor?</h3>
+      <ol class="flow">
+        <li><b>Eğit</b><code>train.py</code> PPO ile sinir ağını eğitir, modeli <code>models/</code> altına kaydeder.</li>
+        <li><b>Ölç</b><code>evaluate.py</code> her modeli ve kuralları aynı 100 bölümde sınar; sonuç <code>experiments.json</code>'a yazılır.</li>
+        <li><b>Aktar</b><code>--export</code> ile ağın ağırlıkları <code>policy_latest.json</code>'a çevrilir. Tarayıcı ağı kendi içinde çalıştırır.</li>
+        <li><b>Yaz</b><code>log_finding.py</code> bulguları, <code>export_site_config.py</code> sensör düzenlerini (<code>robot.json</code>) üretir.</li>
+        <li><b>Yayınla</b><code>publish.sh</code> yalnızca <code>docs/</code> klasörünü GitHub Pages'e gönderir. Sayfa bu JSON dosyalarını okuyup kendini çizer.</li>
+      </ol>
+      <p class="note">Sayfanın kodu değişmeden yalnızca veri güncellendiği için her yeni deney sitede kendiliğinden görünür.</p>
+
+      <div class="arch-cols">
+        <div>
+          <h3>Simülatörün sözleşmesi</h3>
+          <dl class="specs">
+            <dt>Gözlem</dt><dd>Her sensörün mesafesi, 1,5 m'ye bölünüp 0-1 arasına sıkıştırılır. Hafıza açıksa (<code>frames</code>) son birkaç adımın okuması arka arkaya eklenir. 3 sensör ve 3 kare, 9 sayı eder.</dd>
+            <dt>Eylem</dt><dd>5 ayrık hareket: ileri (0,20 m/s), sol-ileri ve sağ-ileri (0,12 m/s ve ±1,5 rad/s), yerinde sola ve sağa dön (±2,5 rad/s).</dd>
+            <dt>Ödül</dt><dd>İleri gittikçe artı. Yerinde dönmek küçük ceza. Engele 10 cm'den fazla yaklaşmak ceza, çarpmak büyük ceza (−10) ve bölüm biter.</dd>
+            <dt>Sensör</dt><dd>27° görüş konisi, 0,04-4 m, her konide 5 ışın ve 1 cm gürültü. İki düzen var: <code>front3</code> ve <code>side5</code> (iki yan sensör daha).</dd>
+            <dt>Zaman</dt><dd>Adım 0,05 sn, bir bölüm en çok 1000 adım (50 sn). Arenada 2 sabit, 2 hareketli engel var.</dd>
+            <dt>Eğitim</dt><dd>Stable-Baselines3 PPO, 8 paralel ortam, işlemcide. Ağ küçük bir çok katmanlı algılayıcı (MLP).</dd>
+          </dl>
+        </div>
+        <div>
+          <h3>Gerçek robota giden ortak dil</h3>
+          <p>Robotun üç dünyada aynı kodla çalışması için hepsi aynı ROS 2 konularını konuşur (SI birimleriyle):</p>
+          <pre><code>/cmd_vel            Twist    beyin -> robot
+/tof_left/range     Range    robot -> beyin
+/tof_center/range   Range    robot -> beyin
+/tof_right/range    Range    robot -> beyin
+/imu  /odom         Imu, Odometry</code></pre>
+          <p>Gazebo ikizi bu konuları ROS 2 Jazzy ile yayınlar. Gerçek robotlarda Raspberry Pi 4 doğrudan ROS 2 çalıştırır, Pico 2 W ise MicroPython ve Wi-Fi (UDP) ile konuşur.</p>
+        </div>
+      </div>
+
+      <h3 style="margin-top:40px">Şu anki durum</h3>
+      <ul class="status">
+        <li class="done">Python / Gymnasium simülatörü ve PPO eğitimi</li>
+        <li class="done">Gazebo arenası, robot modeli ve hareketli engeller</li>
+        <li class="done">Deney, bulgu ve sensör düzeni kayıtları ve bu sayfaya otomatik yayın</li>
+        <li class="todo">Üç dünya için ortak Python arayüzü (SimRobot, GazeboRobot, RealRobot)</li>
+        <li class="todo">Pi 4 sürücüsü ve Pico 2 W yazılımı (MicroPython, UDP)</li>
+        <li class="todo">Pico robot kartı (fab lab'da frezelenecek) ve senaryo sistemi</li>
+      </ul>
+      <p class="note">Henüz hiçbir model gerçek robotta denenmedi; bu sayfadaki tüm sonuçlar simülasyondan geliyor. Beş sensörlü düzen şimdilik yalnızca simülasyonda var: Pico'nun mevcut pin planında yalnızca üç ToF sensörü için kapı var.</p>
     </div>
   </section>
 
