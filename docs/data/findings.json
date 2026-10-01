@@ -36,6 +36,35 @@
       ]
     },
     {
+      "id": "hareketli-engel-zorluk",
+      "date": "2026-10-01",
+      "type": "bulgu",
+      "title": "Hareketli engel, kurallı ve öğrenmiş kontrolcüyü aynı ölçüde zorluyor",
+      "text": "Sabit engelde neredeyse hiç çarpmayan iki kontrolcü de hareketli engelde ciddi biçimde çarptı: kurallı kontrolcü %0'dan %44'e, PPO (500 bin adım) %2'den %49'a çıktı. Bölüm başına ortalama hayatta kalma adımı kurallıda 1000'den 797'ye, PPO'da 980'den 667'ye düştü. Üç sensörün yalnızca öne bakması ve hareketli engelin yaklaşma yönünün bilinmemesi olası bir neden olabilir, ancak bu henüz test edilmedi; sensör düzeni deneyi yapılmadan kesin söylenemez. 100'er bölümlük ölçümler.",
+      "metrics": [
+        {
+          "label": "Kurallı, çarpma (sabit → hareketli)",
+          "value": "%0 → %44"
+        },
+        {
+          "label": "PPO 500 bin, çarpma (sabit → hareketli)",
+          "value": "%2 → %49"
+        },
+        {
+          "label": "Kurallı, ort. adım",
+          "value": "1000 → 797"
+        },
+        {
+          "label": "PPO 500 bin, ort. adım",
+          "value": "980 → 667"
+        }
+      ],
+      "related": [
+        "rule",
+        "ppo-500k"
+      ]
+    },
+    {
       "id": "hareketli-engel-plato",
       "date": "2026-10-01",
       "type": "bulgu",
@@ -71,5 +100,5 @@
       ]
     }
   ],
-  "updated": "2026-10-01T09:43"
+  "updated": "2026-10-01T09:44"
 }
