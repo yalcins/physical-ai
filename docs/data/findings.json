@@ -1,6 +1,35 @@
 {
   "findings": [
     {
+      "id": "sensor-gorus-alani",
+      "date": "2026-10-01",
+      "type": "donanim",
+      "title": "Üç ToF sensör robotun yalnızca önündeki yaklaşık 87 derecelik alanı görüyor",
+      "text": "Sensörler sol +30°, orta 0°, sağ -30° yönünde ve her birinin görüş açısı 27° (yarım açı 13,5°). Bu da -43,5° ile +43,5° arasını kaplar; sol-orta ve orta-sağ arasında 3° genişliğinde iki küçük boşluk vardır. Robotun yanları ve arkası hiç görülmez. Bu sayılar sensör yerleşiminden hesaplanmış tasarım değerleridir, bir deney ölçümü değildir. Hareketli engellerdeki yüksek çarpma oranıyla ilişkisi henüz test edilmedi; farklı bir sensör düzeniyle deney yapılması gerekir.",
+      "metrics": [
+        {
+          "label": "Sensör sayısı",
+          "value": "3"
+        },
+        {
+          "label": "Sensör başına görüş açısı",
+          "value": "27°"
+        },
+        {
+          "label": "Toplam kapsanan alan",
+          "value": "87°"
+        },
+        {
+          "label": "Sensörler arası boşluk",
+          "value": "3°"
+        }
+      ],
+      "related": [
+        "rule",
+        "ppo-500k"
+      ]
+    },
+    {
       "id": "sabit-engel-getiri",
       "date": "2026-10-01",
       "type": "bulgu",
@@ -100,5 +129,5 @@
       ]
     }
   ],
-  "updated": "2026-10-01T09:44"
+  "updated": "2026-10-01T09:46"
 }
