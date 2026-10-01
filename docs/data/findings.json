@@ -1,6 +1,41 @@
 {
   "findings": [
     {
+      "id": "sabit-engel-getiri",
+      "date": "2026-10-01",
+      "type": "bulgu",
+      "title": "Sabit engelde öğrenmiş politika daha yüksek getiri verdi, ama kurallı kontrolcü daha az çarptı",
+      "text": "Sabit engelli arenada rastgele eylemler her bölümde çarptı (%100). Kurallı kontrolcü hiç çarpmadı (%0), PPO ise %2-4 çarptı; buna karşılık PPO'nun ortalama getirisi kurallıdan belirgin yüksek (183 ve 117). Yani öğrenmiş politika ödül açısından kuralı geçiyor ama güvenlik açısından geçmiyor. 150 binden 500 bin adıma eğitim çarpmayı %4'ten %2'ye indirdi. 100'er bölümlük ölçümler; farkların tesadüf olup olmadığı ayrıca test edilmedi.",
+      "metrics": [
+        {
+          "label": "Rastgele, sabit çarpma",
+          "value": "%100"
+        },
+        {
+          "label": "Kurallı, sabit çarpma",
+          "value": "%0"
+        },
+        {
+          "label": "PPO 150 bin",
+          "value": "%4"
+        },
+        {
+          "label": "PPO 500 bin",
+          "value": "%2"
+        },
+        {
+          "label": "Ortalama getiri (PPO 500 bin / kurallı)",
+          "value": "183,4 / 116,9"
+        }
+      ],
+      "related": [
+        "random",
+        "rule",
+        "ppo-150k",
+        "ppo-500k"
+      ]
+    },
+    {
       "id": "hareketli-engel-plato",
       "date": "2026-10-01",
       "type": "bulgu",
@@ -36,5 +71,5 @@
       ]
     }
   ],
-  "updated": "2026-10-01T09:42"
+  "updated": "2026-10-01T09:43"
 }
