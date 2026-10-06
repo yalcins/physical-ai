@@ -104,3 +104,7 @@ Gözlem vektörü = sensörler sırayla, en yeni kare başta (`frames` > 1 ise g
 `docs/data/build.json`: arena, ağ, Pico robot, Pi 4 robot, ölçüm ve birlikte deneme için parça listesi,
 adım adım işler, açık kararlar. Bir adım bitince `"state": "done"` yap (`todo` / `later` / `done`) ve `./publish.sh`.
 Pico firmware'inin karta yüklenmesi bilerek `later`: kullanıcı donanım hazır olunca yapacak.
+
+## Simülasyon kayıtları (docs/media/)
+`pai_gym/record.py` (pygame, pencere açmaz) ve `tools/capture_gazebo/run.sh` (Gazebo başsız, tepeden kamera) 6 sn'lik PNG + MP4 üretir.
+Gazebo kaydı için `colcon build` yapılmış olmalı, .venv'siz terminalde çalıştır. Depodaki `arena.sdf`'e dokunulmaz, kamera geçici bir kopyaya eklenir.
