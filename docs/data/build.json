@@ -343,7 +343,8 @@
           "kind": "fiziksel",
           "state": "later",
           "cmd": "python3 host/fleet.py random",
-          "phase": 4
+          "phase": 4,
+          "arena": true
         }
       ]
     },
@@ -430,7 +431,8 @@
           "kind": "yazılım",
           "state": "todo",
           "phase": 5,
-          "cmd": "python3 host/fleet.py deploy\npython3 host/fleet.py run-policy\npython3 host/fleet.py stop"
+          "cmd": "python3 host/fleet.py deploy\npython3 host/fleet.py run-policy\npython3 host/fleet.py stop",
+          "arena": true
         }
       ]
     },
@@ -456,19 +458,22 @@
           "text": "Düz git komutu ver (0,2 m/s); 1 m'yi kaç saniyede aldığını ölç. Simülasyonla karşılaştır.",
           "kind": "fiziksel",
           "state": "todo",
-          "phase": 6
+          "phase": 6,
+          "arena": true
         },
         {
           "text": "Yerinde dönüş (2,5 rad/s) için 360° dönüş süresini ölç.",
           "kind": "fiziksel",
           "state": "todo",
-          "phase": 6
+          "phase": 6,
+          "arena": true
         },
         {
           "text": "ToF okumalarını bilinen mesafelerde (10, 50, 100 cm) kontrol et; gürültüyü simülasyonla karşılaştır.",
           "kind": "fiziksel",
           "state": "todo",
-          "phase": 6
+          "phase": 6,
+          "arena": true
         },
         {
           "text": "Hareketli engel karşılaştırması: Pico robotun hızını ve yarıçapını simülasyondaki engelle eşle (karar listesine bak).",
@@ -489,7 +494,8 @@
           "kind": "fiziksel",
           "state": "todo",
           "cmd": "python3 host/fleet.py random\npython3 host/fleet.py run-policy",
-          "phase": 7
+          "phase": 7,
+          "arena": true
         },
         {
           "text": "Sonucu simülasyondaki aynı koşullu ölçümle karşılaştır; farkı bulgu olarak kaydet.",
@@ -501,5 +507,6 @@
       ]
     }
   ],
-  "bench_note": "Tezgâh denemesinde tekerlek, sarhoş teker ve şasi gerekmez. ToF sensörleri firmware olmadan tek tek denenir; üçünün adres ataması firmware aşamasına (daha sonra) bağlı."
+  "bench_note": "Tezgâh denemesinde tekerlek, sarhoş teker ve şasi gerekmez. ToF sensörleri firmware olmadan tek tek denenir; üçünün adres ataması firmware aşamasına (daha sonra) bağlı.",
+  "arena_note": "“arena gerekir” etiketi, o adımın 2 x 2 m arenada yapılması gerektiğini gösterir. Etiketsiz adımlar tezgâhta ya da arenasız yapılabilir."
 }

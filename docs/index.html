@@ -180,6 +180,7 @@
   .bsteps .done::before { content: "\2713"; color: var(--mat); }
   .bsteps .tag { display: inline-block; font-size: 12px; padding: 0 7px; border-radius: 4px; margin-right: 8px; background: var(--ink); color: var(--paper); }
   .bsteps .tag.later { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+  .bsteps .tag.arena { background: var(--sensor); color: var(--ink); }
   .bsteps pre { margin: 6px 0 0; font-size: 14px; overflow-x: auto; }
     .target .cols > * { min-width: 0; }
   @media (max-width: 760px) { .target .cols { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
@@ -788,6 +789,7 @@ fetch('data/robot.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null
 const KIND_TR = { fiziksel: 'Fiziksel', 'yazılım': 'Yazılım' };
 fetch('data/build.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Promise.reject()).then(b => {
   document.getElementById('build-intro').textContent = b.intro + ' Son güncelleme: ' + new Date(b.updated).toLocaleDateString('tr-TR', { dateStyle: 'long' }) + '.';
+  if (b.arena_note) document.getElementById('build-intro').append(' ' + b.arena_note);
   const ph = document.getElementById('build-phases');
   (b.phases || []).forEach(p => { const li = el('li'); li.append(el('b', {}, p.n + '.'), p.name + ': ' + p.goal); ph.append(li); });
   const dec = document.getElementById('build-decisions');
@@ -821,6 +823,7 @@ fetch('data/build.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Prom
       const li = el('li', { class: s.state });
       li.append(el('span', { class: 'tag' }, KIND_TR[s.kind] || s.kind));
       if (s.state === 'later') li.append(el('span', { class: 'tag later' }, 'daha sonra'));
+      if (s.arena) li.append(el('span', { class: 'tag arena' }, 'arena gerekir'));
       li.append(document.createTextNode(s.text + ' '), el('small', {}, '(aşama ' + s.phase + ')'));
       if (s.cmd) li.append(el('pre', {}, s.cmd));
       ol.append(li);
