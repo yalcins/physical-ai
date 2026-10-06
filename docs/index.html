@@ -154,6 +154,9 @@
   th { font-weight: 700; border-bottom: 2px solid var(--ink); }
   td.num { font-variant-numeric: tabular-nums; }
   td:nth-child(9) { white-space: nowrap; }
+  table.maturity { min-width: 0; width: 100%; }
+  table.maturity td:nth-child(4) { white-space: normal; }
+  table.maturity td.num { text-align: center; }
   tr.live td:first-child::after { content: " (sitede sürüyor)"; font-size: 14px; color: var(--mat); font-weight: 700; }
   .finding { display: grid; grid-template-columns: 170px 1fr; gap: 24px; padding: 24px 0; border-top: 2px solid var(--ink); max-width: 860px; }
   .finding .when { font-size: 15px; }
@@ -338,6 +341,27 @@
       </div>
       <p>Ana bilgisayar (laptop ya da ana sunucu) üç iş yapar: PPO eğitimini çalıştırır, yeni politikayı Pi 4'lere gönderir, tüm robotları izleyip kontrol eder. Geliştirme sırasında kolay olduğu için politika geçici olarak laptopta da çalıştırılabilir.</p>
       <p class="note">Bu bir plan; iki tür robot da henüz kurulmadı. Küçük robotların gerçek hareketli engellerin yerini alması, sim-gerçek farkını ölçmemizi sağlayacak.</p>
+
+      <h3 style="margin-top:40px">Katman katman olgunluk (1-5)</h3>
+      <p>1: yalnızca fikir ya da plan. 3: kodlanmış ve simülasyonda ya da sahte robotla test edilmiş. 5: gerçek donanımda doğrulanmış. Sürüm 2'de puanı 1 olan katmanların yazılımı yazıldı; hiçbirini gerçek robotta denemedik, bu yüzden hiçbir katman 3'ün üstüne çıkmadı.</p>
+      <div class="table-wrap">
+        <table class="maturity">
+          <thead><tr><th>Katman</th><th>Sürüm 1</th><th>Sürüm 2</th><th>Ne var, ne eksik</th></tr></thead>
+          <tbody>
+          <tr><td>Gymnasium simülatörü</td><td class="num">4</td><td class="num">4</td><td>2B dünya, iki sensör düzeni, PPO eğitimi. Birim testi yok.</td></tr>
+          <tr><td>Eğitim ve ölçüm hattı</td><td class="num">4</td><td class="num">4</td><td>Altı deney aynı 100 bölümde ölçüldü.</td></tr>
+          <tr><td>Site ve yayın hattı</td><td class="num">4</td><td class="num">4</td><td>Sayfa yalnızca veriyle çalışıyor, yayın otomatik.</td></tr>
+          <tr><td>Gazebo dijital ikizi</td><td class="num">3</td><td class="num">3</td><td>URDF, dünya ve node'lar var. Sim-gerçek ölçü eşleşmesi elle.</td></tr>
+          <tr><td>Ortak Python arayüzü</td><td class="num">1</td><td class="num">3</td><td><code>pai_robot/</code>: SimRobot ve UdpRobot sahte Pico ile test edildi. RosRobot (Gazebo ve Pi 4) yazıldı, ROS ortamında denenmedi.</td></tr>
+          <tr><td>Büyük robot (Pi 4)</td><td class="num">1</td><td class="num">2</td><td><code>pi4/run_policy.py</code> simülasyonda çalışıyor. Sürücü node'u taslak, pinler belirlenmedi.</td></tr>
+          <tr><td>Küçük robot (Pico 2 W)</td><td class="num">1</td><td class="num">2</td><td><code>firmware/pico2w/</code>: rastgele ve uzaktan kumanda modu yazıldı, protokol sahte Pico ile test edildi. Gerçek kartta denenmedi, ToF sürücüsü uyarlanacak.</td></tr>
+          <tr><td>Ana bilgisayar kontrolü</td><td class="num">1</td><td class="num">3</td><td><code>host/fleet.py</code>: durum, rastgele mod, durdurma sahte Pico ile denendi. Politikayı Pi 4'e gönderme (<code>scp</code>) yazıldı, denenmedi.</td></tr>
+          <tr><td>Sim-gerçek aktarımı</td><td class="num">1</td><td class="num">1</td><td>Hiçbir model gerçek robotta denenmedi.</td></tr>
+          <tr><td>Sensör düzeni uyumu</td><td class="num">2</td><td class="num">2</td><td><code>side5</code> yalnızca simülasyonda. Pico pin planında yalnızca üç ToF için yer var.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Puanlar bu projenin kendi değerlendirmesi; ölçüm değil, yorum.</p>
 
       <h3 style="margin-top:40px">Şu anki durum</h3>
       <ul class="status">
