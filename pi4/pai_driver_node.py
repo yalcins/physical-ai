@@ -12,6 +12,7 @@ import rclpy
 from geometry_msgs.msg import Twist
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
+from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Range
 
 from tof import ToFArray
@@ -41,7 +42,7 @@ class PaiDriver(Node):
         self.left = (PWMOutputDevice(PINS['pwma']), DigitalOutputDevice(PINS['ain1']), DigitalOutputDevice(PINS['ain2']))
         self.right = (PWMOutputDevice(PINS['pwmb']), DigitalOutputDevice(PINS['bin1']), DigitalOutputDevice(PINS['bin2']))
         self.create_subscription(Twist, '/cmd_vel', self.on_cmd, 10)
-        self.pubs = [self.create_publisher(Range, f'/tof_{n}/range', 10) for n in TOF_NAMES]
+        self.pubs = [self.create_publisher(Range, f'/tof_{n}/range', qos_profile_sensor_data) for n in TOF_NAMES]
         self.last_cmd = self.get_clock().now()
         self.create_timer(0.05, self.tick)      # 20 Hz: ToF oku + watchdog
         self.tof = ToFArray(XSHUT_PINS)       # adresleri atar (tof.py)

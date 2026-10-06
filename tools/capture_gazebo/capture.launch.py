@@ -26,4 +26,7 @@ def generate_launch_description():
                parameters=[{'use_sim_time': True}])
     tof = Node(package='arena_sim', executable='tof_range_node', parameters=[{'use_sim_time': True}])
     moving = Node(package='arena_sim', executable='moving_obstacles_node', parameters=[{'use_sim_time': True}])
-    return LaunchDescription([gazebo, rsp, spawn, bridge, img, tof, moving])
+    nodes = [gazebo, rsp, spawn, bridge, img, tof]
+    if not os.environ.get('CAPTURE_NO_MOVING'):        # testlerde hareketli engeller kapatilabilir
+        nodes.append(moving)
+    return LaunchDescription(nodes)
