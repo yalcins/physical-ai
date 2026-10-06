@@ -7,6 +7,7 @@ Politika dosyasini ana bilgisayar `host/fleet.py deploy` ile gonderir.
 Gereken: numpy. ROS modunda ayrica ROS 2 Jazzy (RosRobot).
 """
 import argparse
+import signal
 import sys
 import time
 from pathlib import Path
@@ -31,6 +32,7 @@ def main():
     else:
         from pai_robot.ros import RosRobot
         robot = RosRobot()
+    signal.signal(signal.SIGTERM, signal.default_int_handler)   # run.sh stop: SIGTERM -> robot.close() calissin
     start = time.time()
     try:
         while not a.seconds or time.time() - start < a.seconds:

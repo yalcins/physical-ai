@@ -4,7 +4,7 @@
     python3 fleet.py random                      # tum Pico'lari rastgele moda al
     python3 fleet.py stop                        # tum Pico'lari ve Pi 4 politikalarini durdur
     python3 fleet.py deploy ../docs/data/policy_latest.json   # politikayi Pi 4'lere gonder (scp)
-    python3 fleet.py run-policy                  # Pi 4'lerde politikayi baslat (ssh)
+    python3 fleet.py run-policy                  # Pi 4'lerde surucuyu ve politikayi baslat (ssh)
 
 IP adresleri fleet.json icinde (ornek degerler, kendi agina gore degistir).
 """
@@ -68,18 +68,21 @@ def deploy(fleet, path):
         print(r['name'], 'gonderildi' if ok else 'HATA')
 
 
-def stop_pi4(fleet):
-    """Pi 4'lerde politikayi durdurur. Surucu 0,5 sn komut gelmeyince tekerlekleri de durdurur."""
+def pi4_run(fleet, action):
+    """Pi 4'lerde `pi4/run.sh start|stop` calistirir (ROS ortamini ve surucuyu run.sh halleder)."""
     for r in pi4s(fleet):
-        subprocess.run(['ssh', f"{r['user']}@{r['host']}", 'pkill -f run_policy.py'])
-        print(r['name'], 'durduruldu')
+        out = subprocess.run(['ssh', f"{r['user']}@{r['host']}", f'bash ~/physical-ai/pi4/run.sh {action}'],
+                             capture_output=True, text=True)
+        print(r['name'], out.stdout.strip() or out.stderr.strip() or f'run.sh {action} bitti')
+
+
+def stop_pi4(fleet):
+    """Politikayi ve surucuyu durdurur. Surucu 0,5 sn komut gelmeyince de tekerlekleri durdurur."""
+    pi4_run(fleet, 'stop')
 
 
 def run_policy(fleet):
-    for r in pi4s(fleet):
-        cmd = f"cd physical-ai && nohup python3 pi4/run_policy.py --policy policy_latest.json > run.log 2>&1 &"
-        subprocess.run(['ssh', f"{r['user']}@{r['host']}", cmd])
-        print(r['name'], 'baslatildi')
+    pi4_run(fleet, 'start')
 
 
 def main():

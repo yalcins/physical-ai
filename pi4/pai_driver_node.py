@@ -6,9 +6,11 @@ ToF okuma ve adres atama tof.py icinde (sahte sensorlerle test edildi, gercek se
 PINS sozlugunu gercek kablolamaya gore doldur (Pico pin planindan farkli olabilir).
 """
 import math
+import signal
 
 import rclpy
 from geometry_msgs.msg import Twist
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from sensor_msgs.msg import Range
 
@@ -74,16 +76,29 @@ class PaiDriver(Node):
                 msg.range = r
             pub.publish(msg)
 
+    def stop_motors(self):
+        self.set_motor(self.left, 0.0)
+        self.set_motor(self.right, 0.0)
+
     def tick(self):
         self.publish_tof()
         if (self.get_clock().now() - self.last_cmd).nanoseconds > CMD_TIMEOUT * 1e9:
-            self.set_motor(self.left, 0.0)
-            self.set_motor(self.right, 0.0)
+            self.stop_motors()
 
 
 def main():
     rclpy.init()
-    rclpy.spin(PaiDriver())
+    signal.signal(signal.SIGTERM, signal.default_int_handler)   # run.sh stop: SIGTERM -> temiz cikis
+    node = PaiDriver()
+    try:
+        rclpy.spin(node)
+    except (KeyboardInterrupt, ExternalShutdownException):
+        pass
+    finally:
+        node.stop_motors()                 # her cikista motorlar kapansin (run.sh stop SIGTERM yollar)
+        node.tof.close()
+        node.destroy_node()
+        rclpy.try_shutdown()
 
 
 if __name__ == '__main__':

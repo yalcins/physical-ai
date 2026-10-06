@@ -10,3 +10,5 @@ __pycache__/
 
 firmware/pico2w/secrets.py
 firmware/pico2w/vl53l1x.py
+.venv-pi/
+.run/

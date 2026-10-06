@@ -422,21 +422,21 @@
           "cmd": "i2cdetect -y 1"
         },
         {
-          "text": "pi4/pai_driver_node.py içinde PINS ve XSHUT_PINS'i doldur. ToF okuma ve adres atama pi4/tof.py içinde yazıldı (adafruit-circuitpython-vl53l1x kullanır); gerçek sensörlerle henüz denenmedi.",
+          "text": "Pi'de sanal ortam kur (Ubuntu 24.04'te sistem Python'una doğrudan pip install reddedilir; --system-site-packages ROS'un rclpy'sini görmesi için gerekli) ve kütüphaneleri yükle. pi4/pai_driver_node.py içinde PINS ve XSHUT_PINS'i doldur. ToF okuma ve adres atama pi4/tof.py içinde yazıldı (adafruit-circuitpython-vl53l1x kullanır); gerçek sensörlerle henüz denenmedi.",
           "kind": "yazılım",
           "state": "todo",
           "phase": 5,
-          "cmd": "pip install adafruit-circuitpython-vl53l1x gpiozero"
+          "cmd": "cd ~/physical-ai\npython3 -m venv --system-site-packages .venv-pi\nsource .venv-pi/bin/activate\npip install adafruit-circuitpython-vl53l1x gpiozero"
         },
         {
-          "text": "Sürücü node'unu çalıştır, tekerlekler yerden kesikken /cmd_vel ile tekerlekleri, /tof_*/range ile sensörleri doğrula. Komut kesilince 0,5 sn içinde durmalı.",
+          "text": "Sürücü node'unu çalıştır ve tekerlekler yerden kesikken /cmd_vel ile tekerlekleri, /tof_*/range ile sensörleri doğrula. İki ayrı terminal gerekir; ikisinde de ROS ortamı kaynaklanmalı. Komut kesilince 0,5 sn içinde durmalı.",
           "kind": "yazılım",
           "state": "todo",
           "phase": 5,
-          "cmd": "ros2 topic pub /cmd_vel geometry_msgs/Twist \"{linear: {x: 0.1}}\"\nros2 topic echo /tof_center/range"
+          "cmd": "# terminal 1: sürücü\ncd ~/physical-ai\nsource /opt/ros/jazzy/setup.bash\nsource .venv-pi/bin/activate\npython3 pi4/pai_driver_node.py\n\n# terminal 2: komut ve okuma\nsource /opt/ros/jazzy/setup.bash\nros2 topic pub /cmd_vel geometry_msgs/Twist \"{linear: {x: 0.1}}\"\nros2 topic echo /tof_center/range"
         },
         {
-          "text": "Politikayı bilgisayardan gönder. İlk çalıştırma tekerlekler yerden kesikken olsun, ardından arenada, elin acil durdurmada. Durdurmak için Ctrl+C ya da fleet.py stop.",
+          "text": "Politikayı bilgisayardan gönder ve başlat: fleet.py run-policy Pi'de pi4/run.sh start çalıştırır (ROS ortamını kaynaklar, önce sürücüyü, 3 sn sonra politikayı başlatır). İlk çalıştırma tekerlekler yerden kesikken olsun, ardından arenada, elin acil durdurmada. fleet.py stop politikayı, sonra sürücüyü durdurur ve motorlar kapanır. Sürücü başlamazsa Pi'deki driver.log dosyasına bak.",
           "kind": "yazılım",
           "state": "todo",
           "phase": 5,

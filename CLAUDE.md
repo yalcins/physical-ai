@@ -49,6 +49,7 @@ python train.py --steps 150000 [--no-moving]
 ## Kurallar
 - `sudo` gerektiren komutları ÇALIŞTIRMA; kullanıcıya komutu ver, o çalıştırsın.
 - ROS ve .venv Python ortamlarını karıştırma. `.venv/` içinde `COLCON_IGNORE` olmalı.
+  İstisna: Pi 4'te `.venv-pi` bilerek `--system-site-packages` ile kurulur (sürücü hem rclpy hem pip kütüphanesi ister); `pi4/run.sh` bunu kullanır.
 - `build/ install/ log/ .venv/ */models/` git'e girmez.
 - GUI açan komutları (Gazebo, pygame) kullanıcı kendi başlatır; sen pencere açmadan test et.
 - Kod lise öğrencileri tarafından okunacak: sade, yorumlu, Türkçe açıklamalı yaz.
