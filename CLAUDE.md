@@ -59,8 +59,9 @@ python train.py --steps 150000 [--no-moving]
 - [x] Gymnasium 2D simülatör + PPO eğitim
 - [x] Gazebo arena + pai_bot modeli
 - [x] Hareketli engelleri Gazebo'ya ekle (`moving_obstacles_node`, world.py ile aynı hız/yarıçap)
-- [ ] Ortak Python arayüzü: SimRobot / GazeboRobot / RealRobot
-- [ ] Pi 4 sürücüsü (ROS 2 node) ve Pico 2 W firmware (MicroPython + UDP)
+- [~] Ortak Python arayüzü `pai_robot/`: SimRobot + UdpRobot sahte Pico ile test edildi, RosRobot (Gazebo/Pi 4) ROS ortamında denenmedi
+- [~] Pi 4 (`pi4/`, büyük robot: görev çözer, politika üzerinde çalışır) ve Pico 2 W (`firmware/pico2w/`, küçük robot: rastgele = hareketli engel) yazıldı, gerçek donanımda DENENMEDİ; Pi pinleri belirlenmedi
+- [~] Ana bilgisayar kontrolü `host/fleet.py` (durum, mod, politika gönderme); testler: `.venv/bin/python tests/test_pai_robot.py`
 - [ ] Pico robot kartı (KiCad, fab lab'da frezelenecek)
 - [ ] Senaryo sistemi (hareketli objeler için tanım dosyası)
 

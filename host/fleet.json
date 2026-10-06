@@ -1,0 +1,8 @@
+{
+  "robots": [
+    {"name": "pico-1", "kind": "pico", "host": "192.168.1.51"},
+    {"name": "pico-2", "kind": "pico", "host": "192.168.1.52"},
+    {"name": "pi4-1",  "kind": "pi4",  "host": "192.168.1.61", "user": "pi"},
+    {"name": "pi4-2",  "kind": "pi4",  "host": "192.168.1.62", "user": "pi"}
+  ]
+}

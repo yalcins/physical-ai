@@ -7,3 +7,5 @@ __pycache__/
 *.pyc
 *.log
 .claude/settings.local.json
+
+firmware/pico2w/secrets.py
