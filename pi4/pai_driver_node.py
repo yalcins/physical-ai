@@ -17,14 +17,16 @@ CMD_TIMEOUT = 0.5                    # sn: komut kesilirse dur
 # TB6612FNG BCM pinleri -- DOLDURULACAK (None = henuz atanmadi)
 PINS = {'pwma': None, 'ain1': None, 'ain2': None,
         'pwmb': None, 'bin1': None, 'bin2': None, 'stby': None}
+# Her ToF'un XSHUT pini (I2C adres ataması için) -- DOLDURULACAK, sıra: sol, orta, sağ
+XSHUT_PINS = (None, None, None)
 TOF_NAMES = ('left', 'center', 'right')
 
 
 class PaiDriver(Node):
     def __init__(self):
         super().__init__('pai_driver')
-        if any(v is None for v in PINS.values()):
-            raise RuntimeError('PINS doldurulmadi: pi4/pai_driver_node.py icinde pinleri yaz.')
+        if any(v is None for v in PINS.values()) or None in XSHUT_PINS:
+            raise RuntimeError('PINS / XSHUT_PINS doldurulmadi: pi4/pai_driver_node.py icinde pinleri yaz.')
         from gpiozero import DigitalOutputDevice, PWMOutputDevice
         self.stby = DigitalOutputDevice(PINS['stby'], initial_value=True)
         self.left = (PWMOutputDevice(PINS['pwma']), DigitalOutputDevice(PINS['ain1']), DigitalOutputDevice(PINS['ain2']))

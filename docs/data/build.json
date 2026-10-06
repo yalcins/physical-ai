@@ -387,37 +387,50 @@
           "phase": 5
         },
         {
-          "text": "ROS 2 Jazzy, numpy ve gpiozero'yu kur; projeyi klonla.",
+          "text": "ROS 2 Jazzy, numpy, gpiozero ve i2c-tools'u kur; I2C'yi aç (/boot/firmware/config.txt içine dtparam=i2c_arm=on, sonra yeniden başlat); projeyi klonla.",
           "kind": "yazılım",
           "state": "todo",
-          "cmd": "sudo apt install ros-jazzy-ros-base python3-numpy python3-gpiozero\ngit clone https://github.com/yalcins/physical-ai.git",
-          "phase": 5
+          "phase": 5,
+          "cmd": "sudo apt install ros-jazzy-ros-base python3-numpy python3-gpiozero i2c-tools\ngit clone https://github.com/yalcins/physical-ai.git"
         },
         {
-          "text": "Motor sürücüyü ve ToF'ları Pi'ye bağla; hangi pinlerin kullanıldığını yaz.",
+          "text": "Motor sürücüyü ve üç ToF'u Pi'ye bağla. Pi, pil ve motor sürücünün GND'leri ortak olmalı. Üç ToF'un XSHUT pinlerini ayrı GPIO'lara ver (adres ataması için gerekli). Kullandığın tüm pinleri yaz.",
           "kind": "fiziksel",
           "state": "todo",
           "phase": 5
         },
         {
-          "text": "pi4/pai_driver_node.py içinde PINS'i doldur, ToF okumayı yaz.",
+          "text": "Kodsuz motor testi, tekerlekler yerden kesik: STBY, PWMA ve AIN1'i Pi'nin 3V3 pinine, AIN2'yi GND'ye bağla, sol motor dönmeli. Sağ motor için PWMB, BIN1, BIN2 ile aynısı. Her sensörün besleme pininde doğru gerilimi ölç.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 5
+        },
+        {
+          "text": "Sensörleri tek tek bağlayıp I2C taraması yap; her biri 0x29 adresinde görünmeli. Üçünün ayrı adres alması, adım 7'deki kod çalışınca doğrulanır.",
+          "kind": "yazılım",
+          "state": "todo",
+          "phase": 5,
+          "cmd": "i2cdetect -y 1"
+        },
+        {
+          "text": "pi4/pai_driver_node.py içinde PINS ve XSHUT pinlerini doldur; sensör adres atamasını ve ToF okumayı yaz (Pico'daki tof.py gibi, kullandığın Python kütüphanesine göre).",
           "kind": "yazılım",
           "state": "todo",
           "phase": 5
         },
         {
-          "text": "Sürücü node'unu çalıştır; /cmd_vel ile tekerlekleri, /tof_*/range ile sensörleri doğrula.",
+          "text": "Sürücü node'unu çalıştır, tekerlekler yerden kesikken /cmd_vel ile tekerlekleri, /tof_*/range ile sensörleri doğrula. Komut kesilince 0,5 sn içinde durmalı.",
           "kind": "yazılım",
           "state": "todo",
-          "cmd": "ros2 topic pub /cmd_vel geometry_msgs/Twist \"{linear: {x: 0.1}}\"\nros2 topic echo /tof_center/range",
-          "phase": 5
+          "phase": 5,
+          "cmd": "ros2 topic pub /cmd_vel geometry_msgs/Twist \"{linear: {x: 0.1}}\"\nros2 topic echo /tof_center/range"
         },
         {
-          "text": "Politikayı bilgisayardan gönder ve çalıştır.",
+          "text": "Politikayı bilgisayardan gönder. İlk çalıştırma tekerlekler yerden kesikken olsun, ardından arenada, elin acil durdurmada. Durdurmak için Ctrl+C ya da fleet.py stop.",
           "kind": "yazılım",
           "state": "todo",
-          "cmd": "python3 host/fleet.py deploy\npython3 host/fleet.py run-policy",
-          "phase": 5
+          "phase": 5,
+          "cmd": "python3 host/fleet.py deploy\npython3 host/fleet.py run-policy\npython3 host/fleet.py stop"
         }
       ]
     },

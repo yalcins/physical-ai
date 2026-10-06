@@ -2,7 +2,7 @@
 
     python3 fleet.py status                      # her robotun durumu (mod, pil, mesafeler)
     python3 fleet.py random                      # tum Pico'lari rastgele moda al
-    python3 fleet.py stop                        # tum Pico'lari durdur
+    python3 fleet.py stop                        # tum Pico'lari ve Pi 4 politikalarini durdur
     python3 fleet.py deploy ../docs/data/policy_latest.json   # politikayi Pi 4'lere gonder (scp)
     python3 fleet.py run-policy                  # Pi 4'lerde politikayi baslat (ssh)
 
@@ -68,6 +68,13 @@ def deploy(fleet, path):
         print(r['name'], 'gonderildi' if ok else 'HATA')
 
 
+def stop_pi4(fleet):
+    """Pi 4'lerde politikayi durdurur. Surucu 0,5 sn komut gelmeyince tekerlekleri de durdurur."""
+    for r in pi4s(fleet):
+        subprocess.run(['ssh', f"{r['user']}@{r['host']}", 'pkill -f run_policy.py'])
+        print(r['name'], 'durduruldu')
+
+
 def run_policy(fleet):
     for r in pi4s(fleet):
         cmd = f"cd physical-ai && nohup python3 pi4/run_policy.py --policy policy_latest.json > run.log 2>&1 &"
@@ -88,6 +95,7 @@ def main():
         for_picos(fleet, lambda rb: rb.set_mode('random'))
     elif a.cmd == 'stop':
         for_picos(fleet, lambda rb: (rb.set_mode('remote'), rb.stop()))
+        stop_pi4(fleet)
     elif a.cmd == 'deploy':
         deploy(fleet, a.path or str(HERE.parent / 'docs/data/policy_latest.json'))
     elif a.cmd == 'run-policy':
