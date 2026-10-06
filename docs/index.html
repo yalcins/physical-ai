@@ -314,13 +314,38 @@
         </div>
       </div>
 
+      <h3 style="margin-top:40px">İki tür gerçek robot</h3>
+      <p>Gerçek arenada iki ayrı rolde robot olacak. İkisi de aynı ROS 2 konularını konuşur, fark beynin nerede çalıştığında ve robotun ne yaptığında.</p>
+      <div class="arch-cols">
+        <div>
+          <h3>Küçük robotlar: rastgele hareket</h3>
+          <dl class="specs">
+            <dt>Kart</dt><dd>Raspberry Pi Pico 2 W (MicroPython, Wi-Fi)</dd>
+            <dt>Görev</dt><dd>Rastgele dolaşmak. Öğrenmezler; arenada hareketli engel gibi davranırlar.</dd>
+            <dt>Simülasyondaki karşılığı</dt><dd>Hareketli engeller</dd>
+            <dt>Beyin</dt><dd>Yok. Komutu laptoptan ya da ana sunucudan UDP ile alır, sensör verisini geri yollar.</dd>
+          </dl>
+        </div>
+        <div>
+          <h3>Büyük robotlar: görev çözen</h3>
+          <dl class="specs">
+            <dt>Kart</dt><dd>Raspberry Pi 4 (ROS 2 Jazzy)</dd>
+            <dt>Görev</dt><dd>Öğrencilerin verdiği görevi çözmek: engellerden kaçmak, hedefe gitmek.</dd>
+            <dt>Simülasyondaki karşılığı</dt><dd>Eğitilen PPO robotu</dd>
+            <dt>Beyin</dt><dd>Eğitilmiş politika robotun üzerinde, Pi 4'te çalışır. Eğitimi ve robotları laptop ya da ana sunucu yönetir ve izler.</dd>
+          </dl>
+        </div>
+      </div>
+      <p>Ana bilgisayar (laptop ya da ana sunucu) üç iş yapar: PPO eğitimini çalıştırır, yeni politikayı Pi 4'lere gönderir, tüm robotları izleyip kontrol eder. Geliştirme sırasında kolay olduğu için politika geçici olarak laptopta da çalıştırılabilir.</p>
+      <p class="note">Bu bir plan; iki tür robot da henüz kurulmadı. Küçük robotların gerçek hareketli engellerin yerini alması, sim-gerçek farkını ölçmemizi sağlayacak.</p>
+
       <h3 style="margin-top:40px">Şu anki durum</h3>
       <ul class="status">
         <li class="done">Python / Gymnasium simülatörü ve PPO eğitimi</li>
         <li class="done">Gazebo arenası, robot modeli ve hareketli engeller</li>
         <li class="done">Deney, bulgu ve sensör düzeni kayıtları ve bu sayfaya otomatik yayın</li>
         <li class="todo">Üç dünya için ortak Python arayüzü (SimRobot, GazeboRobot, RealRobot)</li>
-        <li class="todo">Pi 4 sürücüsü ve Pico 2 W yazılımı (MicroPython, UDP)</li>
+        <li class="todo">Büyük robotlar için Pi 4 sürücüsü, küçük rastgele robotlar için Pico 2 W yazılımı (MicroPython, UDP)</li>
         <li class="todo">Pico robot kartı (fab lab'da frezelenecek) ve senaryo sistemi</li>
       </ul>
       <p class="note">Henüz hiçbir model gerçek robotta denenmedi; bu sayfadaki tüm sonuçlar simülasyondan geliyor. Beş sensörlü düzen şimdilik yalnızca simülasyonda var: Pico'nun mevcut pin planında yalnızca üç ToF sensörü için kapı var.</p>
