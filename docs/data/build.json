@@ -268,31 +268,45 @@
           "phase": 3
         },
         {
-          "text": "Pico'yu sadece USB ile besleyerek TB6612'yi bağla (GP16-GP22). Motorları tek tek döndür.",
+          "text": "TB6612'yi bağla (GP16-GP22). Motor gücü (VM) pil hattından gelir, Pico ise USB ile beslenir; Pico GND, pil GND ve TB6612 GND ortak olmalı. Kodsuz motor testi: geçici olarak STBY, PWMA ve AIN1'i Pico'nun 3V3 pinine, AIN2'yi GND'ye bağla, sol motor dönmeli. Sağ motor için PWMB, BIN1, BIN2 ile aynısı.",
           "kind": "fiziksel",
           "state": "todo",
           "phase": 3
         },
         {
-          "text": "Enkoderleri bağla (sol GP10/GP11, sağ GP12/GP13); tekerleği elle çevirip darbeleri say.",
+          "text": "Enkoderleri bağla (sol GP10/GP11, sağ GP12/GP13). Enkoder besleme gerilimini motorun veri sayfasından kontrol et. Kodsuz kontrol: multimetreyle çıkış pinini izlerken tekerleği yavaşça çevir; gerilim düşük ve yüksek arasında geçmeli. Darbeleri saymak aşama 4'te.",
           "kind": "fiziksel",
           "state": "todo",
           "phase": 3
         },
         {
-          "text": "Üç ToF sensörünü I2C'ye bağla (SDA GP4, SCL GP5), XSHUT'ları GP6, GP7, GP8'e ver. Üçünü de görebildiğini doğrula.",
-          "kind": "fiziksel",
-          "state": "todo",
-          "phase": 3
-        },
-        {
-          "text": "Her şeyi şasiye monte et: tekerlekler arası 115 mm, sarhoş teker 65 mm arkada, sensörler yerden yaklaşık 5 cm.",
+          "text": "Üç ToF sensörünü I2C'ye bağla (SDA GP4, SCL GP5), XSHUT'ları GP6, GP7, GP8'e ver. Kodsuz kontrol: her sensörün besleme pininde doğru gerilimi ölç. Sensörleri görmek (I2C taraması) aşama 4'te.",
           "kind": "fiziksel",
           "state": "todo",
           "phase": 3
         },
         {
           "text": "MicroPython (Pico 2 W için, micropython.org/download adresindeki RPI_PICO2_W .uf2) indir. BOOTSEL düğmesine basılı tutarak USB tak; çıkan sürücüye .uf2 dosyasını kopyala.",
+          "kind": "fiziksel",
+          "state": "later",
+          "phase": 4
+        },
+        {
+          "text": "Tezgâh testi, motor ve enkoder: Pico'yu USB ile bağla, REPL'de sol enkoder çıkışına kesme koyup tekerleği elle çevir, sayacın arttığını gör.",
+          "kind": "fiziksel",
+          "state": "later",
+          "phase": 4,
+          "cmd": "mpremote connect auto repl\nfrom machine import Pin\nn = 0\ndef f(p):\n    global n; n += 1\nPin(10, Pin.IN).irq(trigger=Pin.IRQ_RISING, handler=f)\n# tekerleği çevir, sonra:\nprint(n)"
+        },
+        {
+          "text": "Tezgâh testi, ToF: I2C taraması yap. Sensörleri önce tek tek bağlayıp her birini gör (adresi 0x29 bekleniyor). Üç sensörün ayrı adres alması, firmware'in XSHUT ile yaptığı adres ataması çalışınca doğrulanır.",
+          "kind": "fiziksel",
+          "state": "later",
+          "phase": 4,
+          "cmd": "mpremote connect auto repl\nfrom machine import I2C, Pin\ni2c = I2C(0, sda=Pin(4), scl=Pin(5))\nprint([hex(a) for a in i2c.scan()])"
+        },
+        {
+          "text": "Tezgâh testleri geçince her şeyi şasiye monte et: tekerlekler arası 115 mm, sarhoş teker 65 mm arkada, sensörler yerden yaklaşık 5 cm.",
           "kind": "fiziksel",
           "state": "later",
           "phase": 4
