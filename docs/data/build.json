@@ -319,16 +319,17 @@
           "phase": 4
         },
         {
-          "text": "Kullandığın VL53L1X MicroPython kütüphanesini kart için hazırla; firmware/pico2w/tof.py içindeki çağrıları buna göre uyarla.",
+          "text": "VL53L1X MicroPython kütüphanesini indir: drakxtwo/vl53l1x_pico (MIT), tek dosya vl53l1x.py. Bu kütüphanede adres değiştirme yok; firmware/pico2w/tof.py adresi kendisi atıyor. Kütüphane machine.lightsleep kullanıyor: kartta USB ya da Wi-Fi bağlantısı kopuyorsa bu çağrıları time.sleep_ms ile değiştir.",
           "kind": "yazılım",
           "state": "later",
-          "phase": 4
+          "phase": 4,
+          "cmd": "curl -L -o firmware/pico2w/vl53l1x.py https://raw.githubusercontent.com/drakxtwo/vl53l1x_pico/main/vl53l1x.py"
         },
         {
-          "text": "Dosyaları karta yükle (main.py en son, çünkü açılışta kendiliğinden çalışır).",
+          "text": "Dosyaları karta yükle: önce kütüphane, tof.py ve secrets.py; main.py en son, çünkü açılışta kendiliğinden çalışır.",
           "kind": "yazılım",
           "state": "later",
-          "cmd": "mpremote connect auto fs cp firmware/pico2w/tof.py firmware/pico2w/secrets.py :   # kütüphaneyi de kopyala\nmpremote connect auto fs cp firmware/pico2w/main.py :",
+          "cmd": "mpremote connect auto fs cp firmware/pico2w/vl53l1x.py :\nmpremote connect auto fs cp firmware/pico2w/tof.py :\nmpremote connect auto fs cp firmware/pico2w/secrets.py :\nmpremote connect auto fs cp firmware/pico2w/main.py :",
           "phase": 4
         },
         {

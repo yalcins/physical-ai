@@ -5,8 +5,8 @@ Iki mod:
   remote : Wi-Fi (UDP, port 5005) ile bilgisayardan gelen {"cmd": "drive"} komutlarini uygular
 Protokol pai_robot/udp.py dosyasinda anlatildi. Pin plani CLAUDE.md'deki ile ayni.
 
-DURUM: Gercek kartta henuz denenmedi. tof.py icindeki surucu sizin kullandiginiz
-VL53L1X kutuphanesine gore uyarlanmali.
+DURUM: Gercek kartta henuz denenmedi. ToF icin drakxtwo/vl53l1x_pico kutuphanesi gerekir
+(vl53l1x.py, bkz. tof.py).
 """
 import json
 import random
