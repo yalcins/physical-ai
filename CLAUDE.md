@@ -98,3 +98,8 @@ Site: https://yalcins.github.io/physical-ai/ (GitHub Pages, `docs/` klasörü). 
 ```
 Kural: ilk üç sensör her zaman ön sol/orta/sağ olmalı (kurallı kontrolcü bunları kullanır).
 Gözlem vektörü = sensörler sırayla, en yeni kare başta (`frames` > 1 ise geçmiş kareler arkasına eklenir).
+
+## Yapım rehberi (fiziksel işler)
+`docs/data/build.json`: arena, ağ, Pico robot, Pi 4 robot, ölçüm ve birlikte deneme için parça listesi,
+adım adım işler, açık kararlar. Bir adım bitince `"state": "done"` yap (`todo` / `later` / `done`) ve `./publish.sh`.
+Pico firmware'inin karta yüklenmesi bilerek `later`: kullanıcı donanım hazır olunca yapacak.

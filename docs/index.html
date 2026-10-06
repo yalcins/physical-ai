@@ -154,6 +154,33 @@
   th { font-weight: 700; border-bottom: 2px solid var(--ink); }
   td.num { font-variant-numeric: tabular-nums; }
   td:nth-child(9) { white-space: nowrap; }
+  .build h3 { font: 800 22px var(--display); margin: 0 0 8px; }
+  .build .goal { margin: 0 0 6px; }
+  .phases { display: flex; flex-wrap: wrap; gap: 8px 10px; list-style: none; padding: 0; margin: 20px 0 8px; }
+  .phases li { border: 2px solid var(--ink); border-radius: 6px; padding: 4px 12px; font-size: 15px; }
+  .phases b { font-family: var(--display); margin-right: 6px; }
+  .decisions { max-width: 860px; padding-left: 22px; }
+  .decisions li { margin-bottom: 12px; }
+  .decisions small { display: block; opacity: .85; }
+  .target { border-top: 2px solid var(--ink); padding: 28px 0; }
+  .target .bar { height: 8px; background: rgba(29,43,42,.15); border-radius: 4px; max-width: 320px; margin: 8px 0 0; overflow: hidden; }
+  .target .bar i { display: block; height: 100%; background: var(--mat); }
+  .target h4 { font: 700 17px var(--display); margin: 22px 0 8px; }
+  .target .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 40px; }
+  .parts { list-style: none; margin: 0; padding: 0; font-size: 16px; }
+  .parts li { padding: 6px 0; border-bottom: 1px solid rgba(29,43,42,.15); }
+  .parts small { display: block; opacity: .8; }
+  .bsteps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+  .bsteps li { position: relative; padding: 8px 0 8px 36px; border-bottom: 1px solid rgba(29,43,42,.15); font-size: 16px; }
+  .bsteps li::before { position: absolute; left: 0; top: 8px; width: 24px; text-align: center; font-weight: 800; }
+  .bsteps .todo::before { content: "\25CB"; opacity: .6; }
+  .bsteps .later::before { content: "\23F8"; opacity: .7; }
+  .bsteps .done::before { content: "\2713"; color: var(--mat); }
+  .bsteps .tag { display: inline-block; font-size: 12px; padding: 0 7px; border-radius: 4px; margin-right: 8px; background: var(--ink); color: var(--paper); }
+  .bsteps .tag.later { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+  .bsteps pre { margin: 6px 0 0; font-size: 14px; overflow-x: auto; }
+    .target .cols > * { min-width: 0; }
+  @media (max-width: 760px) { .target .cols { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
   table.maturity { min-width: 0; width: 100%; }
   table.maturity td:nth-child(4) { white-space: normal; }
   table.maturity td.num { text-align: center; }
@@ -201,6 +228,7 @@
       <a href="#deneyler">Deneyler</a>
       <a href="#bulgular">Bulgular</a>
       <a href="#robot">Robot</a>
+      <a href="#yapim">Yapım</a>
       <a href="#plan">Dönem planı</a>
       <a href="#basla">Başla</a>
       <a href="https://github.com/yalcins/physical-ai">GitHub</a>
@@ -369,6 +397,7 @@
         <li class="done">Gazebo arenası, robot modeli ve hareketli engeller</li>
         <li class="done">Deney, bulgu ve sensör düzeni kayıtları ve bu sayfaya otomatik yayın</li>
         <li class="todo">Üç dünya için ortak Python arayüzü (SimRobot, GazeboRobot, RealRobot)</li>
+        <li class="todo">Fiziksel yapım: arena, iki tür robot ve ağ (<a href="#yapim">Yapım rehberi</a>)</li>
         <li class="todo">Büyük robotlar için Pi 4 sürücüsü, küçük rastgele robotlar için Pico 2 W yazılımı (MicroPython, UDP)</li>
         <li class="todo">Pico robot kartı (fab lab'da frezelenecek) ve senaryo sistemi</li>
       </ul>
@@ -404,7 +433,7 @@
           <dt>Motor</dt><dd>N20 enkoderli, 6 V, ~300 devir/dakika</dd>
           <dt>Mesafe</dt><dd>3 x VL53L1X lazer sensör: 27° görüş, 4 cm – 4 m</dd>
           <dt>Denge</dt><dd>MPU6050 ivme ve dönüş sensörü</dd>
-          <dt>Beyin</dt><dd>Raspberry Pi 4 ya da Pico 2 W, Wi-Fi ile laptopa bağlı</dd>
+          <dt>Beyin</dt><dd>İki tür: büyük robot Raspberry Pi 4 (politika üzerinde çalışır), küçük robot Pico 2 W (rastgele dolaşır, Wi-Fi ile laptopa bağlı)</dd>
         </dl>
       </div>
       <svg viewBox="0 0 400 360" role="img" aria-labelledby="rtitle rdesc">
@@ -426,6 +455,17 @@
         <line x1="60" y1="318" x2="92" y2="196" stroke="#1d2b2a" stroke-width="1.2"/>
         <text x="300" y="300" font-family="Atkinson Hyperlegible, sans-serif" font-size="15" fill="#1d2b2a">3 sensör, ±30°</text>
       </svg>
+    </div>
+  </section>
+
+  <section id="yapim">
+    <div class="wrap build">
+      <h2>Yapım rehberi: fiziksel işler</h2>
+      <p class="intro" id="build-intro">Yapım listesi yükleniyor.</p>
+      <ol class="phases" id="build-phases"></ol>
+      <h3 style="margin-top:32px">Önce kapatılacak kararlar</h3>
+      <ol class="decisions" id="build-decisions"></ol>
+      <div id="build-body"></div>
     </div>
   </section>
 
@@ -741,6 +781,45 @@ fetch('data/robot.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null
   }
   setLayout(cfg.default || layouts[0].id);
 }).catch(() => {});
+
+/* ---------------- yapim rehberi (docs/data/build.json) ---------------- */
+const KIND_TR = { fiziksel: 'Fiziksel', 'yazılım': 'Yazılım' };
+fetch('data/build.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Promise.reject()).then(b => {
+  document.getElementById('build-intro').textContent = b.intro + ' Son güncelleme: ' + new Date(b.updated).toLocaleDateString('tr-TR', { dateStyle: 'long' }) + '.';
+  const ph = document.getElementById('build-phases');
+  (b.phases || []).forEach(p => { const li = el('li'); li.append(el('b', {}, p.n + '.'), p.name + ': ' + p.goal); ph.append(li); });
+  const dec = document.getElementById('build-decisions');
+  (b.decisions || []).forEach(d => { const li = el('li', {}, d.q); li.append(el('small', {}, d.why)); dec.append(li); });
+  const body = document.getElementById('build-body');
+  (b.targets || []).forEach(t => {
+    const sec = el('div', { class: 'target', id: 'yapim-' + t.id });
+    const done = t.steps.filter(s => s.state === 'done').length;
+    sec.append(el('h3', {}, t.name), el('p', { class: 'goal' }, t.role));
+    sec.append(el('p', { class: 'note' }, done + ' / ' + t.steps.length + ' adım tamam'));
+    const bar = el('div', { class: 'bar' }); const fill = el('i'); fill.style.width = (100 * done / t.steps.length) + '%'; bar.append(fill); sec.append(bar);
+    const cols = el('div', { class: 'cols' });
+    const left = el('div');
+    if (t.parts.length) {
+      left.append(el('h4', {}, 'Parçalar'));
+      const ul = el('ul', { class: 'parts' });
+      t.parts.forEach(p => { const li = el('li', {}, p.name + (p.qty ? ' × ' + p.qty : '')); if (p.note) li.append(el('small', {}, p.note)); ul.append(li); });
+      left.append(ul);
+    }
+    const right = el('div');
+    right.append(el('h4', {}, 'Adım adım'));
+    const ol = el('ol', { class: 'bsteps' });
+    t.steps.forEach(s => {
+      const li = el('li', { class: s.state });
+      li.append(el('span', { class: 'tag' }, KIND_TR[s.kind] || s.kind));
+      if (s.state === 'later') li.append(el('span', { class: 'tag later' }, 'daha sonra'));
+      li.append(document.createTextNode(s.text + ' '), el('small', {}, '(aşama ' + s.phase + ')'));
+      if (s.cmd) li.append(el('pre', {}, s.cmd));
+      ol.append(li);
+    });
+    right.append(ol);
+    cols.append(left, right); sec.append(cols); body.append(sec);
+  });
+}).catch(() => { document.getElementById('build-intro').textContent = 'Yapım listesi yüklenemedi.'; });
 
 /* ---------------- bulgular (docs/data/findings.json) ---------------- */
 const TYPE_TR = { bulgu: 'Bulgu', karar: 'Karar', donanim: 'Donanım' };

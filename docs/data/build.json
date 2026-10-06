@@ -1,0 +1,441 @@
+{
+  "updated": "2026-10-06",
+  "intro": "Gerçek dünya tarafında yapılacak her işin sırası. Hiçbir adım henüz yapılmadı; bir adım bitince bu dosyada (docs/data/build.json) durumu 'done' olur ve sayfa kendiliğinden güncellenir.",
+  "phases": [
+    {
+      "n": 1,
+      "name": "Kararlar",
+      "goal": "Parça almadan önce açık soruları kapat."
+    },
+    {
+      "n": 2,
+      "name": "Arena ve ağ",
+      "goal": "Robotların çalışacağı zemin ve Wi-Fi hazır olsun."
+    },
+    {
+      "n": 3,
+      "name": "Küçük robot: tezgâh denemesi",
+      "goal": "Bir Pico robotu breadboard üzerinde, şasiye takmadan çalıştır."
+    },
+    {
+      "n": 4,
+      "name": "Küçük robot: yazılımı yükle",
+      "goal": "Firmware'i karta yükle. Daha sonra yapılacak."
+    },
+    {
+      "n": 5,
+      "name": "Büyük robot (Pi 4)",
+      "goal": "Pi 4'ü kur, kablola, politikayı üzerinde çalıştır."
+    },
+    {
+      "n": 6,
+      "name": "Ölçüm ve eşleştirme",
+      "goal": "Simülasyonu gerçek ölçülere uydur."
+    },
+    {
+      "n": 7,
+      "name": "Birlikte deneme",
+      "goal": "Küçük robotlar engel, büyük robot görev çözücü olarak arenada."
+    }
+  ],
+  "decisions": [
+    {
+      "q": "Şasi nasıl üretilecek (malzeme, lazer kesim ya da 3B baskı)?",
+      "why": "Ölçüler belli (tekerlek 43 mm, iki tekerlek arası 115 mm) ama üretim yöntemi yazılı değil. Yan sensör konumları da şasi hazır olunca ölçülecek."
+    },
+    {
+      "q": "Pi 4 robotu nasıl beslenecek?",
+      "why": "Pi 4 5 V ve yüksek akım ister; Pico robotun 4xAA pil düzeni onu taşımaz. Güç bankası ya da ayrı regülatör gerekebilir. Henüz seçilmedi."
+    },
+    {
+      "q": "Pi 4 robotunda ToF ve motor sürücüsü hangi pinlere bağlanacak?",
+      "why": "Pico için pin planı var, Pi 4 için yok. pi4/pai_driver_node.py içindeki PINS boş."
+    },
+    {
+      "q": "Kaç küçük, kaç büyük robot yapılacak?",
+      "why": "Şimdiki plan 2 Pico + 2 Pi 4. Hareketli engel sayısı simülasyonda 2."
+    },
+    {
+      "q": "Gerçek Pico robot, simülasyondaki hareketli engelle nasıl eşleşecek?",
+      "why": "Simülasyonda hareketli engel 5 cm yarıçaplı ve yaklaşık 0,09 m/s hızda. Robot yarıçapı 7,5 cm ve Pico yazılımı 0,20 m/s'ye kadar gidiyor. Ya simülasyon ya robot ayarlanmalı."
+    },
+    {
+      "q": "Beş sensörlü (side5) düzen yapılacak mı?",
+      "why": "Simülasyonda hareketli engelde çarpma %49'dan %69'a çıktı. Pico'da yalnızca üç ToF için pin var."
+    },
+    {
+      "q": "Pico robot kartı (PCB) KiCad'de tasarlanıp fab lab'da mı frezelenecek, yoksa önce breadboard/delikli plaket mi?",
+      "why": "Kart henüz tasarlanmadı. Tezgâh denemesi kart olmadan başlayabilir."
+    }
+  ],
+  "targets": [
+    {
+      "id": "arena",
+      "name": "Arena",
+      "role": "2 x 2 m kapalı alan; robotların çalıştığı zemin.",
+      "parts": [
+        {
+          "name": "MDF duvar, 18 mm kalınlık, 12 cm yükseklik",
+          "qty": "4 kenar, 2 x 2 m iç ölçü",
+          "note": "Köşeler dik olmalı; sensör duvarı düz görsün."
+        },
+        {
+          "name": "Zemin (düz, mat)",
+          "qty": "1",
+          "note": "Parlak yüzey ToF ölçümünü bozabilir; mat tercih et."
+        },
+        {
+          "name": "Sabit engeller",
+          "qty": "2",
+          "note": "Simülasyondaki yerleşim: 15 x 15 cm kutu (x=0,45; y=0,35 m) ve 6 cm yarıçaplı silindir (x=-0,35; y=0,5 m). Merkez (0,0)."
+        }
+      ],
+      "steps": [
+        {
+          "text": "Duvarları kesip birleştir. İç ölçü tam 2 x 2 m olsun, iki köşegeni ölç (eşit olmalı).",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 2
+        },
+        {
+          "text": "Merkezi (0, 0) zeminde işaretle; sabit engelleri simülasyondaki koordinatlara yerleştir.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 2
+        },
+        {
+          "text": "Arenayı sensör için kontrol et: duvar yüzeyi mat ve düz mü?",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 2
+        }
+      ]
+    },
+    {
+      "id": "host",
+      "name": "Ana bilgisayar ve ağ",
+      "role": "Eğitimi çalıştırır, politikayı Pi 4'lere gönderir, robotları izler. ThinkPad, Ubuntu 24.04.",
+      "parts": [
+        {
+          "name": "Wi-Fi yönlendirici (2,4 GHz)",
+          "qty": "1",
+          "note": "Pico 2 W yalnızca 2,4 GHz'e bağlanır. Sınıf ağından ayrı, robotlara özel ağ önerilir."
+        },
+        {
+          "name": "USB kablo (veri destekli)",
+          "qty": "1",
+          "note": "Pico'yu bilgisayara bağlamak için; yalnızca şarj kablosu çalışmaz."
+        }
+      ],
+      "steps": [
+        {
+          "text": "Robot ağını kur; her robota sabit IP ver (yönlendiricide DHCP rezervasyonu).",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 2
+        },
+        {
+          "text": "IP adreslerini host/fleet.json içine yaz.",
+          "kind": "yazılım",
+          "state": "todo",
+          "cmd": "nano host/fleet.json",
+          "phase": 2
+        },
+        {
+          "text": "Pi 4'lere şifresiz ssh için anahtar kopyala.",
+          "kind": "yazılım",
+          "state": "todo",
+          "cmd": "ssh-copy-id kullanici@pi4-ip",
+          "phase": 5
+        },
+        {
+          "text": "Bilgisayarda testleri çalıştır; hepsi geçmeli.",
+          "kind": "yazılım",
+          "state": "done",
+          "cmd": ".venv/bin/python tests/test_pai_robot.py",
+          "phase": 2
+        }
+      ]
+    },
+    {
+      "id": "pico",
+      "name": "Küçük robot (Pico 2 W)",
+      "role": "Rastgele dolaşır, arenada hareketli engel gibi davranır. Öğrenmez.",
+      "parts": [
+        {
+          "name": "Raspberry Pi Pico 2 W",
+          "qty": "1",
+          "note": "Başlık pinli (header) sürüm lehimlemeyi kolaylaştırır."
+        },
+        {
+          "name": "JGA12-N20B motor, 6 V, ~300 dev/dk, enkoderli",
+          "qty": "2",
+          "note": ""
+        },
+        {
+          "name": "TB6612FNG motor sürücü",
+          "qty": "1",
+          "note": ""
+        },
+        {
+          "name": "TOF400C (VL53L1X) mesafe sensörü",
+          "qty": "3",
+          "note": "Sol +30°, orta 0°, sağ -30°. Her birinin XSHUT pini ayrı bir GP pinine gider (GP6, GP7, GP8)."
+        },
+        {
+          "name": "MPU6050 ivme/dönüş sensörü",
+          "qty": "1",
+          "note": "Pico yazılımı henüz kullanmıyor."
+        },
+        {
+          "name": "Tekerlek, 43 mm çap, 19 mm genişlik",
+          "qty": "2",
+          "note": ""
+        },
+        {
+          "name": "Bilyeli sarhoş teker",
+          "qty": "1",
+          "note": "Tekerlek aksının 65 mm arkasında."
+        },
+        {
+          "name": "4xAA pil yuvası + NiMH piller",
+          "qty": "1",
+          "note": "Motorlar pilden doğrudan TB6612 VM girişine bağlanır."
+        },
+        {
+          "name": "Pololu S7V7F5 (5 V regülatör)",
+          "qty": "1",
+          "note": "Pil -> regülatör -> 1N5819 diyot -> VSYS."
+        },
+        {
+          "name": "1N5819 Schottky diyot",
+          "qty": "1",
+          "note": ""
+        },
+        {
+          "name": "Şasi ve bağlantı (kart ya da breadboard, kablolar)",
+          "qty": "1",
+          "note": "Üretim yöntemi karar bekliyor."
+        }
+      ],
+      "steps": [
+        {
+          "text": "Parçaları say ve eksik olanları sipariş et (parça listesi yukarıda).",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 3
+        },
+        {
+          "text": "Breadboard'da güç hattını kur: 4xAA -> S7V7F5 -> 1N5819 -> Pico VSYS. Bağlamadan önce regülatör çıkışını multimetreyle ölç (5 V).",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 3
+        },
+        {
+          "text": "Pico'yu sadece USB ile besleyerek TB6612'yi bağla (GP16-GP22). Motorları tek tek döndür.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 3
+        },
+        {
+          "text": "Enkoderleri bağla (sol GP10/GP11, sağ GP12/GP13); tekerleği elle çevirip darbeleri say.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 3
+        },
+        {
+          "text": "Üç ToF sensörünü I2C'ye bağla (SDA GP4, SCL GP5), XSHUT'ları GP6, GP7, GP8'e ver. Üçünü de görebildiğini doğrula.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 3
+        },
+        {
+          "text": "Her şeyi şasiye monte et: tekerlekler arası 115 mm, sarhoş teker 65 mm arkada, sensörler yerden yaklaşık 5 cm.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 3
+        },
+        {
+          "text": "MicroPython (Pico 2 W için, micropython.org/download adresindeki RPI_PICO2_W .uf2) indir. BOOTSEL düğmesine basılı tutarak USB tak; çıkan sürücüye .uf2 dosyasını kopyala.",
+          "kind": "fiziksel",
+          "state": "later",
+          "phase": 4
+        },
+        {
+          "text": "secrets.py oluştur ve Wi-Fi bilgilerini yaz.",
+          "kind": "yazılım",
+          "state": "later",
+          "cmd": "cp firmware/pico2w/secrets.example.py firmware/pico2w/secrets.py",
+          "phase": 4
+        },
+        {
+          "text": "Kullandığın VL53L1X MicroPython kütüphanesini kart için hazırla; firmware/pico2w/tof.py içindeki çağrıları buna göre uyarla.",
+          "kind": "yazılım",
+          "state": "later",
+          "phase": 4
+        },
+        {
+          "text": "Dosyaları karta yükle (main.py en son, çünkü açılışta kendiliğinden çalışır).",
+          "kind": "yazılım",
+          "state": "later",
+          "cmd": "mpremote connect auto fs cp firmware/pico2w/tof.py firmware/pico2w/secrets.py :   # kütüphaneyi de kopyala\nmpremote connect auto fs cp firmware/pico2w/main.py :",
+          "phase": 4
+        },
+        {
+          "text": "Kartın IP'sini seri konsoldan gör, host/fleet.json'a yaz, durumu sorgula.",
+          "kind": "yazılım",
+          "state": "later",
+          "cmd": "mpremote connect auto repl\npython3 host/fleet.py status",
+          "phase": 4
+        },
+        {
+          "text": "Robotu arenaya koy; rastgele modda 5 dakika çarpmadan dolaşıyor mu?",
+          "kind": "fiziksel",
+          "state": "later",
+          "cmd": "python3 host/fleet.py random",
+          "phase": 4
+        }
+      ]
+    },
+    {
+      "id": "pi4",
+      "name": "Büyük robot (Pi 4)",
+      "role": "Görev çözer; eğitilmiş politika robotun üzerinde çalışır. ROS 2 Jazzy.",
+      "parts": [
+        {
+          "name": "Raspberry Pi 4",
+          "qty": "1 (şimdiki plan: 2 robot)",
+          "note": ""
+        },
+        {
+          "name": "microSD kart",
+          "qty": "1",
+          "note": "Ubuntu 24.04 + ROS 2 Jazzy."
+        },
+        {
+          "name": "Motor, motor sürücü, tekerlek, 3 ToF, MPU6050",
+          "qty": "Pico robotla aynı",
+          "note": "Aynı gövde ölçüleri: simülasyon ve Gazebo modeli bunu varsayıyor."
+        },
+        {
+          "name": "Pi 4 için güç",
+          "qty": "1",
+          "note": "KARAR BEKLİYOR: güç bankası ya da 5 V yüksek akımlı regülatör."
+        }
+      ],
+      "steps": [
+        {
+          "text": "Güç yöntemine karar ver (karar listesine bak) ve parçaları al.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 5
+        },
+        {
+          "text": "microSD'ye Ubuntu 24.04 kur; ssh'ı aç, sabit IP ver.",
+          "kind": "yazılım",
+          "state": "todo",
+          "phase": 5
+        },
+        {
+          "text": "ROS 2 Jazzy, numpy ve gpiozero'yu kur; projeyi klonla.",
+          "kind": "yazılım",
+          "state": "todo",
+          "cmd": "sudo apt install ros-jazzy-ros-base python3-numpy python3-gpiozero\ngit clone https://github.com/yalcins/physical-ai.git",
+          "phase": 5
+        },
+        {
+          "text": "Motor sürücüyü ve ToF'ları Pi'ye bağla; hangi pinlerin kullanıldığını yaz.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 5
+        },
+        {
+          "text": "pi4/pai_driver_node.py içinde PINS'i doldur, ToF okumayı yaz.",
+          "kind": "yazılım",
+          "state": "todo",
+          "phase": 5
+        },
+        {
+          "text": "Sürücü node'unu çalıştır; /cmd_vel ile tekerlekleri, /tof_*/range ile sensörleri doğrula.",
+          "kind": "yazılım",
+          "state": "todo",
+          "cmd": "ros2 topic pub /cmd_vel geometry_msgs/Twist \"{linear: {x: 0.1}}\"\nros2 topic echo /tof_center/range",
+          "phase": 5
+        },
+        {
+          "text": "Politikayı bilgisayardan gönder ve çalıştır.",
+          "kind": "yazılım",
+          "state": "todo",
+          "cmd": "python3 host/fleet.py deploy\npython3 host/fleet.py run-policy",
+          "phase": 5
+        }
+      ]
+    },
+    {
+      "id": "calib",
+      "name": "Ölçüm ve eşleştirme",
+      "role": "Simülasyonun gerçeği doğru taklit ettiğinden emin olmak.",
+      "parts": [
+        {
+          "name": "Cetvel / kumpas, kronometre, işaretli zemin",
+          "qty": "1",
+          "note": ""
+        }
+      ],
+      "steps": [
+        {
+          "text": "Şasiyi ölç: tekerlek çapı, iki tekerlek arası, sensör konumları. pai_gym/world.py ve arena_sim/urdf/pai_bot.urdf'taki değerleri düzelt.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 6
+        },
+        {
+          "text": "Düz git komutu ver (0,2 m/s); 1 m'yi kaç saniyede aldığını ölç. Simülasyonla karşılaştır.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 6
+        },
+        {
+          "text": "Yerinde dönüş (2,5 rad/s) için 360° dönüş süresini ölç.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 6
+        },
+        {
+          "text": "ToF okumalarını bilinen mesafelerde (10, 50, 100 cm) kontrol et; gürültüyü simülasyonla karşılaştır.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 6
+        },
+        {
+          "text": "Hareketli engel karşılaştırması: Pico robotun hızını ve yarıçapını simülasyondaki engelle eşle (karar listesine bak).",
+          "kind": "yazılım",
+          "state": "todo",
+          "phase": 6
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "name": "Birlikte deneme",
+      "role": "Her şey bir arada: küçük robotlar engel, büyük robot görev çözücü.",
+      "parts": [],
+      "steps": [
+        {
+          "text": "2 Pico robotu rastgele moda al, Pi 4 robota politikayı çalıştır. 10 bölüm çarpma oranını say.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "cmd": "python3 host/fleet.py random\npython3 host/fleet.py run-policy",
+          "phase": 7
+        },
+        {
+          "text": "Sonucu simülasyondaki aynı koşullu ölçümle karşılaştır; farkı bulgu olarak kaydet.",
+          "kind": "yazılım",
+          "state": "todo",
+          "cmd": "python3 pai_gym/log_finding.py --id sim-gercek --title \"...\" --text \"...\" --publish",
+          "phase": 7
+        }
+      ]
+    }
+  ]
+}
