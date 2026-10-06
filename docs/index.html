@@ -374,19 +374,21 @@
       <p class="note">Bu bir plan; iki tür robot da henüz kurulmadı. Küçük robotların gerçek hareketli engellerin yerini alması, sim-gerçek farkını ölçmemizi sağlayacak.</p>
 
       <h3 style="margin-top:40px">Katman katman olgunluk (1-5)</h3>
-      <p>1: yalnızca fikir ya da plan. 3: kodlanmış ve simülasyonda ya da sahte robotla test edilmiş. 5: gerçek donanımda doğrulanmış. Sürüm 2'de puanı 1 olan katmanların yazılımı yazıldı; hiçbirini gerçek robotta denemedik, bu yüzden hiçbir katman 3'ün üstüne çıkmadı.</p>
+      <p>1: yalnızca fikir ya da plan. 3: kodlanmış ve simülasyonda ya da sahte robotla test edilmiş. 5: gerçek donanımda doğrulanmış. Hiçbir şeyi gerçek robotta denemedik, bu yüzden hiçbir katman 4'ün üstüne çıkmadı ve gerçek dünya katmanları hâlâ 1-2. Plan ile uygulama ayrı satırlarda: plan 3, uygulama 1.</p>
       <div class="table-wrap">
         <table class="maturity">
-          <thead><tr><th>Katman</th><th>Sürüm 1</th><th>Sürüm 2</th><th>Ne var, ne eksik</th></tr></thead>
+          <thead><tr><th>Katman</th><th>Sürüm 1</th><th>Şimdi (6 Ekim)</th><th>Ne var, ne eksik</th></tr></thead>
           <tbody>
           <tr><td>Gymnasium simülatörü</td><td class="num">4</td><td class="num">4</td><td>2B dünya, iki sensör düzeni, PPO eğitimi. Birim testi yok.</td></tr>
           <tr><td>Eğitim ve ölçüm hattı</td><td class="num">4</td><td class="num">4</td><td>Altı deney aynı 100 bölümde ölçüldü.</td></tr>
-          <tr><td>Site ve yayın hattı</td><td class="num">4</td><td class="num">4</td><td>Sayfa yalnızca veriyle çalışıyor, yayın otomatik.</td></tr>
-          <tr><td>Gazebo dijital ikizi</td><td class="num">3</td><td class="num">3</td><td>URDF, dünya ve node'lar var. Sim-gerçek ölçü eşleşmesi elle.</td></tr>
-          <tr><td>Ortak Python arayüzü</td><td class="num">1</td><td class="num">3</td><td><code>pai_robot/</code>: SimRobot ve UdpRobot sahte Pico ile test edildi. RosRobot (Gazebo ve Pi 4) yazıldı, ROS ortamında denenmedi.</td></tr>
-          <tr><td>Büyük robot (Pi 4)</td><td class="num">1</td><td class="num">2</td><td><code>pi4/run_policy.py</code> simülasyonda çalışıyor. Sürücü node'u taslak, pinler belirlenmedi.</td></tr>
-          <tr><td>Küçük robot (Pico 2 W)</td><td class="num">1</td><td class="num">2</td><td><code>firmware/pico2w/</code>: rastgele ve uzaktan kumanda modu yazıldı, protokol sahte Pico ile test edildi. Gerçek kartta denenmedi, ToF sürücüsü uyarlanacak.</td></tr>
-          <tr><td>Ana bilgisayar kontrolü</td><td class="num">1</td><td class="num">3</td><td><code>host/fleet.py</code>: durum, rastgele mod, durdurma sahte Pico ile denendi. Politikayı Pi 4'e gönderme (<code>scp</code>) yazıldı, denenmedi.</td></tr>
+          <tr><td>Site ve yayın hattı</td><td class="num">4</td><td class="num">4</td><td>Sayfa yalnızca veriyle çalışıyor, yayın otomatik. Yapım rehberi de aynı yöntemle (<code>build.json</code>) çalışıyor.</td></tr>
+          <tr><td>Gazebo dijital ikizi</td><td class="num">3</td><td class="num">3</td><td>URDF, dünya ve node'lar var. Bu oturumlarda çalıştırılıp doğrulanmadı.</td></tr>
+          <tr><td>Ortak Python arayüzü</td><td class="num">1</td><td class="num">3</td><td><code>pai_robot/</code>: SimRobot ve UdpRobot sahte Pico ile test edildi. RosRobot (Gazebo ve Pi 4) ROS ortamında denenmedi.</td></tr>
+          <tr><td>Ana bilgisayar kontrolü</td><td class="num">1</td><td class="num">3</td><td><code>host/fleet.py</code>: durum, rastgele mod, durdurma sahte Pico ile denendi. <code>scp</code> ve <code>ssh</code> adımları denenmedi.</td></tr>
+          <tr><td>Küçük robot (Pico 2 W)</td><td class="num">1</td><td class="num">2</td><td><code>firmware/pico2w/</code>: rastgele ve uzaktan mod yazıldı, protokol sahte Pico ile test edildi. Gerçek kartta denenmedi; ToF sürücüsü kullanılacak kütüphaneye göre uyarlanacak.</td></tr>
+          <tr><td>Büyük robot (Pi 4)</td><td class="num">1</td><td class="num">2</td><td><code>pi4/run_policy.py</code> simülasyonda çalışıyor. Sürücüde ToF okuma ve adres atama yok, pinler boş.</td></tr>
+          <tr><td>Fiziksel yapım planı</td><td class="num">–</td><td class="num">3</td><td>Parçalar, adımlar, açık kararlar ve arena etiketleri yazıldı (<a href="#yapim">Yapım rehberi</a>). Hiçbiri gerçek donanımda doğrulanmadı.</td></tr>
+          <tr><td>Fiziksel yapım ilerlemesi</td><td class="num">–</td><td class="num">1</td><td>Fiziksel adımlardan hiçbiri henüz yapılmadı.</td></tr>
           <tr><td>Sim-gerçek aktarımı</td><td class="num">1</td><td class="num">1</td><td>Hiçbir model gerçek robotta denenmedi.</td></tr>
           <tr><td>Sensör düzeni uyumu</td><td class="num">2</td><td class="num">2</td><td><code>side5</code> yalnızca simülasyonda. Pico pin planında yalnızca üç ToF için yer var.</td></tr>
           </tbody>
