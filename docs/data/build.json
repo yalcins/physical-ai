@@ -165,27 +165,32 @@
         {
           "name": "Raspberry Pi Pico 2 W",
           "qty": "1",
-          "note": "Başlık pinli (header) sürüm lehimlemeyi kolaylaştırır."
+          "note": "Başlık pinli (header) sürüm lehimlemeyi kolaylaştırır.",
+          "bench": "evet"
         },
         {
           "name": "JGA12-N20B motor, 6 V, ~300 dev/dk, enkoderli",
           "qty": "2",
-          "note": ""
+          "note": "",
+          "bench": "evet"
         },
         {
           "name": "TB6612FNG motor sürücü",
           "qty": "1",
-          "note": ""
+          "note": "",
+          "bench": "evet"
         },
         {
           "name": "TOF400C (VL53L1X) mesafe sensörü",
           "qty": "3",
-          "note": "Sol +30°, orta 0°, sağ -30°. Her birinin XSHUT pini ayrı bir GP pinine gider (GP6, GP7, GP8)."
+          "note": "Sol +30°, orta 0°, sağ -30°. Her birinin XSHUT pini ayrı bir GP pinine gider (GP6, GP7, GP8).",
+          "bench": "evet"
         },
         {
           "name": "MPU6050 ivme/dönüş sensörü",
           "qty": "1",
-          "note": "Pico yazılımı henüz kullanmıyor."
+          "note": "Pico yazılımı henüz kullanmıyor.",
+          "bench": "opsiyonel"
         },
         {
           "name": "Tekerlek, 43 mm çap, 19 mm genişlik",
@@ -200,22 +205,53 @@
         {
           "name": "4xAA pil yuvası + NiMH piller",
           "qty": "1",
-          "note": "Motorlar pilden doğrudan TB6612 VM girişine bağlanır."
+          "note": "Motorlar pilden doğrudan TB6612 VM girişine bağlanır.",
+          "bench": "evet"
         },
         {
           "name": "Pololu S7V7F5 (5 V regülatör)",
           "qty": "1",
-          "note": "Pil -> regülatör -> 1N5819 diyot -> VSYS."
+          "note": "Pil -> regülatör -> 1N5819 diyot -> VSYS.",
+          "bench": "evet"
         },
         {
           "name": "1N5819 Schottky diyot",
           "qty": "1",
-          "note": ""
+          "note": "",
+          "bench": "evet"
         },
         {
           "name": "Şasi ve bağlantı (kart ya da breadboard, kablolar)",
           "qty": "1",
           "note": "Üretim yöntemi karar bekliyor."
+        },
+        {
+          "name": "Breadboard",
+          "qty": "1",
+          "note": "Tezgâh için. Tüm bağlantılar önce burada denenir.",
+          "bench": "evet",
+          "suggested": true
+        },
+        {
+          "name": "Jumper kablo (erkek-erkek ve erkek-dişi)",
+          "qty": "1 set",
+          "note": "Tezgâh için.",
+          "bench": "evet",
+          "suggested": true
+        },
+        {
+          "name": "Multimetre",
+          "qty": "1",
+          "note": "Tezgâh için. Güç hattı adımında regülatör çıkışını (5 V) ölçmek gerekiyor.",
+          "bench": "evet",
+          "suggested": true
+        },
+        {
+          "name": "Lehim takımı ve pin başlıkları",
+          "qty": "1",
+          "note": "Sensör, sürücü ya da motor kartlarında pin başlığı yoksa gerekir.",
+          "bench": "opsiyonel",
+          "suggested": true
         }
       ],
       "steps": [
@@ -437,5 +473,6 @@
         }
       ]
     }
-  ]
+  ],
+  "bench_note": "Tezgâh denemesinde tekerlek, sarhoş teker ve şasi gerekmez. ToF sensörleri firmware olmadan tek tek denenir; üçünün adres ataması firmware aşamasına (daha sonra) bağlı."
 }

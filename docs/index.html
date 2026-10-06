@@ -170,6 +170,8 @@
   .parts { list-style: none; margin: 0; padding: 0; font-size: 16px; }
   .parts li { padding: 6px 0; border-bottom: 1px solid rgba(29,43,42,.15); }
   .parts small { display: block; opacity: .8; }
+  .parts .tag { display: inline-block; font-size: 12px; padding: 0 7px; border-radius: 4px; background: var(--mat); color: #f3f7f3; white-space: nowrap; }
+  .parts .tag.sug { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
   .bsteps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
   .bsteps li { position: relative; padding: 8px 0 8px 36px; border-bottom: 1px solid rgba(29,43,42,.15); font-size: 16px; }
   .bsteps li::before { position: absolute; left: 0; top: 8px; width: 24px; text-align: center; font-weight: 800; }
@@ -802,7 +804,14 @@ fetch('data/build.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Prom
     if (t.parts.length) {
       left.append(el('h4', {}, 'Parçalar'));
       const ul = el('ul', { class: 'parts' });
-      t.parts.forEach(p => { const li = el('li', {}, p.name + (p.qty ? ' × ' + p.qty : '')); if (p.note) li.append(el('small', {}, p.note)); ul.append(li); });
+      t.parts.forEach(p => {
+        const li = el('li', {}, p.name + (p.qty ? ' × ' + p.qty : ''));
+        if (p.bench) li.append(' ', el('span', { class: 'tag bench' }, p.bench === 'evet' ? 'tezgâh denemesi' : 'tezgâh: isteğe bağlı'));
+        if (p.suggested) li.append(' ', el('span', { class: 'tag sug' }, 'öneri'));
+        if (p.note) li.append(el('small', {}, p.note));
+        ul.append(li);
+      });
+      if (t.id === 'pico' && b.bench_note) left.append(el('p', { class: 'note' }, b.bench_note));
       left.append(ul);
     }
     const right = el('div');
