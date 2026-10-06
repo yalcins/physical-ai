@@ -1,6 +1,94 @@
 {
   "findings": [
     {
+      "id": "sim-bozukluk-dayaniklilik",
+      "date": "2026-10-07",
+      "type": "bulgu",
+      "title": "Motor farkı, gecikme ve sensör hatası çarpmayı biraz artırdı; bozuklukla eğitilen model değişmedi",
+      "text": "Gerçek robota benzetmek için simülasyona bozukluk ekledik: sol motor %10 yavaş, sağ %10 hızlı, komutta 1 adım gecikme, sensörlerde +1 cm kayma ve %2 boş okuma. Pico engelleriyle birlikte çarpma oranları: kurallı kontrolcü %13'ten %23'e, eski PPO modeli %36'dan %44'e çıktı. Bozukluklarla eğitilen model %29'da kaldı. Farklar 100 bölümde ±5 puan belirsizliğin içinde ya da hemen dışında; bunu kesin sonuç değil, işaret olarak okuyoruz. Bozuk koşullarda ortalama ödülleri karşılaştırmıyoruz: motor farkı yerinde dönüşü bile ileri harekete çevirdiği için ödül yanıltıcı oluyor.",
+      "metrics": [
+        {
+          "label": "Kurallı kontrolcü",
+          "value": "%13 → %23"
+        },
+        {
+          "label": "PPO, 3 kare hafıza",
+          "value": "%36 → %44"
+        },
+        {
+          "label": "PPO, bozuklukla eğitilmiş",
+          "value": "%29 → %29"
+        }
+      ],
+      "related": [
+        "rule-pico2-bozuk",
+        "ppo-500k-f3-pico2-bozuk",
+        "ppo-pico-dr-pico2-bozuk"
+      ]
+    },
+    {
+      "id": "ros-qos-hatasi",
+      "date": "2026-10-07",
+      "type": "bulgu",
+      "title": "Robotun ToF konularını hiç almadığını entegrasyon testi yakaladı",
+      "text": "Robotu Gazebo'ya bağlayan RosRobot sınıfı, ToF konularına 'güvenilir' (reliable) abone oluyordu; sensör düğümleri ise 'en iyi çaba' (best effort) yayınlıyordu. ROS 2 bu iki ayarı eşleştirmiyor, mesaj hiç gelmiyordu. Robot sürekli 'her yer boş' (4 m) okuyup düz gidiyordu ve test yine de 'robot hareket etti' diyordu. Abonelik ve yayıncı aynı ayara getirilince gerçek mesafeler (ör. 1,03 / 0,29 / 1,54 m) geldi. Ders: bir robotun hareket etmesi, algıladığı anlamına gelmez; testte okunan değerin varsayılan değerden farklı olduğunu da kontrol ediyoruz.",
+      "metrics": [
+        {
+          "label": "Öncesi",
+          "value": "4,0 / 4,0 / 4,0 m"
+        },
+        {
+          "label": "Sonrası",
+          "value": "1,03 / 0,29 / 1,54 m"
+        }
+      ],
+      "related": []
+    },
+    {
+      "id": "pico-engelleri-kural",
+      "date": "2026-10-07",
+      "type": "bulgu",
+      "title": "Gerçek Pico engellerine karşı kurallı kontrolcü, eğitilmiş modellerden daha az çarptı",
+      "text": "Hareketli engel olarak sekerek giden küçük toplar yerine sahadaki gibi 2 simüle Pico robot koyduk (yarıçap 7,5 cm, firmware'deki rastgele dolaşma). Kurallı kontrolcünün çarpma oranı %44'ten %13'e düştü. Eski modelin (3 kare hafıza) oranı %46'dan %36'ya indi. Pico engelleriyle ve rastgele bozukluklarla yeniden eğittiğimiz model %29 çarptı. 100 bölümde belirsizlik yaklaşık ±5 puan olduğu için %36 ile %29 arasındaki fark net değil, ama kurallı kontrolcüyle aradaki fark net. Ortalama ödül ise eğitilen modellerde daha yüksek (146-153, kurallı kontrolcüde 111); neden böyle olduğunu ve modellerin neden daha çok çarptığını henüz incelemedik.",
+      "metrics": [
+        {
+          "label": "Kurallı kontrolcü",
+          "value": "%13"
+        },
+        {
+          "label": "PPO, 3 kare hafıza",
+          "value": "%36"
+        },
+        {
+          "label": "PPO, Pico engelleriyle eğitilmiş",
+          "value": "%29"
+        }
+      ],
+      "related": [
+        "rule-pico2",
+        "ppo-500k-f3-pico2",
+        "ppo-pico-dr-pico2"
+      ]
+    },
+    {
+      "id": "gazebo-ikizi-uyumu",
+      "date": "2026-10-07",
+      "type": "bulgu",
+      "title": "Gazebo ikizi Python simülatörüyle uyumlu çıktı",
+      "text": "Aynı komutları iki dünyada denedik (Python tarafında hareket kinematik formülle birebir aynı, birim testi bunu doğruluyor). 0,2 m/s ile 2 sn düz gitmede Gazebo 0,405-0,416 m, Python 0,400 m. 2,5 rad/s ile 1,5 sn yerinde dönmede Gazebo yaklaşık 0,15-0,28 rad eksik döndü (%4-7). Duvara bakan orta ToF sensörü Gazebo'da 0,333-0,338 m, Python'un ışın hesabında 0,353 m gösterdi: Gazebo sürekli 1-2 cm kısa okuyor, nedenini incelemedik. Bir denemede Gazebo 0,267 m ile 8 cm kısa okudu, nedenini bilmiyoruz. Odometri hızları komutla birebir örtüştü (0,200 m/s ve 2,500 rad/s). Bu, ikizin simülasyonda öğrenilen davranışı aktarmak için yeterince yakın olduğunu gösteriyor; gerçek robotla aynı karşılaştırmayı henüz yapmadık.",
+      "metrics": [
+        {
+          "label": "Düz gitme (Gazebo / Python)",
+          "value": "0,41 / 0,40 m"
+        },
+        {
+          "label": "Duvar mesafesi (Gazebo / Python)",
+          "value": "0,335 / 0,353 m"
+        }
+      ],
+      "related": []
+    },
+    {
       "id": "sensor-gorus-alani",
       "date": "2026-10-01",
       "type": "donanim",
@@ -163,5 +251,5 @@
       ]
     }
   ],
-  "updated": "2026-10-01T09:47"
+  "updated": "2026-10-07T00:28"
 }

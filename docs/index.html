@@ -404,22 +404,22 @@
       <p class="note">Bu bir plan; iki tür robot da henüz kurulmadı. Küçük robotların gerçek hareketli engellerin yerini alması, sim-gerçek farkını ölçmemizi sağlayacak.</p>
 
       <h3 style="margin-top:40px">Katman katman olgunluk (1-5)</h3>
-      <p>1: yalnızca fikir ya da plan. 3: kodlanmış ve simülasyonda ya da sahte robotla test edilmiş. 5: gerçek donanımda doğrulanmış. Hiçbir şeyi gerçek robotta denemedik, bu yüzden hiçbir katman 4'ün üstüne çıkmadı ve gerçek dünya katmanları hâlâ 1-2. Plan ile uygulama ayrı satırlarda: plan 3, uygulama 1.</p>
+      <p>1: yalnızca fikir ya da plan. 3: kodlanmış ve simülasyonda ya da sahte robotla test edilmiş. 4: gerçek bir yazılım ortamında (ROS 2 / Gazebo) uçtan uca denenmiş. 5: gerçek donanımda doğrulanmış. Hiçbir şeyi gerçek robotta denemedik, bu yüzden hiçbir katman 4'ün üstüne çıkmadı ve gerçek dünya katmanları hâlâ 1-3. Plan ile uygulama ayrı satırlarda: plan 3, uygulama 1.</p>
       <div class="table-wrap">
         <table class="maturity">
-          <thead><tr><th>Katman</th><th>Sürüm 1</th><th>Şimdi (6 Ekim)</th><th>Ne var, ne eksik</th></tr></thead>
+          <thead><tr><th>Katman</th><th>Sürüm 1</th><th>Şimdi (7 Ekim)</th><th>Ne var, ne eksik</th></tr></thead>
           <tbody>
-          <tr><td>Gymnasium simülatörü</td><td class="num">4</td><td class="num">4</td><td>2B dünya, iki sensör düzeni, PPO eğitimi. Birim testi yok.</td></tr>
-          <tr><td>Eğitim ve ölçüm hattı</td><td class="num">4</td><td class="num">4</td><td>Altı deney aynı 100 bölümde ölçüldü.</td></tr>
+          <tr><td>Gymnasium simülatörü</td><td class="num">4</td><td class="num">4</td><td>2B dünya, iki sensör düzeni, senaryo dosyaları (<code>pico2</code>: gerçek boyutlu Pico engeller), gerçeğe benzetme bozuklukları, 18 birim testi.</td></tr>
+          <tr><td>Eğitim ve ölçüm hattı</td><td class="num">4</td><td class="num">4</td><td>12 deney aynı 100 bölümde ölçüldü; bozukluklarla eğitim denendi.</td></tr>
           <tr><td>Site ve yayın hattı</td><td class="num">4</td><td class="num">4</td><td>Sayfa yalnızca veriyle çalışıyor, yayın otomatik. Yapım rehberi de aynı yöntemle (<code>build.json</code>) çalışıyor.</td></tr>
-          <tr><td>Gazebo dijital ikizi</td><td class="num">3</td><td class="num">3</td><td>URDF, dünya ve node'lar var. Bu oturumlarda çalıştırılıp doğrulanmadı.</td></tr>
-          <tr><td>Ortak Python arayüzü</td><td class="num">1</td><td class="num">3</td><td><code>pai_robot/</code>: SimRobot ve UdpRobot sahte Pico ile test edildi. RosRobot (Gazebo ve Pi 4) ROS ortamında denenmedi.</td></tr>
+          <tr><td>Gazebo dijital ikizi</td><td class="num">3</td><td class="num">4</td><td>Başsız Gazebo'da denendi: düz gitme %4, dönme %4-7 içinde uyuşuyor; ToF Python'dan sürekli 1-2 cm kısa okuyor (nedeni incelenmedi).</td></tr>
+          <tr><td>Ortak Python arayüzü</td><td class="num">1</td><td class="num">4</td><td>SimRobot, UdpRobot (sahte Pico) ve RosRobot (başsız Gazebo, <code>tests/ros_integration.py</code>) test edildi. Gerçek robotta denenmedi.</td></tr>
           <tr><td>Ana bilgisayar kontrolü</td><td class="num">1</td><td class="num">3</td><td><code>host/fleet.py</code>: durum, rastgele mod, durdurma sahte Pico ile denendi. <code>scp</code> ve <code>ssh</code> adımları denenmedi.</td></tr>
           <tr><td>Küçük robot (Pico 2 W)</td><td class="num">1</td><td class="num">2</td><td><code>firmware/pico2w/</code>: rastgele ve uzaktan mod yazıldı, protokol sahte Pico ile test edildi. ToF kodu gerçek kütüphaneye (<code>vl53l1x_pico</code>) göre yazıldı, sahte modüllerle test edildi. Gerçek kartta ve sensörle denenmedi.</td></tr>
-          <tr><td>Büyük robot (Pi 4)</td><td class="num">1</td><td class="num">2</td><td><code>pi4/run_policy.py</code> simülasyonda, <code>pi4/tof.py</code> (adres atama ve okuma) sahte sensörlerle test edildi. Sürücü node'u ROS ortamında denenmedi, pinler boş.</td></tr>
+          <tr><td>Büyük robot (Pi 4)</td><td class="num">1</td><td class="num">3</td><td>Sürücü düğümü ROS 2'de sahte donanımla, <code>tof.py</code> sahte sensörlerle, <code>run_policy.py</code> Gazebo'da denendi. Gerçek Pi'de denenmedi, pinler boş.</td></tr>
           <tr><td>Fiziksel yapım planı</td><td class="num">–</td><td class="num">3</td><td>Parçalar, adımlar, açık kararlar ve arena etiketleri yazıldı (<a href="#yapim">Yapım rehberi</a>). Hiçbiri gerçek donanımda doğrulanmadı.</td></tr>
           <tr><td>Fiziksel yapım ilerlemesi</td><td class="num">–</td><td class="num">1</td><td>Fiziksel adımlardan hiçbiri henüz yapılmadı.</td></tr>
-          <tr><td>Sim-gerçek aktarımı</td><td class="num">1</td><td class="num">1</td><td>Hiçbir model gerçek robotta denenmedi.</td></tr>
+          <tr><td>Sim-gerçek aktarımı</td><td class="num">1</td><td class="num">2</td><td>Benzetme araçları (bozukluklar, Pico engelleri) ve referans değerler hazır. Hiçbir model gerçek robotta denenmedi.</td></tr>
           <tr><td>Sensör düzeni uyumu</td><td class="num">2</td><td class="num">2</td><td><code>side5</code> yalnızca simülasyonda. Pico pin planında yalnızca üç ToF için yer var.</td></tr>
           </tbody>
         </table>
@@ -431,7 +431,8 @@
         <li class="done">Python / Gymnasium simülatörü ve PPO eğitimi</li>
         <li class="done">Gazebo arenası, robot modeli ve hareketli engeller</li>
         <li class="done">Deney, bulgu ve sensör düzeni kayıtları ve bu sayfaya otomatik yayın</li>
-        <li class="todo">Üç dünya için ortak Python arayüzü (SimRobot, GazeboRobot, RealRobot)</li>
+        <li class="done">Üç dünya için ortak Python arayüzü (SimRobot, RosRobot, UdpRobot), Gazebo'ya karşı test edildi</li>
+        <li class="done">Senaryo dosyaları, gerçek Pico benzeri engeller ve gerçeğe benzetme bozuklukları</li>
         <li class="todo">Fiziksel yapım: arena, iki tür robot ve ağ (<a href="#yapim">Yapım rehberi</a>)</li>
         <li class="todo">Büyük robotlar için Pi 4 sürücüsü, küçük rastgele robotlar için Pico 2 W yazılımı (MicroPython, UDP)</li>
         <li class="todo">Pico robot kartı (fab lab'da frezelenecek) ve senaryo sistemi</li>

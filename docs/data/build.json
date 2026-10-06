@@ -56,8 +56,8 @@
       "why": "Şimdiki plan 2 Pico + 2 Pi 4. Hareketli engel sayısı simülasyonda 2."
     },
     {
-      "q": "Gerçek Pico robot, simülasyondaki hareketli engelle nasıl eşleşecek?",
-      "why": "Simülasyonda hareketli engel 5 cm yarıçaplı ve yaklaşık 0,09 m/s hızda. Robot yarıçapı 7,5 cm ve Pico yazılımı 0,20 m/s'ye kadar gidiyor. Ya simülasyon ya robot ayarlanmalı."
+      "q": "Gerçek Pico robotun hızı ve boyutu simülasyondaki 'pico2' senaryosuyla eşleşecek mi?",
+      "why": "Yazılım tarafı hazır: simülasyonda hareketli engeller yerine firmware'deki rastgele dolaşmayı yapan, 7,5 cm yarıçaplı ve en çok 0,20 m/s hızlı Pico robotlar var. Bu değerler varsayım; gerçek robot ölçülünce kesinleşecek. Yeni sonuç: bu senaryoda kurallı kontrolcü %13, eski PPO modeli %36 çarpıyor."
     },
     {
       "q": "Beş sensörlü (side5) düzen yapılacak mı?",
@@ -149,10 +149,10 @@
           "phase": 5
         },
         {
-          "text": "Bilgisayarda testleri çalıştır; hepsi geçmeli.",
+          "text": "Bilgisayarda testleri çalıştır; hepsi geçmeli (simülatör, robot arayüzü, Pico ve Pi 4 kodları). ROS 2 / Gazebo entegrasyon testi ayrı: --ros ile 1-2 dakika sürer.",
           "kind": "yazılım",
           "state": "done",
-          "cmd": ".venv/bin/python tests/test_pai_robot.py",
+          "cmd": "tests/run_all.sh\ntests/run_all.sh --ros",
           "phase": 2
         }
       ]
@@ -464,28 +464,28 @@
           "phase": 6
         },
         {
-          "text": "Düz git komutu ver (0,2 m/s); 1 m'yi kaç saniyede aldığını ölç. Simülasyonla karşılaştır.",
+          "text": "Düz git komutu ver (0,2 m/s); 1 m'yi kaç saniyede aldığını ölç. Simülasyonda beklenen: 5,0 sn (Gazebo 2 sn'de 0,405-0,416 m gitti, Python 0,400 m). Fark büyükse tekerlek çapını ya da motor hızını kontrol et.",
           "kind": "fiziksel",
           "state": "todo",
           "phase": 6,
           "arena": true
         },
         {
-          "text": "Yerinde dönüş (2,5 rad/s) için 360° dönüş süresini ölç.",
+          "text": "Yerinde dönüş (2,5 rad/s) için 360° dönüş süresini ölç. Simülasyonda beklenen: 2,51 sn (Gazebo bu dönüşü %4-7 eksik yaptı). Gerçek robotta tekerlek kayması bunu uzatabilir.",
           "kind": "fiziksel",
           "state": "todo",
           "phase": 6,
           "arena": true
         },
         {
-          "text": "ToF okumalarını bilinen mesafelerde (10, 50, 100 cm) kontrol et; gürültüyü simülasyonla karşılaştır.",
+          "text": "ToF okumalarını bilinen mesafelerde (10, 50, 100 cm) kontrol et; gürültüyü simülasyonla karşılaştır. Simülasyonda gürültü 1 cm standart sapma. Gazebo duvar mesafesini Python'dan sürekli 1-2 cm kısa okuyor (nedeni incelenmedi); gerçek sensörün farkını bununla karıştırma.",
           "kind": "fiziksel",
           "state": "todo",
           "phase": 6,
           "arena": true
         },
         {
-          "text": "Hareketli engel karşılaştırması: Pico robotun hızını ve yarıçapını simülasyondaki engelle eşle (karar listesine bak).",
+          "text": "Pico robotun gerçek hızını (komut 0,20 m/s) ve yarıçapını ölç. Simülasyondaki 'pico2' senaryosu 7,5 cm yarıçap ve en çok 0,20 m/s varsayıyor. Fark çıkarsa pai_gym/pai_gym/world.py içinde PicoBot ayarlarını güncelle ve pico2 deneylerini yeniden çalıştır (evaluate.py).",
           "kind": "yazılım",
           "state": "todo",
           "phase": 6

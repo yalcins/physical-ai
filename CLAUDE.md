@@ -60,11 +60,11 @@ python train.py --steps 150000 [--no-moving]
 - [x] Gymnasium 2D simülatör + PPO eğitim
 - [x] Gazebo arena + pai_bot modeli
 - [x] Hareketli engelleri Gazebo'ya ekle (`moving_obstacles_node`, world.py ile aynı hız/yarıçap)
-- [~] Ortak Python arayüzü `pai_robot/`: SimRobot + UdpRobot sahte Pico ile test edildi, RosRobot (Gazebo/Pi 4) ROS ortamında denenmedi
-- [~] Pi 4 (`pi4/`, büyük robot: görev çözer, politika üzerinde çalışır) ve Pico 2 W (`firmware/pico2w/`, küçük robot: rastgele = hareketli engel) yazıldı, gerçek donanımda DENENMEDİ; Pi pinleri belirlenmedi
+- [x] Ortak Python arayüzü `pai_robot/`: SimRobot, UdpRobot (sahte Pico ile) ve RosRobot (başsız Gazebo'ya karşı `tests/ros_integration.py`) test edildi; gerçek robotta henüz denenmedi
+- [~] Pi 4 (`pi4/`, büyük robot) ve Pico 2 W (`firmware/pico2w/`, küçük robot) yazıldı. Pi 4 sürücü düğümü ROS'ta sahte donanımla, Pico kodu sahte modüllerle test edildi; GERÇEK donanımda DENENMEDİ. Pi pinleri belirlenmedi
 - [~] Ana bilgisayar kontrolü `host/fleet.py` (durum, mod, politika gönderme); testler: `.venv/bin/python tests/test_pai_robot.py`
 - [ ] Pico robot kartı (KiCad, fab lab'da frezelenecek)
-- [ ] Senaryo sistemi (hareketli objeler için tanım dosyası)
+- [x] Senaryo sistemi (`pai_gym/scenarios/*.json`: kutu, silindir, seken top, `pico` robot) + gerçeğe benzetme bozuklukları (`motor_scale`, `latency`, `sensor_bias`, `sensor_dropout`, `randomize`)
 
 
 ## Site ve deney kayıtları (docs/)
@@ -104,6 +104,11 @@ Gözlem vektörü = sensörler sırayla, en yeni kare başta (`frames` > 1 ise g
 `docs/data/build.json`: arena, ağ, Pico robot, Pi 4 robot, ölçüm ve birlikte deneme için parça listesi,
 adım adım işler, açık kararlar. Bir adım bitince `"state": "done"` yap (`todo` / `later` / `done`) ve `./publish.sh`.
 Pico firmware'inin karta yüklenmesi bilerek `later`: kullanıcı donanım hazır olunca yapacak.
+
+## Testler
+`tests/run_all.sh` (pencere/ROS gerekmez, saniyeler), `tests/run_all.sh --ros` (+ başsız Gazebo, 1-2 dk). Her test dosyası ayrı süreçte koşar.
+Simülatörde davranış değişikliği yaparsan eski sonuçların aynı kaldığını kontrol et: aynı tohumla `ppo_pai_f3` modelinin bölüm sonuçları değişmemeli.
+`pkill -f` kullanma (kendi kabuğunu da öldürebilir); süreç adıyla ya da pid dosyasıyla durdur.
 
 ## Simülasyon kayıtları (docs/media/)
 `pai_gym/record.py` (pygame, pencere açmaz) ve `tools/capture_gazebo/run.sh` (Gazebo başsız, tepeden kamera) 6 sn'lik PNG + MP4 üretir.
