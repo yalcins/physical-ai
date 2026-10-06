@@ -24,10 +24,11 @@ WHEEL_RADIUS = 0.0215
 WHEEL_SEPARATION = 0.115
 MAX_WHEEL_RAD_S = 31.0      # ~300 RPM (JGA12-N20B, 6V)
 WATCHDOG_S = 0.5            # remote modda bu sure komut gelmezse dur
+WIFI_TIMEOUT_S = 20         # tek bir Wi-Fi baglanma denemesi icin en uzun sure
 PWM_FREQ = 1000
 
 # TB6612FNG pinleri (CLAUDE.md)
-STBY = Pin(22, Pin.OUT)
+STBY = Pin(22, Pin.OUT, value=0)    # acilista surucu bekleme modunda: motorlar kapali
 MOTOR_L = (PWM(Pin(16)), Pin(17, Pin.OUT), Pin(18, Pin.OUT))   # PWMA, AIN1, AIN2
 MOTOR_R = (PWM(Pin(21)), Pin(19, Pin.OUT), Pin(20, Pin.OUT))   # PWMB, BIN1, BIN2
 for m in (MOTOR_L, MOTOR_R):
@@ -52,13 +53,34 @@ def drive(v, w):
     set_motor(MOTOR_R, right)
 
 
+def motors_off():
+    STBY.value(0)
+    set_motor(MOTOR_L, 0)
+    set_motor(MOTOR_R, 0)
+
+
 def connect_wifi():
+    """Wi-Fi'ye baglanana kadar motorlar KAPALI kalir. Her deneme WIFI_TIMEOUT_S ile sinirli;
+    basarisiz olursa nedeni yazilir ve yeniden denenir. Beklerken LED yanip soner."""
+    motors_off()
+    led = Pin('LED', Pin.OUT)
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
-    wlan.connect(secrets.WIFI_SSID, secrets.WIFI_PASSWORD)
-    while not wlan.isconnected():
-        time.sleep(0.3)
-    print('IP:', wlan.ifconfig()[0])
+    while True:
+        wlan.connect(secrets.WIFI_SSID, secrets.WIFI_PASSWORD)
+        start = time.ticks_ms()
+        while not wlan.isconnected():
+            if time.ticks_diff(time.ticks_ms(), start) > WIFI_TIMEOUT_S * 1000:
+                break
+            led.value(not led.value())
+            time.sleep(0.3)
+        if wlan.isconnected():
+            led.value(1)
+            print('IP:', wlan.ifconfig()[0])
+            return
+        print('Wi-Fi baglanamadi (durum kodu:', wlan.status(), '), yeniden deneniyor')
+        wlan.disconnect()
+        motors_off()
 
 
 def random_command(ranges, state):
@@ -113,4 +135,5 @@ def main():
             last_tx = time.ticks_ms()
 
 
-main()
+if __name__ == '__main__':
+    main()

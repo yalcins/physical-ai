@@ -326,18 +326,25 @@
           "cmd": "curl -L -o firmware/pico2w/vl53l1x.py https://raw.githubusercontent.com/drakxtwo/vl53l1x_pico/main/vl53l1x.py"
         },
         {
-          "text": "Dosyaları karta yükle: önce kütüphane, tof.py ve secrets.py; main.py en son, çünkü açılışta kendiliğinden çalışır.",
+          "text": "Robotu tekerlekler yerden kesik tut (örneğin kutu üstünde): main.py açılışta rastgele modda kendiliğinden çalışır. Dosyaları karta yükle: önce kütüphane, tof.py ve secrets.py; main.py en son.",
           "kind": "yazılım",
           "state": "later",
           "cmd": "mpremote connect auto fs cp firmware/pico2w/vl53l1x.py :\nmpremote connect auto fs cp firmware/pico2w/tof.py :\nmpremote connect auto fs cp firmware/pico2w/secrets.py :\nmpremote connect auto fs cp firmware/pico2w/main.py :",
           "phase": 4
         },
         {
-          "text": "Kartın IP'sini seri konsoldan gör, host/fleet.json'a yaz, durumu sorgula.",
+          "text": "Kartın IP'sini seri konsoldan gör, host/fleet.json'a yaz, durumu sorgula. Wi-Fi'ye bağlanamazsa motorlar kapalı kalır, LED yanıp söner ve konsolda 'Wi-Fi baglanamadi' yazar; 20 saniyede bir yeniden dener. secrets.py'yi ve 2,4 GHz ağı kontrol et.",
           "kind": "yazılım",
           "state": "later",
           "cmd": "mpremote connect auto repl\npython3 host/fleet.py status",
           "phase": 4
+        },
+        {
+          "text": "İlk çalıştırma, tekerlekler yerden kesikken: rastgele modda tekerleklerin döndüğünü, bir engeli (elini) ToF'un önüne tutunca yön değiştirdiğini ve durdurunca (fleet.py stop) durduğunu gör. Ardından uzaktan modda komutla sür.",
+          "kind": "fiziksel",
+          "state": "later",
+          "phase": 4,
+          "cmd": "python3 host/fleet.py random\npython3 host/fleet.py status\npython3 host/fleet.py stop"
         },
         {
           "text": "Robotu arenaya koy; rastgele modda 5 dakika çarpmadan dolaşıyor mu?",
