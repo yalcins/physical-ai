@@ -1,0 +1,10 @@
+{
+  "name": "default",
+  "description": "Gazebo dunyasiyla ayni yerlesim: 1 kutu, 1 sabit silindir, 2 sekerek giden hareketli engel.",
+  "obstacles": [
+    {"type": "box",     "x": 0.45,  "y": 0.35, "w": 0.15, "h": 0.15},
+    {"type": "circle",  "x": -0.35, "y": 0.5,  "r": 0.06},
+    {"type": "bouncer", "x": 0.3,   "y": -0.4, "r": 0.05, "vx": 0.08,  "vy": 0.05},
+    {"type": "bouncer", "x": -0.5,  "y": 0.0,  "r": 0.05, "vx": -0.05, "vy": 0.09}
+  ]
+}

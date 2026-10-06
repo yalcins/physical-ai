@@ -6,6 +6,7 @@ Kullanim:
     python train.py --no-moving     # sadece sabit engeller (ilk ders icin)
 """
 import argparse
+import json
 import time
 from pathlib import Path
 
@@ -26,12 +27,13 @@ def main():
                    help='kac adimlik hafiza (3 = son 3 olcumu gor)')
     p.add_argument('--layout', default='front3',
                    help="sensor duzeni: front3 (3 on sensor) veya side5 (+2 yan sensor)")
+    p.add_argument('--env-kwargs', default='{}',
+                   help='ArenaEnv icin ek ayarlar (JSON), ornek: \'{"scenario": "pico2", "randomize": true}\'')
     a = p.parse_args()
 
-    env = make_vec_env(ArenaEnv, n_envs=a.envs,
-                       env_kwargs={'moving_obstacles': not a.no_moving,
-                                'frames': a.frames,
-                                'layout': a.layout})
+    env_kwargs = {'moving_obstacles': not a.no_moving, 'frames': a.frames, 'layout': a.layout}
+    env_kwargs.update(json.loads(a.env_kwargs))
+    env = make_vec_env(ArenaEnv, n_envs=a.envs, env_kwargs=env_kwargs)
     model = PPO('MlpPolicy', env, verbose=1, n_steps=512, batch_size=256,
                 learning_rate=3e-4, gamma=0.99, ent_coef=0.01, device='cpu')
     t0 = time.time()

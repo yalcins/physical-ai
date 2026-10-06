@@ -24,8 +24,32 @@ python play.py --mode model    # 5) Ogrenmis robot
 ```
 `--no-moving` ile hareketli engeller kapatilir (kolay baslangic).
 
+## Senaryolar ve gercege benzetme
+```bash
+python play.py --mode rule --scenario pico2        # hareketli engeller yerine 2 simule Pico robot
+python train.py --steps 500000 --frames 3 --out models/ppo_pico_dr \
+    --env-kwargs '{"scenario": "pico2", "randomize": true}'
+```
+- **Senaryo** (`scenarios/*.json`): engelleri dosyayla tanimla. Turler: `box`, `circle`, `bouncer` (seken top),
+  `pico` (firmware'deki rastgele dolasmayi yapan gercek boyutlu robot). Hazir olanlar: `default`, `pico2`, `empty`.
+- **Bozukluklar** (`ArenaEnv` secenekleri, varsayilan hepsi kapali): `motor_scale=[sol, sag]` (tekerlek hizi carpani),
+  `latency` (komutun kac adim gec uygulandigi), `sensor_bias` (m), `sensor_dropout` (bos okuma olasiligi).
+  `randomize=True` ise her bolumde bunlar rastgele secilir (egitimde dayaniklilik icin).
+- Olcmek icin `evaluate.py --env-kwargs '{"scenario": "pico2", "latency": 1}'` yeterli; ArenaEnv'e yeni secenek
+  eklesen bile `evaluate.py` degismez.
+
+## Testler
+```bash
+cd ~/projects/physical-ai && tests/run_all.sh          # saniyeler
+tests/run_all.sh --ros                                 # + ROS 2 / Gazebo entegrasyonu (1-2 dk, ROS kurulu olmali)
+```
+
+## Kayit
+`python record.py --model models/ppo_pai_f3 --frames 3` pencere acmadan PNG + MP4 uretir.
+
 ## Dosyalar
 - `pai_gym/world.py` – fizik ve sensorler (sadece numpy, okunabilir)
 - `pai_gym/arena_env.py` – Gymnasium ortami: gozlem, eylemler, odul
+- `pai_gym/scenarios.py` – senaryo dosyalarini okur
 - `pai_gym/render.py` – pygame ile ustten gorunum
 - `train.py`, `play.py` – egitim ve izleme

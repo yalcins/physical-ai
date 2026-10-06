@@ -54,6 +54,59 @@ class Circle:
         return self.vx != 0.0 or self.vy != 0.0
 
 
+class PicoBot(Circle):
+    """Hareketli engel olarak gercek bir Pico robot: firmware/pico2w/main.py'deki rastgele dolasmanin kopyasi.
+
+    Kendi 3 ToF sensorunu kullanir: onde engel varsa yerinde doner, yoksa 1-3 sn'de bir
+    rastgele bir hareket secer. Boyut ve hiz gercek robotunki (yaricap 7,5 cm, en cok 0,20 m/s).
+    Kurallar firmware ile ayni olmali; tests/test_pai_gym.py bunu kontrol eder.
+    """
+    # (v m/s, w rad/s) -- main.py'deki random_command tablosu
+    COMMANDS = ((0.20, 0.0), (0.12, 1.5), (0.12, -1.5), (0.0, 2.5), (0.0, -2.5))
+    CENTER_STOP = 0.20       # m: orta sensor bundan yakinsa don
+    SIDE_STOP = 0.10         # m: yan sensorler bundan yakinsa don
+    TURN_W = 2.5             # rad/s
+    HOLD_S = (1.0, 3.0)      # bir hareketi kac saniye surdurur
+
+    def __init__(self, x, y, theta=0.0):
+        super().__init__(x, y, ROBOT_RADIUS)
+        self.theta = theta
+        self.cmd = (0.0, 0.0)
+        self.until = 0.0     # simulasyon saniyesi
+        self.t = 0.0
+
+    @property
+    def moving(self):
+        return True
+
+    def command(self, ranges, rng):
+        """Firmware'deki random_command: (v, w) dondurur."""
+        left, center, right = ranges[:3]
+        if center < self.CENTER_STOP or min(left, right) < self.SIDE_STOP:
+            return (0.0, self.TURN_W if left > right else -self.TURN_W)
+        if self.t >= self.until:
+            self.cmd = self.COMMANDS[int(rng.integers(len(self.COMMANDS)))]
+            self.until = self.t + rng.uniform(*self.HOLD_S)
+        return self.cmd
+
+    def step(self, world, dt):
+        # Kendi sensorleri: baska engeller + duvarlar + ogrenen robot (kendisi haric)
+        others = [o for o in world.obstacles if o is not self]
+        others.append(Circle(world.x, world.y, ROBOT_RADIUS))
+        ranges = []
+        for _, fwd, side, ang in TOF_SENSORS:
+            c, s_ = math.cos(self.theta), math.sin(self.theta)
+            ox, oy = self.x + fwd * c - side * s_, self.y + fwd * s_ + side * c
+            offsets = np.linspace(-TOF_FOV / 2, TOF_FOV / 2, TOF_RAYS)
+            ranges.append(min(world.cast(ox, oy, self.theta + ang + o, others) for o in offsets))
+        v, w = self.command(ranges, world.rng)
+        self.t += dt
+        self.theta = (self.theta + w * dt + math.pi) % (2 * math.pi) - math.pi
+        nx, ny = self.x + v * math.cos(self.theta) * dt, self.y + v * math.sin(self.theta) * dt
+        lim = HALF - self.r
+        self.x, self.y = max(-lim, min(lim, nx)), max(-lim, min(lim, ny))   # duvardan disari cikamaz
+
+
 class Box:
     """Eksene hizali kutu engel (merkez x, y ve kenar uzunluklari w, h)."""
 
@@ -114,13 +167,18 @@ def ray_circle(ox, oy, dx, dy, c):
 # ---------------- Dunya ----------------
 class World:
 
-    def __init__(self, obstacles=None, rng=None, sensor_noise=True, sensors=TOF_SENSORS):
+    def __init__(self, obstacles=None, rng=None, sensor_noise=True, sensors=TOF_SENSORS,
+                 motor_scale=(1.0, 1.0), sensor_bias=0.0, sensor_dropout=0.0):
         self.rng = rng if rng is not None else np.random.default_rng()
         self.obstacles = obstacles if obstacles is not None else default_obstacles()
         self.sensor_noise = sensor_noise
         self.sensors = sensors              # hangi sensor duzeni kullaniliyor
         self.x = self.y = self.theta = 0.0
         self.v = self.w = 0.0
+        # Gercek robota benzetmek icin bozukluklar (varsayilan: hic yok)
+        self.motor_scale = motor_scale      # (sol, sag) tekerlek hizi carpani
+        self.sensor_bias = sensor_bias      # m, tum ToF okumalarina eklenir
+        self.sensor_dropout = sensor_dropout  # okumanin 'bos' (4 m) gelme olasiligi
 
     # --- robot yerlestirme ---
     def place_robot(self, x, y, theta):
@@ -152,13 +210,21 @@ class World:
     # --- hareket ---
     def step(self, v, w, dt):
         """Diferansiyel surus kinematigi + hareketli engelleri ilerlet."""
+        if self.motor_scale != (1.0, 1.0):
+            # Istenen (v, w) -> tekerlek hizlari -> motor farki -> gercekte olusan (v, w)
+            wl, wr = self.wheel_speeds(v, w)
+            wl, wr = wl * self.motor_scale[0], wr * self.motor_scale[1]
+            v = WHEEL_RADIUS * (wl + wr) / 2
+            w = WHEEL_RADIUS * (wr - wl) / WHEEL_SEPARATION
         self.v, self.w = v, w
         self.theta += w * dt
         self.theta = (self.theta + math.pi) % (2 * math.pi) - math.pi
         self.x += v * math.cos(self.theta) * dt
         self.y += v * math.sin(self.theta) * dt
         for ob in self.obstacles:
-            if isinstance(ob, Circle) and ob.moving:
+            if isinstance(ob, PicoBot):
+                ob.step(self, dt)
+            elif isinstance(ob, Circle) and ob.moving:
                 ob.x += ob.vx * dt
                 ob.y += ob.vy * dt
                 if abs(ob.x) > HALF - ob.r:
@@ -176,14 +242,16 @@ class World:
         return left, right
 
     # --- sensorler ---
-    def cast(self, ox, oy, angle):
+    def cast(self, ox, oy, angle, obstacles=None):
+        """Isin at, en yakin engele/duvara mesafe. obstacles verilmezse dunyadakiler kullanilir."""
+        obstacles = self.obstacles if obstacles is None else obstacles
         dx, dy = math.cos(angle), math.sin(angle)
         best = TOF_MAX
         for seg in WALLS:
             t = ray_segment(ox, oy, dx, dy, seg)
             if t is not None and t < best:
                 best = t
-        for ob in self.obstacles:
+        for ob in obstacles:
             if isinstance(ob, Circle):
                 t = ray_circle(ox, oy, dx, dy, ob)
                 if t is not None and t < best:
@@ -210,5 +278,8 @@ class World:
             d = min(self.cast(ox, oy, heading + o) for o in offsets)
             if self.sensor_noise:
                 d += self.rng.normal(0.0, TOF_NOISE)
+            d += self.sensor_bias
+            if self.sensor_dropout and self.rng.random() < self.sensor_dropout:
+                d = TOF_MAX                        # gecersiz okuma: sensor "bos" der
             out.append(float(np.clip(d, TOF_MIN, TOF_MAX)))
         return out

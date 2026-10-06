@@ -50,10 +50,12 @@ def main():
                    help='modelin egitildigi hafiza uzunlugu')
     p.add_argument('--layout', default='front3',
                    help='sensor duzeni: front3 veya side5')
+    p.add_argument('--scenario', default=None,
+                   help='senaryo: default, pico2, empty ya da bir .json yolu (pai_gym/scenarios/)')
     a = p.parse_args()
 
     env = ArenaEnv(render_mode='human', moving_obstacles=not a.no_moving,
-                   frames=a.frames, layout=a.layout)
+                   frames=a.frames, layout=a.layout, scenario=a.scenario)
     model = None
     if a.mode == 'model':
         from stable_baselines3 import PPO

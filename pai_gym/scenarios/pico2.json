@@ -1,0 +1,10 @@
+{
+  "name": "pico2",
+  "description": "Sahadaki durum: ayni sabit engeller, hareketli engeller yerine 2 gercek Pico robot (yaricap 7,5 cm, firmware'deki rastgele dolasma).",
+  "obstacles": [
+    {"type": "box",    "x": 0.45,  "y": 0.35, "w": 0.15, "h": 0.15},
+    {"type": "circle", "x": -0.35, "y": 0.5,  "r": 0.06},
+    {"type": "pico",   "x": 0.3,   "y": -0.4, "theta": 2.0},
+    {"type": "pico",   "x": -0.5,  "y": 0.0,  "theta": 0.5}
+  ]
+}

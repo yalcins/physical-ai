@@ -15,7 +15,8 @@ import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 
-from .world import SENSOR_LAYOUTS, TOF_MAX, Circle, World, default_obstacles
+from .scenarios import load_scenario
+from .world import SENSOR_LAYOUTS, TOF_MAX, Circle, PicoBot, World, default_obstacles
 
 # (ad, dogrusal hiz m/s, acisal hiz rad/s) -> gercek robota /cmd_vel olarak gider
 ACTIONS = (
@@ -34,7 +35,9 @@ class ArenaEnv(gym.Env):
 
     def __init__(self, render_mode=None, dt=0.05, max_steps=1000,
                  random_start=True, sensor_noise=True, moving_obstacles=True,
-                 frames=1, layout='front3'):
+                 frames=1, layout='front3', scenario=None,
+                 motor_scale=(1.0, 1.0), latency=0, sensor_bias=0.0, sensor_dropout=0.0,
+                 randomize=False):
         super().__init__()
         self.render_mode = render_mode
         self.dt = dt
@@ -46,6 +49,15 @@ class ArenaEnv(gym.Env):
         if layout not in SENSOR_LAYOUTS:
             raise ValueError(f'Bilinmeyen sensor duzeni: {layout}. Secenekler: {list(SENSOR_LAYOUTS)}')
         self.layout = layout
+        self.scenario = scenario            # None = default_obstacles(); ya da senaryo adi/yolu
+        # Gercege benzetme bozukluklari (varsayilan: yok). randomize=True ise her bolumde rastgele secilir.
+        self.motor_scale = tuple(motor_scale)
+        self.latency = int(latency)         # komutun kac adim gec uygulandigi
+        self.sensor_bias = sensor_bias
+        self.sensor_dropout = sensor_dropout
+        self.randomize = randomize
+        self.pending = []
+        self.perturbation = {}
         self.sensors = SENSOR_LAYOUTS[layout]
         self.n_sensors = len(self.sensors)
         self.history = []                   # son olcumler, en yenisi basta
@@ -70,11 +82,24 @@ class ArenaEnv(gym.Env):
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
-        obstacles = default_obstacles()
+        obstacles = default_obstacles() if self.scenario is None else load_scenario(self.scenario)[1]
         if not self.moving_obstacles:
-            obstacles = [o for o in obstacles if not (isinstance(o, Circle) and o.moving)]
+            obstacles = [o for o in obstacles if not (isinstance(o, (Circle, PicoBot)) and o.moving)]
+        if self.randomize:                  # bu bolumun bozukluklarini sec
+            r = self.np_random
+            self.perturbation = {'motor_scale': (float(r.uniform(0.85, 1.15)), float(r.uniform(0.85, 1.15))),
+                                 'latency': int(r.integers(0, 3)),
+                                 'sensor_bias': float(r.uniform(-0.02, 0.02)),
+                                 'sensor_dropout': float(r.uniform(0.0, 0.03))}
+        else:
+            self.perturbation = {'motor_scale': self.motor_scale, 'latency': self.latency,
+                                 'sensor_bias': self.sensor_bias, 'sensor_dropout': self.sensor_dropout}
+        pt = self.perturbation
+        self.pending = [None] * pt['latency']
         self.world = World(obstacles=obstacles, rng=self.np_random,
-                           sensor_noise=self.sensor_noise, sensors=self.sensors)
+                           sensor_noise=self.sensor_noise, sensors=self.sensors,
+                           motor_scale=pt['motor_scale'], sensor_bias=pt['sensor_bias'],
+                           sensor_dropout=pt['sensor_dropout'])
         if self.random_start:
             self.world.place_robot(*self.world.random_free_pose())
         else:
@@ -89,8 +114,11 @@ class ArenaEnv(gym.Env):
         return self._obs(), {}
 
     def step(self, action):
-        _, v, w = ACTIONS[int(action)]
         self.last_action = int(action)
+        # Gecikme: komut `latency` adim sonra uygulanir (once robot durur)
+        self.pending.append(int(action))
+        applied = self.pending.pop(0)
+        _, v, w = ACTIONS[applied] if applied is not None else ('bekle', 0.0, 0.0)
         self.world.step(v, w, self.dt)
         self.steps += 1
         self.last_ranges = self.world.read_tof()
@@ -110,7 +138,7 @@ class ArenaEnv(gym.Env):
         self.episode_return += reward
         terminated = crashed
         truncated = self.steps >= self.max_steps
-        info = {'crashed': crashed, 'ranges': list(self.last_ranges)}
+        info = {'crashed': crashed, 'ranges': list(self.last_ranges), 'perturbation': self.perturbation}
         if self.render_mode == 'human':
             self.render()
         return self._obs(), float(reward), terminated, truncated, info
