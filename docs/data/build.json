@@ -414,10 +414,11 @@
           "cmd": "i2cdetect -y 1"
         },
         {
-          "text": "pi4/pai_driver_node.py içinde PINS ve XSHUT pinlerini doldur; sensör adres atamasını ve ToF okumayı yaz (Pico'daki tof.py gibi, kullandığın Python kütüphanesine göre).",
+          "text": "pi4/pai_driver_node.py içinde PINS ve XSHUT_PINS'i doldur. ToF okuma ve adres atama pi4/tof.py içinde yazıldı (adafruit-circuitpython-vl53l1x kullanır); gerçek sensörlerle henüz denenmedi.",
           "kind": "yazılım",
           "state": "todo",
-          "phase": 5
+          "phase": 5,
+          "cmd": "pip install adafruit-circuitpython-vl53l1x gpiozero"
         },
         {
           "text": "Sürücü node'unu çalıştır, tekerlekler yerden kesikken /cmd_vel ile tekerlekleri, /tof_*/range ile sensörleri doğrula. Komut kesilince 0,5 sn içinde durmalı.",
