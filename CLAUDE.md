@@ -30,7 +30,8 @@ Gerçek robot sürücüleri de bu konuları yayınlamalı.
 ## Pico 2 W pin planı
 I2C SDA/SCL GP4/GP5 · ToF XSHUT GP6/GP7/GP8 · Enkoder sol GP10/GP11, sağ GP12/GP13 ·
 TB6612 PWMA/AIN1/AIN2 GP16/17/18, BIN1/BIN2/PWMB GP19/20/21, STBY GP22 · Pil ADC GP26.
-Güç: 4xAA NiMH → Pololu S7V7F5 (5V) → 1N5819 → VSYS; motorlar pilden doğrudan TB6612 VM.
+Güç (MİKRO Pico robot, ~65 x 55 mm): 1S LiPo (3,0-4,2 V) → seri anahtar (pil kablosunda) → 1N5819 → VSYS (Pico 1,8-5,5 V kabul eder, regülatör YOK); motorlar ve TB6612 VM/VCC pilden. Pil gerilimi GP26'da 100k/100k bölücüyle (oran 2). IMU yok.
+Pi 4 robot büyük kalır (BIG_SPEC, 5 V / 3 A güç yöntemi karar bekliyor). Mikro robot: tekerlek Ø22, iz 65 mm, tekerlekler ±7 mm kaydırılmış (referans = tekerlek orta noktası); sim: `PicoBot` yarıçap 0,048, kendi mikro ToF'ları (`world.PICO_*`).
 
 ## Komutlar
 ROS terminali (.venv AKTİF OLMADAN):
@@ -63,7 +64,7 @@ python train.py --steps 150000 [--no-moving]
 - [x] Ortak Python arayüzü `pai_robot/`: SimRobot, UdpRobot (sahte Pico ile) ve RosRobot (başsız Gazebo'ya karşı `tests/ros_integration.py`) test edildi; gerçek robotta henüz denenmedi
 - [~] Pi 4 (`pi4/`, büyük robot) ve Pico 2 W (`firmware/pico2w/`, küçük robot) yazıldı. Pi 4 sürücü düğümü ROS'ta sahte donanımla, Pico kodu sahte modüllerle test edildi; GERÇEK donanımda DENENMEDİ. Pi pinleri belirlenmedi
 - [~] Ana bilgisayar kontrolü `host/fleet.py` (durum, mod, politika gönderme); testler: `.venv/bin/python tests/test_pai_robot.py`
-- [ ] Pico robot kartı (KiCad, fab lab'da frezelenecek)
+- [~] Pico robot kartı (KiCad, TEK KATMAN, 55 x 58): şema, yerleşim, yönlendirme, DRC (bağlanmamış 0) ve Gerber hazır; fab lab'da frezelenecek, modül pin sıraları doğrulanacak
 - [x] Senaryo sistemi (`pai_gym/scenarios/*.json`: kutu, silindir, seken top, `pico` robot) + gerçeğe benzetme bozuklukları (`motor_scale`, `latency`, `sensor_bias`, `sensor_dropout`, `randomize`)
 
 
@@ -132,7 +133,7 @@ Yetim ROS süreçleri testleri bozar: testler/kayıt betikleri süreç GRUBUNU k
 ## PCB (design/pcb/)
 `design/pcb/pcb_design.py` Pico taşıyıcı kartının TEK KAYNAĞI (parçalar, footprint, netler, elektrik kontrolleri; referanslar KiCad kuralı: J1..J10, U1, D1, R/C/TP). Sıra:
 `python3 tools/design/build_pcb.py` (netlist, tablolar, okunabilir şema SVG, docs/data/pcb.json) -> `python3 tools/design/build_kicad.py` (design/pcb/kicad: Pico footprint kütüphanesi, `.kicad_sch`)
--> `python3 tools/design/build_board.py --route` (`.kicad_pcb`: yerleşim + Freerouting + temizlik + DRC + Gerber zip + SVG). Kart lazer kesim üst plakanın yerine geçer (113 x 90, aynı 4 M3 delik).
+-> `python3 tools/design/build_board.py --route` (`.kicad_pcb`: yerleşim + Freerouting + temizlik + DRC + Gerber zip + SVG). Kart lazer kesim üst plakanın yerine geçer (mikro robot: 55 x 58, 4 M2 delik) ve TEK KATMANDIR (bakır yalnız altta, via yok; DSN'de F.Cu silinir, `--router.job_timeout=00:01:00`). Pico'nun iki pin sırası arasından geçilemediği için +3V3 iki ada (`+3V3`, `+3V3_L`), W2 tel köprüsü Pico'nun üstünden birleştirir; GND adalarını Pico modülü içinde birleştirir (her yanda tek GND pini kullanılır, diğerleri NC). Konnektör pin sırası ve satır sırası Pico pin sırasına göre seçildi (çizgiler kesişmesin); sıra değişirse yeniden yönlendirme gerekir.
 KiCad 7.0.11 kurulu (apt: `kicad occt-misc=7.6.3+dfsg1-7.1build1`; eski KiCad PPA'sı occt-misc'i çakıştırıyor). 7.0 komut satırında ERC/DRC YOK: DRC `pcbnew.WriteDRCReport` ile (Python, sistem python3), ağlar `kicad-cli sch export netlist` ile doğrulanır.
-Freerouting 2.1.0 jar'ı `~/.cache/freerouting/` altında (Java 21; 2.2+ Java 25 ister), depoya girmez; `ImportSpecctraSES` KiCad 7 Python'unda çalışmadığı için SES kendi okuyucumuzla içe aktarılır. Sonuç her seferinde farklı: betik en çok 8 kez dener.
+Freerouting 2.1.0 jar'ı `~/.cache/freerouting/` altında (Java 21; 2.2+ Java 25 ister), depoya girmez; `ImportSpecctraSES` KiCad 7 Python'unda çalışmadığı için SES kendi okuyucumuzla içe aktarılır. Sonuç her seferinde farklı: betik ilk 0 bağlanmamış sonucu bulana kadar en çok 12 kez dener.
 Testler: `tests/test_pcb.py`, `test_kicad_schematic.py`, `test_board.py` (sistem python3, pcbnew gerekir). DURUM: frezelenmedi; modül pin sıraları gerçek modüllerle doğrulanacak; arayüzde ERC çalıştırılmadı.

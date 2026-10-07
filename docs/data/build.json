@@ -41,12 +41,12 @@
   "decisions": [
     {
       "q": "Şasi nasıl üretilecek (malzeme, lazer kesim ya da 3B baskı)?",
-      "why": "Ölçüler belli (tekerlek 43 mm, iki tekerlek arası 115 mm) ama üretim yöntemi yazılı değil. Yan sensör konumları da şasi hazır olunca ölçülecek.",
-      "proposal": "ÖNERİ (sanal tasarımda uygulandı): 3 mm lazer kesim iki plaka, M3 × 20 ara parça, motorlar kablo bağıyla plakanın altına, ToF için kesilmiş dikmeler. Dosyalar: Tasarım bölümü. İlk kesim karton ya da ince MDF ile denenmeli."
+      "why": "Ölçüler belli (büyük robot: tekerlek 43 mm, iki tekerlek arası 115 mm; mikro Pico robot: 22 mm ve 65 mm) ama üretim yöntemi yazılı değil. Yan sensör konumları da şasi hazır olunca ölçülecek.",
+      "proposal": "ÖNERİ (sanal tasarımda uygulandı): 3 mm lazer kesim iki plaka, M3 × 20 (büyük) ve M2 (mikro robot) ara parça, motorlar kablo bağıyla plakanın altına, ToF için kesilmiş dikmeler. Dosyalar: Tasarım bölümü. İlk kesim karton ya da ince MDF ile denenmeli."
     },
     {
       "q": "Pi 4 robotu nasıl beslenecek?",
-      "why": "Pi 4 5 V ve yüksek akım ister; Pico robotun 4xAA pil düzeni onu taşımaz. Güç bankası ya da ayrı regülatör gerekebilir. Henüz seçilmedi.",
+      "why": "Pi 4 5 V ve yüksek akım ister; Mikro Pico robotun 1S LiPo düzeni onu taşımaz. Güç bankası ya da ayrı regülatör gerekebilir. Henüz seçilmedi.",
       "proposal": "AÇIK: tasarımda 70 × 40 × 18 mm'lik yer tutucu ayrıldı. Seçilecek modül bu hacme sığmalı; Pi 4 için 5 V ve yeterli akım, motorlar için ayrıca 6 V gerekir."
     },
     {
@@ -60,7 +60,7 @@
     },
     {
       "q": "Gerçek Pico robotun hızı ve boyutu simülasyondaki 'pico2' senaryosuyla eşleşecek mi?",
-      "why": "Yazılım tarafı hazır: simülasyonda hareketli engeller yerine firmware'deki rastgele dolaşmayı yapan, 7,5 cm yarıçaplı ve en çok 0,20 m/s hızlı Pico robotlar var. Bu değerler varsayım; gerçek robot ölçülünce kesinleşecek. Yeni sonuç: bu senaryoda kurallı kontrolcü %13, eski PPO modeli %36 çarpıyor.",
+      "why": "Yazılım tarafı hazır: simülasyonda hareketli engeller yerine firmware'deki rastgele dolaşmayı yapan, 4,8 cm yarıçaplı mikro ve en çok 0,20 m/s hızlı Pico robotlar var. Bu değerler varsayım; gerçek robot ölçülünce kesinleşecek. Yeni sonuç: bu senaryoda kurallı kontrolcü %13, eski PPO modeli %36 çarpıyor.",
       "proposal": "HAZIR: ölçümler design/measurements/pico.csv dosyasına girilince tools/calibrate.py simülasyondaki Pico engellerini günceller."
     },
     {
@@ -71,7 +71,7 @@
     {
       "q": "Pico robot kartı (PCB) KiCad'de tasarlanıp fab lab'da mı frezelenecek, yoksa önce breadboard/delikli plaket mi?",
       "why": "Kart henüz tasarlanmadı. Tezgâh denemesi kart olmadan başlayabilir.",
-      "proposal": "ÖNERİ: ilk sürüm lazer kesim plaka + breadboard ya da delikli plaket. PCB de hazır (KiCad 7: şema, yerleşim, yönlendirme, Gerber; lazer kesim üst plakanın yerine geçer). Ters bağlantı koruması yok; iki katmanlı."
+      "proposal": "ÖNERİ: ilk sürüm lazer kesim plaka + breadboard ya da delikli plaket. PCB de hazır (KiCad 7: şema, yerleşim, yönlendirme, Gerber; lazer kesim üst plakanın yerine geçer). Ters bağlantı koruması yok; tek katmanlı (55 × 58 mm), pil anahtarı kartta değil."
     }
   ],
   "targets": [
@@ -210,43 +210,49 @@
           "bench": "evet"
         },
         {
-          "name": "MPU6050 ivme/dönüş sensörü",
-          "qty": "1",
-          "note": "Pico yazılımı henüz kullanmıyor.",
-          "bench": "opsiyonel"
-        },
-        {
-          "name": "Tekerlek, 43 mm çap, 19 mm genişlik",
+          "name": "Tekerlek, 22 mm çap, 8 mm genişlik",
           "qty": "2",
-          "note": ""
+          "note": "Mikro robot. Büyük robotun 43 mm tekerleği değildir."
         },
         {
           "name": "Bilyeli sarhoş teker",
           "qty": "1",
-          "note": "Tekerlek aksının 65 mm arkasında."
+          "note": "Tekerlek aksının yaklaşık 30 mm arkasında."
         },
         {
-          "name": "4xAA pil yuvası + NiMH piller",
+          "name": "1S LiPo pil (3,7 V, 500-1000 mAh) + JST-PH 2 pin",
           "qty": "1",
-          "note": "Motorlar pilden doğrudan TB6612 VM girişine bağlanır.",
+          "note": "Motorlar ve TB6612 doğrudan pilden. Ters bağlama koruması yok: kutup yönünü bağlamadan önce kontrol et.",
           "bench": "evet"
         },
         {
-          "name": "Pololu S7V7F5 (5 V regülatör)",
+          "name": "Kayar anahtar (pil kablosuna seri)",
           "qty": "1",
-          "note": "Pil -> regülatör -> 1N5819 diyot -> VSYS.",
+          "note": "Kartta anahtar başlığı yok; pilin artı kablosuna seri lehimlenir.",
           "bench": "evet"
+        },
+        {
+          "name": "1S LiPo şarj modülü (korumalı, USB)",
+          "qty": "1",
+          "note": "Robotun içinde şarj için; tezgâh testi için gerekmez.",
+          "bench": "opsiyonel"
         },
         {
           "name": "1N5819 Schottky diyot",
           "qty": "1",
-          "note": "",
+          "note": "Pil -> 1N5819 -> VSYS (Pico 1,8-5,5 V kabul eder; regülatör YOK).",
           "bench": "evet"
         },
         {
-          "name": "Şasi ve bağlantı (kart ya da breadboard, kablolar)",
+          "name": "100 kΩ direnç ×2 + 100 nF",
+          "qty": "1 set",
+          "note": "Pil bölücüsü (GP26, oran 2): LiPo 4,2 V en çok 2,1 V olur.",
+          "bench": "evet"
+        },
+        {
+          "name": "Şasi: 2 lazer kesim plaka + tek katmanlı PCB (55 × 58)",
           "qty": "1",
-          "note": "Üretim yöntemi karar bekliyor."
+          "note": "Üst plakanın yerine geçen kart (design/pcb); tezgâhta breadboard yeter."
         },
         {
           "name": "Breadboard",
@@ -265,7 +271,7 @@
         {
           "name": "Multimetre",
           "qty": "1",
-          "note": "Tezgâh için. Güç hattı adımında regülatör çıkışını (5 V) ölçmek gerekiyor.",
+          "note": "Tezgâh için. Güç hattı adımında pil (3,0-4,2 V) ve 3V3 ölçülür.",
           "bench": "evet",
           "suggested": true
         },
@@ -286,7 +292,7 @@
           "today": true
         },
         {
-          "text": "Gerçek parçaları kumpasla ölç (motor uzunluğu, pil yuvası, TB6612, MPU6050, ToF modülü, sarhoş teker yüksekliği). design/design.py içindeki yıldızlı ölçüleri güncelle ve dosyaları yeniden üret.",
+          "text": "Gerçek parçaları kumpasla ölç (motor uzunluğu, LiPo pil, TB6612, ToF modülü, sarhoş teker yüksekliği). design/design.py içindeki yıldızlı ölçüleri güncelle ve dosyaları yeniden üret.",
           "kind": "yazılım",
           "state": "todo",
           "phase": 3,
@@ -294,7 +300,7 @@
           "today": true
         },
         {
-          "text": "Breadboard'da güç hattını kur: 4xAA -> S7V7F5 -> 1N5819 -> Pico VSYS. Bağlamadan önce regülatör çıkışını multimetreyle ölç (5 V).",
+          "text": "Breadboard'da güç hattını kur: LiPo -> anahtar -> 1N5819 -> Pico VSYS. Bağlamadan önce pil gerilimini (3,0-4,2 V) multimetreyle ölç ve kutup yönünü kontrol et. GP26 için 100 k / 100 k bölücü kur (oran 2).",
           "kind": "fiziksel",
           "state": "todo",
           "phase": 3,
@@ -353,7 +359,7 @@
           "group": "pico"
         },
         {
-          "text": "PCB: şema, yerleşim ve yönlendirme KiCad 7'de hazır (design/pcb/kicad). Kalan: modül soket sırasını gerçek TB6612, motor ve regülatör modülleriyle doğrula (farklıysa pcb_design.py'de değiştirip kartı yeniden üret), KiCad arayüzünde ERC çalıştır, ipek baskı uyarılarını düzelt.",
+          "text": "PCB: şema, yerleşim ve yönlendirme KiCad 7'de hazır (design/pcb/kicad). Kalan: modül soket sırasını gerçek TB6612, ve motor modülleriyle doğrula (farklıysa pcb_design.py'de değiştirip kartı yeniden üret), KiCad arayüzünde ERC çalıştır, ipek baskı uyarılarını düzelt. Kart tek katmanlıdır; yerleşim ya da pin sırası değişirse yeniden yönlendirme gerekir (betik 0 bağlanmamış sonucu bulana kadar dener).",
           "kind": "yazılım",
           "state": "later",
           "phase": 4,
@@ -361,14 +367,14 @@
           "group": "pico"
         },
         {
-          "text": "PCB'yi fab lab'da freze et (docs/media/design/pico-carrier-gerber.zip; iki katmanlı: çift yüz frezeleme ya da delik kaplama gerekir), soketleri ve pasifleri lehimle, Pico'yu takmadan önce kısa devre ve besleme (VM, 5 V, 3V3) kontrolü yap.",
+          "text": "PCB'yi fab lab'da freze et (docs/media/design/pico-carrier-gerber.zip; tek katmanlı: yalnız alt yüz frezelenir). Soketleri ve pasifleri lehimle; 3V3 için tek tel köprüyü (W2) Pico'nun üstünden bağla. Pico'yu takmadan önce kısa devre ve besleme (pil, 3V3) kontrolü yap.",
           "kind": "fiziksel",
           "state": "later",
           "phase": 4,
           "group": "pico"
         },
         {
-          "text": "Tezgâh testleri geçince her şeyi şasiye monte et: tekerlekler arası 115 mm, sarhoş teker 65 mm arkada, sensörler yerden yaklaşık 5 cm.",
+          "text": "Tezgâh testleri geçince her şeyi şasiye monte et: tekerlekler arası 65 mm (±7 mm kaydırılmış, referans orta nokta), sarhoş teker yaklaşık 30 mm arkada, sensörler yerden yaklaşık 2-3 cm.",
           "kind": "fiziksel",
           "state": "later",
           "phase": 4
@@ -565,7 +571,7 @@
           "arena": true
         },
         {
-          "text": "Pico robotun gerçek hızını (komut 0,20 m/s) ve yarıçapını ölç. Simülasyondaki 'pico2' senaryosu 7,5 cm yarıçap ve en çok 0,20 m/s varsayıyor. Fark çıkarsa pai_gym/pai_gym/world.py içinde PicoBot ayarlarını güncelle ve pico2 deneylerini yeniden çalıştır (evaluate.py).",
+          "text": "Pico robotun gerçek hızını (komut 0,20 m/s) ve yarıçapını ölç. Simülasyondaki 'pico2' senaryosu 4,8 cm yarıçap ve en çok 0,20 m/s varsayıyor. Fark çıkarsa pai_gym/pai_gym/world.py içinde PicoBot ayarlarını güncelle ve pico2 deneylerini yeniden çalıştır (evaluate.py).",
           "kind": "yazılım",
           "state": "todo",
           "phase": 6,
@@ -619,11 +625,12 @@
       "Tekerlekleri motorlardan çıkar ya da robotu kutu üstüne koy: tekerlekler havada dönsün."
     ],
     "safety": [
-      "Güç hattı tasarımdaki gibi: 4×AA → S7V7F5 → 1N5819 → Pico VSYS. Regülatör çıkışını bağlamadan önce multimetreyle ölç (yaklaşık 5 V).",
+      "Güç hattı tasarımdaki gibi: LiPo → anahtar → 1N5819 → Pico VSYS. Bağlamadan önce pil gerilimini multimetreyle ölç (3,0-4,2 V) ve kutup yönünü kontrol et.",
       "Pil kutusunu ters bağlama; bağlantıları pil takılı değilken yap.",
+      "LiPo'yu delme, ezme ya da kısa devre yapma; şarjı yalnız şarj modülüyle ve gözetim altında yap.",
       "Motor testi en çok 3 sn ve %60 güç: bench_test.py bunu zaten sınırlıyor.",
       "Bir şey ısınır, kokar ya da duman çıkarırsa pili hemen çıkar.",
-      "GP26 (pil ölçümü) pinine pil gerilimini DOĞRUDAN bağlama: 4×AA 3,3 V'u aşar, pin zarar görür. Önce bölücü direnç gerekir; yoksa b.pil() denemesini atla."
+      "GP26 (pil ölçümü) pinine pil gerilimini DOĞRUDAN bağlama: LiPo 4,2 V, 3,3 V'u aşar, pin zarar görür. Önce 100 k / 100 k bölücü gerekir; yoksa b.pil() denemesini atla."
     ],
     "success": [
       "Regülatör çıkışı ölçüldü (yaklaşık 5 V).",
@@ -633,12 +640,12 @@
       "(İsteğe bağlı) ToF mesafesi cetvelle uyuşuyor."
     ],
     "record": [
-      "Regülatör çıkış gerilimi (V).",
+      "Pil gerilimi (V).",
       "Motor başına: döndü mü, ileri komutta tekerlek öne mi döndü?",
       "Tekerleği 1 tam tur çevirince enkoder darbe sayısı (sol ve sağ).",
       "ToF: ölçülen mesafe ve cetvelle fark (cm).",
       "Sorunlar ve fotoğraflar (öğrenci yüzü ve adı olmadan).",
-      "Parça ölçüleri (kumpas): motor uzunluğu, pil yuvası, TB6612, MPU6050, ToF modülü, sarhoş teker yüksekliği."
+      "Parça ölçüleri (kumpas): motor uzunluğu, LiPo pil, TB6612, ToF modülü, sarhoş teker yüksekliği."
     ]
   },
   "groups": [
