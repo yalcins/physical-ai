@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 980" width="1500" height="980" role="img" aria-labelledby="t d"><title id="t">Sistem şeması</title><desc id="d">Ana bilgisayar ve sunucu, Wi-Fi yönlendirici, iki Pico robot, iki Pi 4 robot ve arena ile veri akışı.</desc><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#b3261e"/></marker></defs><rect width="1500" height="980" fill="#f7f5ee"/>
+<rect x="560.0" y="60.0" width="380.0" height="190.0" rx="8" fill="#dbe9f6" stroke="#1d2b2a" stroke-width="2"/>
+<text x="750.0" y="88.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="18" text-anchor="middle" fill="#1d2b2a" font-weight="700">Ana bilgisayar / sunucu</text>
+<text x="750.0" y="114.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">ThinkPad, Ubuntu 24.04</text>
+<text x="750.0" y="134.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">PPO eğitimi, deney ölçümü (evaluate.py)</text>
+<text x="750.0" y="154.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">host/fleet.py: izleme ve kontrol</text>
+<text x="750.0" y="174.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Gazebo ikizi (ROS 2 Jazzy)</text>
+<text x="750.0" y="194.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Site yayını (publish.sh)</text>
+<rect x="580.0" y="360.0" width="340.0" height="110.0" rx="8" fill="#f3e9c8" stroke="#1d2b2a" stroke-width="2"/>
+<text x="750.0" y="388.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="18" text-anchor="middle" fill="#1d2b2a" font-weight="700">Wi-Fi yönlendirici (2,4 GHz)</text>
+<text x="750.0" y="414.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Robot ağı, sabit IP (DHCP rezervasyonu)</text>
+<text x="750.0" y="434.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Pico 2 W yalnızca 2,4 GHz</text>
+<rect x="90.0" y="580.0" width="360.0" height="190.0" rx="8" fill="#f3c1a4" stroke="#1d2b2a" stroke-width="2"/>
+<text x="270.0" y="608.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="18" text-anchor="middle" fill="#1d2b2a" font-weight="700">Küçük robotlar ×2 (Pico 2 W)</text>
+<text x="270.0" y="634.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">MicroPython, firmware/pico2w</text>
+<text x="270.0" y="654.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Rastgele dolaşır = hareketli engel</text>
+<text x="270.0" y="674.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">3 ToF, 2 motor, enkoder</text>
+<text x="270.0" y="694.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Komut: UDP 5005, JSON</text>
+<text x="270.0" y="714.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Telemetri 20 Hz: mesafe, pil, mod</text>
+<rect x="1050.0" y="580.0" width="360.0" height="190.0" rx="8" fill="#bfe3bf" stroke="#1d2b2a" stroke-width="2"/>
+<text x="1230.0" y="608.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="18" text-anchor="middle" fill="#1d2b2a" font-weight="700">Büyük robotlar ×2 (Pi 4)</text>
+<text x="1230.0" y="634.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">ROS 2 Jazzy, pi4/run.sh</text>
+<text x="1230.0" y="654.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Politika robotun üstünde çalışır</text>
+<text x="1230.0" y="674.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Sürücü düğümü: /cmd_vel, /tof_*/range</text>
+<text x="1230.0" y="694.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Dosya: scp, kontrol: ssh</text>
+<text x="1230.0" y="714.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">pi4/tof.py: adres atama</text>
+<rect x="570.0" y="600.0" width="360.0" height="150.0" rx="8" fill="#e6dcc4" stroke="#1d2b2a" stroke-width="2"/>
+<text x="750.0" y="628.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="18" text-anchor="middle" fill="#1d2b2a" font-weight="700">Arena (2 × 2 m)</text>
+<text x="750.0" y="654.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">MDF duvar 120 mm</text>
+<text x="750.0" y="674.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Sabit engeller: kutu, silindir</text>
+<text x="750.0" y="694.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Küçük robotlar hareketli engel</text>
+<text x="750.0" y="714.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Büyük robot görev çözer</text>
+<line x1="750.0" y1="250.0" x2="750.0" y2="360.0" stroke="#1d2b2a" stroke-width="2.2" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="770.0" y="310.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#b3261e" font-weight="400">Ethernet / Wi-Fi</text>
+<line x1="650.0" y1="470.0" x2="300.0" y2="580.0" stroke="#1d2b2a" stroke-width="2.2" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="380.0" y="515.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#b3261e" font-weight="400">UDP 5005 (JSON)</text>
+<line x1="850.0" y1="470.0" x2="1200.0" y2="580.0" stroke="#1d2b2a" stroke-width="2.2" marker-end="url(#ar)" marker-start="url(#ar)"/>
+<text x="1080.0" y="515.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#b3261e" font-weight="400">ssh, scp, ROS 2</text>
+<line x1="450.0" y1="680.0" x2="570.0" y2="680.0" stroke="#1d2b2a" stroke-width="1.5" stroke-dasharray="6 4" />
+<line x1="930.0" y1="680.0" x2="1050.0" y2="680.0" stroke="#1d2b2a" stroke-width="1.5" stroke-dasharray="6 4" />
+<text x="510.0" y="670.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12" text-anchor="middle" fill="#555" font-weight="400">sahada</text>
+<text x="990.0" y="670.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12" text-anchor="middle" fill="#555" font-weight="400">sahada</text>
+<text x="750.0" y="815.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#1d2b2a" font-weight="400">Politika dosyası (policy_latest.json) bilgisayardan Pi 4’lere gönderilir; Pico’lar komut ve telemetri ile yönetilir.</text>
+<rect x="10.0" y="10.0" width="1480.0" height="960.0" rx="0" fill="none" stroke="#1d2b2a" stroke-width="2"/>
+<rect x="980.0" y="870.0" width="510.0" height="100.0" rx="0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.5"/>
+<line x1="980.0" y1="908.0" x2="1490.0" y2="908.0" stroke="#1d2b2a" stroke-width="1" />
+<text x="992.0" y="898.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="22" text-anchor="start" fill="#1d2b2a" font-weight="700">Sistem şeması</text>
+<text x="992.0" y="928.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">Kim kime hangi yolla bağlanıyor</text>
+<text x="992.0" y="948.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="start" fill="#1d2b2a" font-weight="400">Şema; ölçekli değildir</text>
+<text x="992.0" y="964.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12" text-anchor="start" fill="#555" font-weight="400">Kaynak: host/fleet.py, pi4/run.sh, firmware/pico2w/</text></svg>
