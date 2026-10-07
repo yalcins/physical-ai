@@ -40,12 +40,13 @@ def main():
     p.add_argument('--model', default='models/ppo_pai_f3')
     p.add_argument('--frames', type=int, default=3, help='modelin hafiza uzunlugu')
     p.add_argument('--layout', default='front3')
+    p.add_argument('--scenario', default=None, help='senaryo: pico2 gibi (bkz. scenarios/)')
     p.add_argument('--seconds', type=float, default=6)
     p.add_argument('--seeds', type=int, default=40, help='denenecek tohum sayisi')
     p.add_argument('--out', default='../docs/media/pai-gym', help='uzantisiz cikti yolu')
     a = p.parse_args()
 
-    kw = dict(frames=a.frames, layout=a.layout)
+    kw = dict(frames=a.frames, layout=a.layout, scenario=a.scenario)
     env = ArenaEnv(render_mode='rgb_array', **kw)
     fps = env.metadata['render_fps']
     steps = int(a.seconds * fps)               # dt = 0.05 sn -> 20 kare/sn, gercek zamanli

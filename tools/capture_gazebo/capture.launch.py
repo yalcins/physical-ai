@@ -1,9 +1,13 @@
 import os
+import sys
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from cameras import CAMS  # noqa: E402
 
 WORLD = os.environ["CAPTURE_WORLD"]   # make_world.py ciktisi
 
@@ -22,7 +26,7 @@ def generate_launch_description():
     bridge = Node(package='ros_gz_bridge', executable='parameter_bridge',
                   parameters=[{'config_file': os.path.join(pkg, 'config', 'bridge.yaml'), 'use_sim_time': True}])
     img = Node(package='ros_gz_bridge', executable='parameter_bridge',
-               arguments=['/overhead/image@sensor_msgs/msg/Image[gz.msgs.Image'],
+               arguments=[f'/cam_{n}/image@sensor_msgs/msg/Image[gz.msgs.Image' for n in CAMS],
                parameters=[{'use_sim_time': True}])
     tof = Node(package='arena_sim', executable='tof_range_node', parameters=[{'use_sim_time': True}])
     moving = Node(package='arena_sim', executable='moving_obstacles_node', parameters=[{'use_sim_time': True}])
