@@ -1,0 +1,26 @@
+ref,value,footprint,description
+U1,Raspberry Pi Pico 2 W,Module:RaspberryPi_Pico_Common_THT,MCU modulu (2 x 20 soket)
+J_TB_A,"TB6612FNG modulu, sol sira",Connector_PinSocket_2.54mm:PinSocket_1x08_P2.54mm_Vertical,Surucu modulu (SparkFun siralamasi VARSAYIM)
+J_TB_B,"TB6612FNG modulu, sag sira",Connector_PinSocket_2.54mm:PinSocket_1x08_P2.54mm_Vertical,Surucu modulu
+J_TOF1,TOF400C sol,Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical,ToF modulu (VIN GND SDA SCL XSHUT)
+J_TOF2,TOF400C orta,Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical,ToF modulu
+J_TOF3,TOF400C sag,Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical,ToF modulu
+J_IMU,MPU6050 (GY-521),Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical,IMU modulu (VCC GND SCL SDA)
+J_ML,Sol motor + enkoder,Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical,N20 motor (6 uc; sira motora gore DOGRULANACAK)
+J_MR,Sag motor + enkoder,Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical,N20 motor
+J_BAT,Pil girisi 4xAA,TerminalBlock:TerminalBlock_bornier-2_P5.08mm,Pil + / -
+SW1,Guc anahtari (harici),Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,Pil + hattinda; harici sivic
+J_REG,S7V7F5 5 V regulator,Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical,Regulator modulu (VIN GND VOUT)
+D1,1N5819,Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal,Regulator cikisi -> VSYS (geri akis korumasi)
+JP1,Sensor besleme secimi,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical,"1-2 = 3V3, 2-3 = 5 V (ToF modulunun gerilim araligina gore)"
+R1,20 k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,Pil bolucu ust
+R2,10 k,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal,Pil bolucu alt
+C1,100 nF,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,ADC filtresi (R2 uzerinde)
+C2,470 uF / 16 V,Capacitor_THT:CP_Radial_D8.0mm_P3.50mm,Motor gucu (VM) depolama
+C3,10 uF,Capacitor_THT:CP_Radial_D5.0mm_P2.00mm,5 V hatti
+C4,100 nF,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,Sensor besleme hatti
+C5,100 nF,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm,TB6612 mantik besleme (VCC)
+TP1,TP_3V3,Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical,Test noktasi 3V3
+TP2,TP_5V,Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical,Test noktasi 5 V
+TP3,TP_VM,Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical,Test noktasi pil (VM)
+TP4,TP_GND,Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical,Test noktasi GND

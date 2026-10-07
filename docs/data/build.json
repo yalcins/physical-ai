@@ -71,7 +71,7 @@
     {
       "q": "Pico robot kartı (PCB) KiCad'de tasarlanıp fab lab'da mı frezelenecek, yoksa önce breadboard/delikli plaket mi?",
       "why": "Kart henüz tasarlanmadı. Tezgâh denemesi kart olmadan başlayabilir.",
-      "proposal": "ÖNERİ: ilk sürüm lazer kesim plaka + breadboard ya da delikli plaket; PCB (KiCad) ikinci sürümde, kablolama doğrulandıktan sonra."
+      "proposal": "ÖNERİ: ilk sürüm lazer kesim plaka + breadboard ya da delikli plaket. PCB şeması hazır (Tasarım bölümü, 25 parça, 28 net); KiCad kurulunca yerleşim yapılır. Ters bağlantı koruması şemada YOK."
     }
   ],
   "targets": [
@@ -165,6 +165,17 @@
           "state": "done",
           "cmd": "tests/run_all.sh\ntests/run_all.sh --ros",
           "phase": 2
+        },
+        {
+          "text": "Bilgisayara KiCad 7'yi kur (yönetici parolası gerekir; Claude kuramaz). Sonra şemayı ve netlisti doğrula.",
+          "kind": "yazılım",
+          "state": "todo",
+          "phase": 2,
+          "cmd": "sudo apt install kicad\nkicad-cli --version",
+          "group": [
+            "server",
+            "pico"
+          ]
         }
       ],
       "group": "server"
@@ -336,6 +347,21 @@
         },
         {
           "text": "Lazer kesim: docs/media/design/laser-pico.svg dosyasını (1 birim = 1 mm; kırmızı kes, mavi yerleşim çizgisi) önce karton ya da ince MDF'e kes, parçalar oturuyor mu bak; sonra 3 mm plakaya kes. ToF dikmelerinden 3 adet kes.",
+          "kind": "fiziksel",
+          "state": "later",
+          "phase": 4,
+          "group": "pico"
+        },
+        {
+          "text": "PCB: design/pcb/pico-carrier.net dosyasını KiCad PCB düzenleyicide içe aktar (Dosya > İçe Aktar > Netlist), modül soket sırasını gerçek modüllerle doğrula, yerleştir, yönlendir (fab lab frezesi için en az 0,4 mm iz), ERC/DRC çalıştır. Kart ölçüsü önerisi 85 × 65 mm.",
+          "kind": "yazılım",
+          "state": "later",
+          "phase": 4,
+          "cmd": "python3 tools/design/build_pcb.py\nkicad-cli pcb drc kart.kicad_pcb",
+          "group": "pico"
+        },
+        {
+          "text": "PCB'yi fab lab'da freze et, soketleri ve pasifleri lehimle, Pico'yu takmadan önce kısa devre ve besleme (VM, 5 V, 3V3) kontrolü yap.",
           "kind": "fiziksel",
           "state": "later",
           "phase": 4,

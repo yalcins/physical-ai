@@ -128,3 +128,8 @@ Kalibrasyon: ölçümler `design/measurements/*.csv` (şablonlar README'de) -> `
 simülasyon `ArenaEnv(calibration=True)` ile okur. Pi 4 pin planı ÖNERİdir (`pai_driver_node.py` PINS, `wiring.json`).
 Bilinen fark: simülasyon çarpışma dairesi 75 mm, tasarımın arka köşeleri eksenden ~96 mm (`ArenaEnv(robot_radius=...)`, bulgu `carpisma-yaricapi`).
 Yetim ROS süreçleri testleri bozar: testler/kayıt betikleri süreç GRUBUNU kapatır; elle başlattıklarını `ps -eo pid,args | grep -a launch` ile kontrol et.
+
+## PCB (design/pcb/)
+`design/pcb/pcb_design.py` Pico taşıyıcı kartının TEK KAYNAĞI (parçalar, footprint önerileri, netler, elektrik kontrolleri). `python3 tools/design/build_pcb.py` ->
+`pico-carrier.net` (KiCad netlist), `netlist.csv`, `bom.csv`, `docs/media/design/pcb-schematic.svg`, `docs/data/pcb.json`. Testi: `tests/test_pcb.py` (Pico pinleri main.py/bench_test.py ile aynı olmalı).
+DURUM: KiCad bilgisayarda kurulu değil (sudo gerekir, kullanıcı kurar: `sudo apt install kicad`); şema ve netlist KiCad'de AÇILMADI. Kurulunca: pcbnew'de netlist içe aktar, `kicad-cli` ile ERC/DRC.

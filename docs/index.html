@@ -161,6 +161,7 @@
   figure.wide figcaption { font-size: 15px; margin-top: 8px; }
   table.maturity td.ok::after { content: " \2713"; color: var(--mat); font-weight: 800; }
   table.maturity td.guess::after { content: " *"; color: var(--laser); font-weight: 800; }
+  .warnitem::marker { color: var(--laser); }
   .decisions .prop { display: block; margin-top: 4px; font-size: 14px; color: var(--mat); }
   .arch-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; margin-top: 40px; }
   .arch h3 { font: 800 22px var(--display); margin: 0 0 12px; }
@@ -506,6 +507,7 @@
           <tr><td>Fiziksel yapım planı</td><td class="num">–</td><td class="num">3</td><td>Parçalar, adımlar, açık kararlar ve arena etiketleri yazıldı (<a href="#yapim">Yapım rehberi</a>). Hiçbiri gerçek donanımda doğrulanmadı.</td></tr>
           <tr><td>Fiziksel yapım ilerlemesi</td><td class="num">–</td><td class="num">1</td><td>Fiziksel adımlardan hiçbiri henüz yapılmadı.</td></tr>
           <tr><td>Sanal tasarım (3B, çizim, lazer, BOM, kablolama)</td><td class="num">–</td><td class="num">3</td><td>Tek kaynaktan (<code>design/design.py</code>) üretilir; çakışma, delik payı ve ölçü tutarlılığı testle denenir. Yıldızlı parça ölçüleri varsayım, gerçek parçalarla doğrulanmadı.</td></tr>
+          <tr><td>PCB şeması (Pico taşıyıcı kartı)</td><td class="num">–</td><td class="num">2</td><td>Parça ve net verisi, netlist ve şema üretildi; elektrik kontrolleri ve firmware pin eşleşmesi testli. KiCad'de açılmadı, yerleşim ve yönlendirme yok.</td></tr>
           <tr><td>Kalibrasyon hattı</td><td class="num">–</td><td class="num">3</td><td><code>tools/calibrate.py</code>: ölçüm CSV'lerinden simülasyon ve firmware ayarları. Bilinen değerli sentetik ölçümle test edildi; gerçek ölçüm henüz yok.</td></tr>
           <tr><td>Sim-gerçek aktarımı</td><td class="num">1</td><td class="num">2</td><td>Benzetme araçları, referans değerler ve kalibrasyon hattı hazır. Hiçbir model gerçek robotta denenmedi.</td></tr>
           <tr><td>Sensör düzeni uyumu</td><td class="num">2</td><td class="num">2</td><td><code>side5</code> yalnızca simülasyonda. Pico pin planında yalnızca üç ToF için yer var.</td></tr>
@@ -638,6 +640,16 @@
       <ul class="plainlist" id="power-pico"></ul>
       <div class="table-wrap" style="margin-top:20px"><table class="maturity" id="wire-pi4"></table></div>
       <ul class="plainlist" id="power-pi4"></ul>
+
+      <h3 class="sub">PCB şeması: Pico taşıyıcı kartı (v0)</h3>
+      <p>Pico 2 W, TB6612 sürücü modülü, 3 ToF, MPU6050, iki motor ve enkoder, pil girişi ve 5 V regülatör tek kartta, 2,54 mm soketlerle birleşir (lehim az, parça değişimi kolay). Şema parça ve net verisinden üretilir; elektrik kontrolleri (tek pinli net, çifte bağlı pin, bağlanmamış pin, ADC gerilimi, bölücü oranı) ve Pico pinlerinin firmware ile aynı olup olmadığı testle denenir.</p>
+      <div class="design-status" id="pcb-status"></div>
+      <figure class="wide"><a href="media/design/pcb-schematic.svg"><img src="media/design/pcb-schematic.svg" alt="Pico taşıyıcı kartı şeması: bloklar ve net etiketleri" loading="lazy"></a><figcaption>Net etiketli şema: aynı adlı etiketler birbirine bağlıdır. Büyütmek için tıkla.</figcaption></figure>
+      <ul class="plainlist">
+        <li><a href="https://github.com/yalcins/physical-ai/blob/main/design/pcb/pico-carrier.net">pico-carrier.net</a> (KiCad netlist, PCB düzenleyicide içe aktarılır), <a href="https://github.com/yalcins/physical-ai/blob/main/design/pcb/netlist.csv">netlist.csv</a>, <a href="https://github.com/yalcins/physical-ai/blob/main/design/pcb/bom.csv">bom.csv</a></li>
+        <li class="warnitem">Bu şema KiCad'de henüz açılmadı: bilgisayarda KiCad kurulu değil (kurulum yönetici parolası ister). Modül pin sıraları (TB6612, motor, regülatör) gerçek modüllerle doğrulanacak.</li>
+        <li class="warnitem">Bilinen eksikler: ters pil bağlantısına karşı koruma yok; yerleşim ve yönlendirme yapılmadı; ToF modülünün besleme aralığı bilinmediği için JP1 ile 3,3 V ya da 5 V seçilir; enkoder beslemesi yalnızca 3,3 V (5 V gerekiyorsa seviye çevirici lazım).</li>
+      </ul>
 
       <h3 class="sub">Kalibrasyon hattı: fiziksel aşama yalnızca veri girişi</h3>
       <p>Gerçek robotta yapılan ölçümler <code>design/measurements/*.csv</code> dosyalarına yazılır; <code>python3 tools/calibrate.py --firmware</code> motor farkını, gecikmeyi, sensör sapma ve gürültüsünü, robot yarıçapını ve Pico hızını hesaplayıp simülasyona (<code>calibration=True</code>) ve Pico firmware'ine (<code>calibration.py</code>) verir. Hat, bilinen değerlerle üretilmiş sentetik ölçümle test edildi.</p>
@@ -1125,6 +1137,13 @@ fetch('data/calibration.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() 
   box.append(el('span', { class: 'chip' }, 'Motor ölçeği: ' + c.motor_scale.join(' / ') + ' · gecikme: ' + c.latency_steps + ' adım · yarıçap: ' + (c.robot_radius_m * 1000).toFixed(0) + ' mm'));
 });
 
+fetch('data/pcb.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(c => {
+  const box = document.getElementById('pcb-status'); if (!box || !c) return;
+  box.append(el('span', { class: 'chip ' + (c.problems.length ? 'bad' : 'ok') }, c.components.length + ' parça, ' + c.nets.length + ' net, elektrik kontrolü: ' + (c.problems.length ? c.problems.length + ' sorun' : 'temiz')));
+  box.append(el('span', { class: 'chip' }, 'ADC en çok ' + c.summary.adc_max_v + ' V (bölücü oranı ' + c.summary.divider_ratio + ')'));
+  box.append(el('span', { class: 'chip bad' }, 'KiCad\'de doğrulanmadı'));
+  box.append(el('span', { class: 'chip' }, 'kart önerisi ' + c.board_mm_proposal.join(' × ') + ' mm'));
+});
 /* ---------------- bulgular (docs/data/findings.json) ---------------- */
 const TYPE_TR = { bulgu: 'Bulgu', karar: 'Karar', donanim: 'Donanım' };
 fetch('data/findings.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Promise.reject()).then(data => {
