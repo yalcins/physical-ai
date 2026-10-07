@@ -118,3 +118,13 @@ Gazebo kaydı için `colcon build` yapılmış olmalı, .venv'siz terminalde ça
 `docs/data/build.json` ayrıca `groups` (5 grup: Pico, Pi 4, dünya, sunucu, AI denemeleri), `today` (bugünkü Pico tezgâh denemesi) ve adımlarda `group`/`today` alanları taşır; site bunları çizer.
 Teknik çizimler `tools/drawings/make_drawings.py` ile üretilir (`docs/media/drawings/*.svg`); ölçüler world.py, pai_bot.urdf ve arena.sdf'ten okunur. Parça yerleşimi ÖNERİdir, gerçek parçalar gelince güncelle.
 Gazebo kayıtları: `tools/capture_gazebo/run.sh [stills|trial]` (docs/media/sim/); Python: `pai_gym/record.py`. Pico tezgâh testi: `firmware/pico2w/bench_test.py` (main.py'den bağımsız, REPL'de).
+
+## Sanal tasarım (design/) ve kalibrasyon
+`design/design.py` robotun TEK KAYNAKLI sanal tasarımı (plakalar, delikler, tüm parçalar, `verified` bayrakları). `python3 tools/design/build_all.py` bundan üretir:
+OpenSCAD 3B modeli (`design/robot_<varyant>.scad`), STL, lazer SVG/DXF, görüntüler, BOM (`docs/data/bom.json`), kablolama (`wiring.json`), kontroller (`design.json`).
+Gerçek parça ölçüsü gelince `design.py` içinde yıldızlı ölçüyü düzelt, build_all'u çalıştır, `tests/test_design.py` çakışma ve delik payını denetler.
+Teknik resimler (`tools/drawings/make_drawings.py`) robot için bu tasarımdan çizilir.
+Kalibrasyon: ölçümler `design/measurements/*.csv` (şablonlar README'de) -> `python3 tools/calibrate.py --firmware` -> `design/calibration.json` (+ `docs/data/`, `firmware/pico2w/calibration.py`);
+simülasyon `ArenaEnv(calibration=True)` ile okur. Pi 4 pin planı ÖNERİdir (`pai_driver_node.py` PINS, `wiring.json`).
+Bilinen fark: simülasyon çarpışma dairesi 75 mm, tasarımın arka köşeleri eksenden ~96 mm (`ArenaEnv(robot_radius=...)`, bulgu `carpisma-yaricapi`).
+Yetim ROS süreçleri testleri bozar: testler/kayıt betikleri süreç GRUBUNU kapatır; elle başlattıklarını `ps -eo pid,args | grep -a launch` ile kontrol et.

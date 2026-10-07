@@ -1,0 +1,258 @@
+{
+  "variants": {
+    "pico": {
+      "rows": [
+        {
+          "signal": "I2C SDA",
+          "mcu_pin": "GP4",
+          "device": "ToF ×3, MPU6050",
+          "device_pin": "SDA",
+          "verified": true
+        },
+        {
+          "signal": "I2C SCL",
+          "mcu_pin": "GP5",
+          "device": "ToF ×3, MPU6050",
+          "device_pin": "SCL",
+          "verified": true
+        },
+        {
+          "signal": "ToF sol XSHUT",
+          "mcu_pin": "GP6",
+          "device": "TOF400C #1",
+          "device_pin": "XSHUT",
+          "verified": true
+        },
+        {
+          "signal": "ToF orta XSHUT",
+          "mcu_pin": "GP7",
+          "device": "TOF400C #2",
+          "device_pin": "XSHUT",
+          "verified": true
+        },
+        {
+          "signal": "ToF sağ XSHUT",
+          "mcu_pin": "GP8",
+          "device": "TOF400C #3",
+          "device_pin": "XSHUT",
+          "verified": true
+        },
+        {
+          "signal": "Enkoder sol A",
+          "mcu_pin": "GP10",
+          "device": "Sol motor enkoderi",
+          "device_pin": "A",
+          "verified": true
+        },
+        {
+          "signal": "Enkoder sol B",
+          "mcu_pin": "GP11",
+          "device": "Sol motor enkoderi",
+          "device_pin": "B",
+          "verified": true
+        },
+        {
+          "signal": "Enkoder sağ A",
+          "mcu_pin": "GP12",
+          "device": "Sağ motor enkoderi",
+          "device_pin": "A",
+          "verified": true
+        },
+        {
+          "signal": "Enkoder sağ B",
+          "mcu_pin": "GP13",
+          "device": "Sağ motor enkoderi",
+          "device_pin": "B",
+          "verified": true
+        },
+        {
+          "signal": "Sol motor PWM",
+          "mcu_pin": "GP16",
+          "device": "TB6612FNG",
+          "device_pin": "PWMA",
+          "verified": true
+        },
+        {
+          "signal": "Sol motor yön 1",
+          "mcu_pin": "GP17",
+          "device": "TB6612FNG",
+          "device_pin": "AIN1",
+          "verified": true
+        },
+        {
+          "signal": "Sol motor yön 2",
+          "mcu_pin": "GP18",
+          "device": "TB6612FNG",
+          "device_pin": "AIN2",
+          "verified": true
+        },
+        {
+          "signal": "Sağ motor yön 1",
+          "mcu_pin": "GP19",
+          "device": "TB6612FNG",
+          "device_pin": "BIN1",
+          "verified": true
+        },
+        {
+          "signal": "Sağ motor yön 2",
+          "mcu_pin": "GP20",
+          "device": "TB6612FNG",
+          "device_pin": "BIN2",
+          "verified": true
+        },
+        {
+          "signal": "Sağ motor PWM",
+          "mcu_pin": "GP21",
+          "device": "TB6612FNG",
+          "device_pin": "PWMB",
+          "verified": true
+        },
+        {
+          "signal": "Sürücü etkin",
+          "mcu_pin": "GP22",
+          "device": "TB6612FNG",
+          "device_pin": "STBY",
+          "verified": true
+        },
+        {
+          "signal": "Pil ölçümü (ADC)",
+          "mcu_pin": "GP26",
+          "device": "Pil bölücüsü",
+          "device_pin": "orta nokta",
+          "verified": true
+        }
+      ],
+      "power": [
+        "4×AA NiMH (≈4,8-6 V) → motor gücü: TB6612 VM (doğrudan)",
+        "4×AA → Pololu S7V7F5 (5 V) → 1N5819 → Pico VSYS",
+        "Pico 3V3(OUT) → TB6612 VCC, ToF ve MPU6050 besleme (modül gerilim aralığı doğrulanacak)",
+        "Tüm GND'ler ortak (Pico, pil, TB6612, sensörler)",
+        "GP26: pil gerilimi bölücüyle 3,3 V altına indirilmeden bağlanmaz"
+      ],
+      "note": "CLAUDE.md pin planı."
+    },
+    "pi4": {
+      "rows": [
+        {
+          "signal": "I2C SDA",
+          "mcu_pin": "GPIO2 (pin 3)",
+          "device": "ToF ×3, MPU6050",
+          "device_pin": "SDA",
+          "verified": false
+        },
+        {
+          "signal": "I2C SCL",
+          "mcu_pin": "GPIO3 (pin 5)",
+          "device": "ToF ×3, MPU6050",
+          "device_pin": "SCL",
+          "verified": false
+        },
+        {
+          "signal": "ToF sol XSHUT",
+          "mcu_pin": "GPIO5 (pin 29)",
+          "device": "TOF400C #1",
+          "device_pin": "XSHUT",
+          "verified": false
+        },
+        {
+          "signal": "ToF orta XSHUT",
+          "mcu_pin": "GPIO6 (pin 31)",
+          "device": "TOF400C #2",
+          "device_pin": "XSHUT",
+          "verified": false
+        },
+        {
+          "signal": "ToF sağ XSHUT",
+          "mcu_pin": "GPIO26 (pin 37)",
+          "device": "TOF400C #3",
+          "device_pin": "XSHUT",
+          "verified": false
+        },
+        {
+          "signal": "Enkoder sol A",
+          "mcu_pin": "GPIO17 (pin 11)",
+          "device": "Sol motor enkoderi",
+          "device_pin": "A",
+          "verified": false
+        },
+        {
+          "signal": "Enkoder sol B",
+          "mcu_pin": "GPIO27 (pin 13)",
+          "device": "Sol motor enkoderi",
+          "device_pin": "B",
+          "verified": false
+        },
+        {
+          "signal": "Enkoder sağ A",
+          "mcu_pin": "GPIO22 (pin 15)",
+          "device": "Sağ motor enkoderi",
+          "device_pin": "A",
+          "verified": false
+        },
+        {
+          "signal": "Enkoder sağ B",
+          "mcu_pin": "GPIO4 (pin 7)",
+          "device": "Sağ motor enkoderi",
+          "device_pin": "B",
+          "verified": false
+        },
+        {
+          "signal": "Sol motor PWM",
+          "mcu_pin": "GPIO12 (pin 32)",
+          "device": "TB6612FNG",
+          "device_pin": "PWMA",
+          "verified": false
+        },
+        {
+          "signal": "Sol motor yön 1",
+          "mcu_pin": "GPIO23 (pin 16)",
+          "device": "TB6612FNG",
+          "device_pin": "AIN1",
+          "verified": false
+        },
+        {
+          "signal": "Sol motor yön 2",
+          "mcu_pin": "GPIO24 (pin 18)",
+          "device": "TB6612FNG",
+          "device_pin": "AIN2",
+          "verified": false
+        },
+        {
+          "signal": "Sağ motor PWM",
+          "mcu_pin": "GPIO13 (pin 33)",
+          "device": "TB6612FNG",
+          "device_pin": "PWMB",
+          "verified": false
+        },
+        {
+          "signal": "Sağ motor yön 1",
+          "mcu_pin": "GPIO25 (pin 22)",
+          "device": "TB6612FNG",
+          "device_pin": "BIN1",
+          "verified": false
+        },
+        {
+          "signal": "Sağ motor yön 2",
+          "mcu_pin": "GPIO16 (pin 36)",
+          "device": "TB6612FNG",
+          "device_pin": "BIN2",
+          "verified": false
+        },
+        {
+          "signal": "Sürücü etkin",
+          "mcu_pin": "GPIO20 (pin 38)",
+          "device": "TB6612FNG",
+          "device_pin": "STBY",
+          "verified": false
+        }
+      ],
+      "power": [
+        "GÜÇ YÖNTEMİ KARAR BEKLİYOR: Pi 4 için 5 V / 3 A, motorlar için 6 V",
+        "Pi 3V3 (pin 1) → TB6612 VCC, ToF ve MPU6050 besleme",
+        "Tüm GND'ler ortak (Pi, pil/güç modülü, TB6612, sensörler)",
+        "ToF adresleri XSHUT ile ayrı atanır (pi4/tof.py); MPU6050 adresi 0x68"
+      ],
+      "note": "Pico pin planı CLAUDE.md ile aynı (kesin). Pi 4 pin planı ÖNERİdir; doğrulanana kadar kablolama yapılmaz."
+    }
+  }
+}

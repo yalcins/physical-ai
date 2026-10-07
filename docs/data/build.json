@@ -41,15 +41,18 @@
   "decisions": [
     {
       "q": "Şasi nasıl üretilecek (malzeme, lazer kesim ya da 3B baskı)?",
-      "why": "Ölçüler belli (tekerlek 43 mm, iki tekerlek arası 115 mm) ama üretim yöntemi yazılı değil. Yan sensör konumları da şasi hazır olunca ölçülecek."
+      "why": "Ölçüler belli (tekerlek 43 mm, iki tekerlek arası 115 mm) ama üretim yöntemi yazılı değil. Yan sensör konumları da şasi hazır olunca ölçülecek.",
+      "proposal": "ÖNERİ (sanal tasarımda uygulandı): 3 mm lazer kesim iki plaka, M3 × 20 ara parça, motorlar kablo bağıyla plakanın altına, ToF için kesilmiş dikmeler. Dosyalar: Tasarım bölümü. İlk kesim karton ya da ince MDF ile denenmeli."
     },
     {
       "q": "Pi 4 robotu nasıl beslenecek?",
-      "why": "Pi 4 5 V ve yüksek akım ister; Pico robotun 4xAA pil düzeni onu taşımaz. Güç bankası ya da ayrı regülatör gerekebilir. Henüz seçilmedi."
+      "why": "Pi 4 5 V ve yüksek akım ister; Pico robotun 4xAA pil düzeni onu taşımaz. Güç bankası ya da ayrı regülatör gerekebilir. Henüz seçilmedi.",
+      "proposal": "AÇIK: tasarımda 70 × 40 × 18 mm'lik yer tutucu ayrıldı. Seçilecek modül bu hacme sığmalı; Pi 4 için 5 V ve yeterli akım, motorlar için ayrıca 6 V gerekir."
     },
     {
       "q": "Pi 4 robotunda ToF ve motor sürücüsü hangi pinlere bağlanacak?",
-      "why": "Pico için pin planı var, Pi 4 için yok. pi4/pai_driver_node.py içindeki PINS boş."
+      "why": "Pico için pin planı var, Pi 4 için yok. pi4/pai_driver_node.py içindeki PINS boş.",
+      "proposal": "ÖNERİ (sürücü koduna yazıldı): BCM pin planı docs/data/wiring.json içinde (I2C GPIO2/3, XSHUT GPIO5/6/26, TB6612 GPIO12/13/16/20/23/24/25, enkoderler GPIO17/27/22/4). Kablolamadan önce doğrula."
     },
     {
       "q": "Kaç küçük, kaç büyük robot yapılacak?",
@@ -57,15 +60,18 @@
     },
     {
       "q": "Gerçek Pico robotun hızı ve boyutu simülasyondaki 'pico2' senaryosuyla eşleşecek mi?",
-      "why": "Yazılım tarafı hazır: simülasyonda hareketli engeller yerine firmware'deki rastgele dolaşmayı yapan, 7,5 cm yarıçaplı ve en çok 0,20 m/s hızlı Pico robotlar var. Bu değerler varsayım; gerçek robot ölçülünce kesinleşecek. Yeni sonuç: bu senaryoda kurallı kontrolcü %13, eski PPO modeli %36 çarpıyor."
+      "why": "Yazılım tarafı hazır: simülasyonda hareketli engeller yerine firmware'deki rastgele dolaşmayı yapan, 7,5 cm yarıçaplı ve en çok 0,20 m/s hızlı Pico robotlar var. Bu değerler varsayım; gerçek robot ölçülünce kesinleşecek. Yeni sonuç: bu senaryoda kurallı kontrolcü %13, eski PPO modeli %36 çarpıyor.",
+      "proposal": "HAZIR: ölçümler design/measurements/pico.csv dosyasına girilince tools/calibrate.py simülasyondaki Pico engellerini günceller."
     },
     {
       "q": "Beş sensörlü (side5) düzen yapılacak mı?",
-      "why": "Simülasyonda hareketli engelde çarpma %49'dan %69'a çıktı. Pico'da yalnızca üç ToF için pin var."
+      "why": "Simülasyonda hareketli engelde çarpma %49'dan %69'a çıktı. Pico'da yalnızca üç ToF için pin var.",
+      "proposal": "ÖNERİ: yapılmasın. Simülasyonda hareketli engelde çarpma %49'dan %69'a çıktı ve tasarımda yan sensör için yer ve pin yok."
     },
     {
       "q": "Pico robot kartı (PCB) KiCad'de tasarlanıp fab lab'da mı frezelenecek, yoksa önce breadboard/delikli plaket mi?",
-      "why": "Kart henüz tasarlanmadı. Tezgâh denemesi kart olmadan başlayabilir."
+      "why": "Kart henüz tasarlanmadı. Tezgâh denemesi kart olmadan başlayabilir.",
+      "proposal": "ÖNERİ: ilk sürüm lazer kesim plaka + breadboard ya da delikli plaket; PCB (KiCad) ikinci sürümde, kablolama doğrulandıktan sonra."
     }
   ],
   "targets": [
@@ -269,6 +275,14 @@
           "today": true
         },
         {
+          "text": "Gerçek parçaları kumpasla ölç (motor uzunluğu, pil yuvası, TB6612, MPU6050, ToF modülü, sarhoş teker yüksekliği). design/design.py içindeki yıldızlı ölçüleri güncelle ve dosyaları yeniden üret.",
+          "kind": "yazılım",
+          "state": "todo",
+          "phase": 3,
+          "cmd": "python3 tools/design/build_all.py\n.venv/bin/python tests/test_design.py",
+          "today": true
+        },
+        {
           "text": "Breadboard'da güç hattını kur: 4xAA -> S7V7F5 -> 1N5819 -> Pico VSYS. Bağlamadan önce regülatör çıkışını multimetreyle ölç (5 V).",
           "kind": "fiziksel",
           "state": "todo",
@@ -319,6 +333,13 @@
           "phase": 4,
           "cmd": ">>> b.tara()\n>>> b.tara((6,))   # yalnızca 1. sensörün XSHUT'u açık\n# isteğe bağlı mesafe testi:\nmpremote connect auto cp firmware/pico2w/vl53l1x.py firmware/pico2w/tof.py :\n>>> b.tof()",
           "today": true
+        },
+        {
+          "text": "Lazer kesim: docs/media/design/laser-pico.svg dosyasını (1 birim = 1 mm; kırmızı kes, mavi yerleşim çizgisi) önce karton ya da ince MDF'e kes, parçalar oturuyor mu bak; sonra 3 mm plakaya kes. ToF dikmelerinden 3 adet kes.",
+          "kind": "fiziksel",
+          "state": "later",
+          "phase": 4,
+          "group": "pico"
         },
         {
           "text": "Tezgâh testleri geçince her şeyi şasiye monte et: tekerlekler arası 115 mm, sarhoş teker 65 mm arkada, sensörler yerden yaklaşık 5 cm.",
@@ -419,6 +440,18 @@
           "cmd": "sudo apt install ros-jazzy-ros-base python3-numpy python3-gpiozero i2c-tools\ngit clone https://github.com/yalcins/physical-ai.git"
         },
         {
+          "text": "Pin planını (docs/data/wiring.json: GPIO2/3, 5/6/26, 12/13/16/20/23/24/25, 17/27/22/4) doğrula ya da değiştir; değişirse pi4/pai_driver_node.py ve wiring tablosunu güncelle.",
+          "kind": "yazılım",
+          "state": "todo",
+          "phase": 5
+        },
+        {
+          "text": "Lazer kesim: docs/media/design/laser-pi4.svg dosyasını önce karton ya da ince MDF'e kes, Pi 4 delikleri (58 × 49) ve ToF dikmeleri oturuyor mu kontrol et; sonra 3 mm plakaya kes.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 5
+        },
+        {
           "text": "Motor sürücüyü ve üç ToF'u Pi'ye bağla. Pi, pil ve motor sürücünün GND'leri ortak olmalı. Üç ToF'un XSHUT pinlerini ayrı GPIO'lara ver (adres ataması için gerekli). Kullandığın tüm pinleri yaz.",
           "kind": "fiziksel",
           "state": "todo",
@@ -485,21 +518,21 @@
           ]
         },
         {
-          "text": "Düz git komutu ver (0,2 m/s); 1 m'yi kaç saniyede aldığını ölç. Simülasyonda beklenen: 5,0 sn (Gazebo 2 sn'de 0,405-0,416 m gitti, Python 0,400 m). Fark büyükse tekerlek çapını ya da motor hızını kontrol et.",
+          "text": "Düz git komutu ver (0,2 m/s); 1 m'yi kaç saniyede aldığını ölç. Simülasyonda beklenen: 5,0 sn (Gazebo 2 sn'de 0,403-0,406 m gitti, Python 0,400 m). Fark büyükse tekerlek çapını ya da motor hızını kontrol et.",
           "kind": "fiziksel",
           "state": "todo",
           "phase": 6,
           "arena": true
         },
         {
-          "text": "Yerinde dönüş (2,5 rad/s) için 360° dönüş süresini ölç. Simülasyonda beklenen: 2,51 sn (Gazebo bu dönüşü %4-7 eksik yaptı). Gerçek robotta tekerlek kayması bunu uzatabilir.",
+          "text": "Yerinde dönüş (2,5 rad/s) için 360° dönüş süresini ölç. Simülasyonda beklenen: 2,51 sn (Gazebo bu dönüşü %1-3 eksik yaptı). Gerçek robotta tekerlek kayması bunu uzatabilir.",
           "kind": "fiziksel",
           "state": "todo",
           "phase": 6,
           "arena": true
         },
         {
-          "text": "ToF okumalarını bilinen mesafelerde (10, 50, 100 cm) kontrol et; gürültüyü simülasyonla karşılaştır. Simülasyonda gürültü 1 cm standart sapma. Gazebo duvar mesafesini Python'dan sürekli 1-2 cm kısa okuyor (nedeni incelenmedi); gerçek sensörün farkını bununla karıştırma.",
+          "text": "ToF okumalarını bilinen mesafelerde (10, 50, 100 cm) kontrol et; gürültüyü simülasyonla karşılaştır. Simülasyonda gürültü 1 cm standart sapma. Gazebo duvar mesafesini Python'dan tutarlı biçimde 1,6-2,2 cm kısa okuyor (nedeni incelenmedi); gerçek sensörün farkını bununla karıştırma.",
           "kind": "fiziksel",
           "state": "todo",
           "phase": 6,
@@ -511,6 +544,14 @@
           "state": "todo",
           "phase": 6,
           "group": "pico"
+        },
+        {
+          "text": "Ölçümleri design/measurements/*.csv olarak kaydet (şablonlar orada), kalibrasyonu çalıştır; simülasyonu ve Pico firmware'ini (calibration.py) güncelle ve deneyleri yeniden ölç.",
+          "kind": "yazılım",
+          "state": "todo",
+          "phase": 6,
+          "cmd": "python3 tools/calibrate.py --firmware\npython3 pai_gym/evaluate.py --id ... --env-kwargs '{\"calibration\": true, \"scenario\": \"pico2\"}'",
+          "group": "ai"
         }
       ],
       "group": "ai"
@@ -570,7 +611,8 @@
       "Motor başına: döndü mü, ileri komutta tekerlek öne mi döndü?",
       "Tekerleği 1 tam tur çevirince enkoder darbe sayısı (sol ve sağ).",
       "ToF: ölçülen mesafe ve cetvelle fark (cm).",
-      "Sorunlar ve fotoğraflar (öğrenci yüzü ve adı olmadan)."
+      "Sorunlar ve fotoğraflar (öğrenci yüzü ve adı olmadan).",
+      "Parça ölçüleri (kumpas): motor uzunluğu, pil yuvası, TB6612, MPU6050, ToF modülü, sarhoş teker yüksekliği."
     ]
   },
   "groups": [

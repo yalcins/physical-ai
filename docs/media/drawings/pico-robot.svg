@@ -1,132 +1,221 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 1000" width="1700" height="1000" role="img" aria-labelledby="t d"><title id="t">Küçük robot (Raspberry Pi Pico 2 W) teknik resim</title><desc id="d">Üst, ön ve yan görünüş; ölçüler milimetre. Tekerlek, gövde ve sensör ölçüleri simülasyonla aynıdır.</desc><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#b3261e"/></marker></defs><rect width="1700" height="1000" fill="#f7f5ee"/>
-<text x="380.0" y="52.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="17" text-anchor="middle" fill="#1d2b2a" font-weight="700">ÜSTTEN GÖRÜNÜŞ</text>
-<rect x="125.4" y="418.3" width="72.2" height="163.4" rx="0" fill="#2b2b2b" stroke="#1d2b2a" stroke-width="1.2"/>
-<rect x="562.4" y="418.3" width="72.2" height="163.4" rx="0" fill="#2b2b2b" stroke="#1d2b2a" stroke-width="1.2"/>
-<circle cx="380.0" cy="747.0" r="40.7" fill="#cfcfcf" stroke="#1d2b2a" stroke-width="1" stroke-dasharray="5 3"/>
-<rect x="209.0" y="329.0" width="342.0" height="494.0" rx="0" fill="#e6c88f" stroke="#1d2b2a" stroke-width="2"/>
-<rect x="209.0" y="477.2" width="102.6" height="45.6" rx="0" fill="#d9d9d9" stroke="#1d2b2a" stroke-width="1.2" stroke-dasharray="5 3"/>
-<circle cx="260.3" cy="500.0" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
-<text x="260.3" y="505.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">6</text>
-<rect x="448.4" y="477.2" width="102.6" height="45.6" rx="0" fill="#d9d9d9" stroke="#1d2b2a" stroke-width="1.2" stroke-dasharray="5 3"/>
-<rect x="235.6" y="680.5" width="288.8" height="133.0" rx="0" fill="#e9e4d4" stroke="#1d2b2a" stroke-width="1.2" stroke-dasharray="5 3"/>
-<circle cx="380.0" cy="747.0" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
-<text x="380.0" y="752.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">5</text>
-<rect x="258.4" y="583.6" width="76.0" height="60.8" rx="0" fill="#c9b8e8" stroke="#1d2b2a" stroke-width="1.2" stroke-dasharray="5 3"/>
-<circle cx="296.4" cy="614.0" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
-<text x="296.4" y="619.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">2</text>
-<rect x="279.3" y="686.2" width="64.6" height="45.6" rx="0" fill="#f3e08a" stroke="#1d2b2a" stroke-width="1.2" stroke-dasharray="5 3"/>
-<circle cx="311.6" cy="709.0" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
-<text x="311.6" y="714.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">4</text>
-<rect x="340.1" y="365.1" width="79.8" height="193.8" rx="0" fill="#9bd49b" stroke="#1d2b2a" stroke-width="1.2"/>
-<circle cx="380.0" cy="462.0" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
-<text x="380.0" y="467.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">1</text>
-<rect x="433.2" y="568.4" width="60.8" height="76.0" rx="0" fill="#f0c0a0" stroke="#1d2b2a" stroke-width="1.2"/>
-<circle cx="463.6" cy="606.4" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
-<text x="463.6" y="611.4" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">3</text>
-<polygon points="266.0,348.0 206.6,147.6 122.1,196.4" fill="#2f6fbd" stroke="#2f6fbd" stroke-width="0.8" fill-opacity="0.12"/>
-<g transform="translate(266.0,348.0) rotate(-29.999999999999996)"><rect x="-19.0" y="-5.7" width="38.0" height="11.4" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/></g>
-<polygon points="380.0,321.4 428.8,118.2 331.2,118.2" fill="#2f6fbd" stroke="#2f6fbd" stroke-width="0.8" fill-opacity="0.12"/>
-<g transform="translate(380.0,321.4) rotate(-0.0)"><rect x="-19.0" y="-5.7" width="38.0" height="11.4" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/></g>
-<polygon points="494.0,348.0 637.9,196.4 553.4,147.6" fill="#2f6fbd" stroke="#2f6fbd" stroke-width="0.8" fill-opacity="0.12"/>
-<g transform="translate(494.0,348.0) rotate(29.999999999999996)"><rect x="-19.0" y="-5.7" width="38.0" height="11.4" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/></g>
-<circle cx="380.0" cy="321.4" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
-<text x="380.0" y="326.4" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">7</text>
-<circle cx="380.0" cy="747.0" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
-<text x="380.0" y="752.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">8</text>
-<line x1="83.6" y1="500.0" x2="676.4" y2="500.0" stroke="#1d2b2a" stroke-width="1" stroke-dasharray="14 4 2 4" />
-<text x="682.4" y="492.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12" text-anchor="start" fill="#555" font-weight="400">tekerlek ekseni</text>
-<line x1="209.0" y1="329.0" x2="684.6" y2="329.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="209.0" y1="823.0" x2="684.6" y2="823.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="678.6" y1="329.0" x2="678.6" y2="823.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="694.6" y="576.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400" transform="rotate(90 694.6 576.0)">gövde boyu 130</text>
-<line x1="125.4" y1="823.0" x2="125.4" y2="879.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="634.6" y1="823.0" x2="634.6" y2="879.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="125.4" y1="873.0" x2="634.6" y2="873.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="380.0" y="868.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">toplam genişlik 134</text>
-<line x1="161.5" y1="843.0" x2="161.5" y2="917.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="598.5" y1="843.0" x2="598.5" y2="917.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="161.5" y1="911.0" x2="598.5" y2="911.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="380.0" y="906.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">tekerlek aralığı 115</text>
-<text x="1000.0" y="52.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="17" text-anchor="middle" fill="#1d2b2a" font-weight="700">ÖNDEN GÖRÜNÜŞ</text>
-<line x1="700.0" y1="380.0" x2="1300.0" y2="380.0" stroke="#1d2b2a" stroke-width="1.5" />
-<circle cx="1000.0" cy="339.3" r="40.7" fill="#cfcfcf" stroke="#1d2b2a" stroke-width="1" stroke-dasharray="5 3"/>
-<rect x="1182.4" y="216.6" width="72.2" height="163.4" rx="0" fill="#2b2b2b" stroke="#1d2b2a" stroke-width="1.2"/>
-<rect x="745.4" y="216.6" width="72.2" height="163.4" rx="0" fill="#2b2b2b" stroke="#1d2b2a" stroke-width="1.2"/>
-<rect x="829.0" y="146.3" width="342.0" height="152.0" rx="0" fill="#e6c88f" stroke="#1d2b2a" stroke-width="2"/>
-<rect x="1095.0" y="172.9" width="38.0" height="22.8" rx="0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/>
-<rect x="981.0" y="172.9" width="38.0" height="22.8" rx="0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/>
-<rect x="867.0" y="172.9" width="38.0" height="22.8" rx="0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/>
-<line x1="745.4" y1="380.0" x2="745.4" y2="436.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="1254.6" y1="380.0" x2="1254.6" y2="436.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="745.4" y1="430.0" x2="1254.6" y2="430.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="1000.0" y="425.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">toplam genişlik 134</text>
-<line x1="829.0" y1="146.3" x2="829.0" y2="106.3" stroke="#b3261e" stroke-width="0.8" />
-<line x1="1171.0" y1="146.3" x2="1171.0" y2="106.3" stroke="#b3261e" stroke-width="0.8" />
-<line x1="829.0" y1="112.3" x2="1171.0" y2="112.3" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="1000.0" y="107.3" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">gövde genişliği 90</text>
-<line x1="1252.6" y1="146.3" x2="1304.6" y2="146.3" stroke="#b3261e" stroke-width="0.8" />
-<line x1="1252.6" y1="380.0" x2="1304.6" y2="380.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="1298.6" y1="146.3" x2="1298.6" y2="380.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="1304.6" y="268.1" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#b3261e" font-weight="400">61.5</text>
-<line x1="747.4" y1="184.3" x2="695.4" y2="184.3" stroke="#b3261e" stroke-width="0.8" />
-<line x1="747.4" y1="380.0" x2="695.4" y2="380.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="701.4" y1="184.3" x2="701.4" y2="380.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="695.4" y="287.1" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="end" fill="#b3261e" font-weight="400">ToF 51.5</text>
-<text x="1100.0" y="545.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="17" text-anchor="middle" fill="#1d2b2a" font-weight="700">YANDAN GÖRÜNÜŞ (sağ yan, ön sağda)</text>
-<line x1="760.0" y1="800.0" x2="1400.0" y2="800.0" stroke="#1d2b2a" stroke-width="1.5" />
-<rect x="777.0" y="566.3" width="494.0" height="152.0" rx="0" fill="#e6c88f" stroke="#1d2b2a" stroke-width="2"/>
-<circle cx="1100.0" cy="718.3" r="81.7" fill="#2b2b2b" stroke="#1d2b2a" stroke-width="1.5"/>
-<circle cx="1100.0" cy="718.3" r="3.0" fill="#f7f5ee" stroke="#f7f5ee" stroke-width="1"/>
-<text x="1100.0" y="756.3" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#f7f5ee" font-weight="700">Ø43</text>
-<circle cx="853.0" cy="759.3" r="40.7" fill="#cfcfcf" stroke="#1d2b2a" stroke-width="1.5"/>
-<rect x="1271.0" y="592.9" width="15.2" height="22.8" rx="0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/>
-<line x1="777.0" y1="800.0" x2="777.0" y2="848.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="1271.0" y1="800.0" x2="1271.0" y2="848.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="777.0" y1="842.0" x2="1271.0" y2="842.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="1024.0" y="837.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">gövde boyu 130</text>
-<line x1="853.0" y1="810.0" x2="853.0" y2="884.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="1100.0" y1="810.0" x2="1100.0" y2="884.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="853.0" y1="878.0" x2="1100.0" y2="878.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="976.5" y="873.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">eksen → sarhoş teker 65</text>
-<line x1="1275.0" y1="566.3" x2="1377.0" y2="566.3" stroke="#b3261e" stroke-width="0.8" />
-<line x1="1275.0" y1="800.0" x2="1377.0" y2="800.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="1371.0" y1="566.3" x2="1371.0" y2="800.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="1377.0" y="688.1" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#b3261e" font-weight="400">61.5</text>
-<line x1="777.0" y1="718.3" x2="721.0" y2="718.3" stroke="#b3261e" stroke-width="0.8" />
-<line x1="777.0" y1="800.0" x2="721.0" y2="800.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="727.0" y1="718.3" x2="727.0" y2="800.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="721.0" y="764.1" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="end" fill="#b3261e" font-weight="400">21.5</text>
-<line x1="1275.0" y1="604.3" x2="1307.0" y2="604.3" stroke="#b3261e" stroke-width="0.8" />
-<line x1="1275.0" y1="800.0" x2="1307.0" y2="800.0" stroke="#b3261e" stroke-width="0.8" />
-<line x1="1301.0" y1="604.3" x2="1301.0" y2="800.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="1307.0" y="707.1" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#b3261e" font-weight="400">ToF 51.5</text>
-<text x="1430.0" y="60.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="15" text-anchor="start" fill="#1d2b2a" font-weight="700">BİLEŞENLER (yerleşim ÖNERİ)</text>
-<text x="1430.0" y="80.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12" text-anchor="start" fill="#555" font-weight="400">kesik çizgili = alt kat</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 1020" width="1700" height="1020" role="img" aria-labelledby="t d"><title id="t">Küçük robot (Raspberry Pi Pico 2 W) teknik resim</title><desc id="d">Üst, ön ve yan görünüş; ölçüler milimetre. Parçalar sanal tasarım modelinden (design/design.py) çizilir; yıldızlı ölçüler varsayımdır.</desc><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#b3261e"/></marker></defs><rect width="1700" height="1020" fill="#f7f5ee"/>
+<text x="360.0" y="52.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="17" text-anchor="middle" fill="#1d2b2a" font-weight="700">ÜSTTEN GÖRÜNÜŞ</text>
+<rect x="112.1" y="440.4" width="70.3" height="159.1" rx="0" fill="#2b2b2b" stroke="#1d2b2a" stroke-width="1.2"/>
+<rect x="537.6" y="440.4" width="70.3" height="159.1" rx="0" fill="#2b2b2b" stroke="#1d2b2a" stroke-width="1.2"/>
+<circle cx="360.0" cy="760.5" r="39.6" fill="#bdbdbd" stroke="#1d2b2a" stroke-width="1.2" stroke-dasharray="5 3"/>
+<circle cx="330.4" cy="760.5" r="11.1" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1.2" stroke-dasharray="5 3"/>
+<circle cx="389.6" cy="760.5" r="11.1" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1.2" stroke-dasharray="5 3"/>
+<rect x="193.5" y="342.4" width="333.0" height="492.1" rx="22.200000000000003" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1.6"/>
+<circle cx="219.4" cy="434.9" r="5.9" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="500.6" cy="434.9" r="5.9" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="219.4" cy="816.0" r="5.9" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="500.6" cy="816.0" r="5.9" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="330.4" cy="760.5" r="5.9" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="389.6" cy="760.5" r="5.9" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<polygon points="296.7,555.9 290.1,555.9 290.1,543.3 296.7,543.3" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="296.7,496.7 290.1,496.7 290.1,484.1 296.7,484.1" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="222.7,555.9 216.1,555.9 216.1,543.3 222.7,543.3" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="222.7,496.7 216.1,496.7 216.1,484.1 222.7,484.1" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="429.9,555.9 423.3,555.9 423.3,543.3 429.9,543.3" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="429.9,496.7 423.3,496.7 423.3,484.1 429.9,484.1" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="503.9,555.9 497.3,555.9 497.3,543.3 503.9,543.3" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="503.9,496.7 497.3,496.7 497.3,484.1 503.9,484.1" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="284.9,359.4 290.8,369.7 226.1,407.0 220.2,396.8" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="397.4,353.1 397.4,365.0 322.6,365.0 322.6,353.1" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="499.8,396.8 493.9,407.0 429.2,369.7 435.1,359.4" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="511.7,714.2 511.7,725.4 437.7,725.4 437.7,714.2" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<polygon points="282.3,714.2 282.3,725.4 208.3,725.4 208.3,714.2" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<rect x="263.8" y="612.5" width="192.4" height="214.6" rx="0" fill="#4a4a4a" stroke="#1d2b2a" stroke-width="1.2" stroke-dasharray="5 3"/>
+<rect x="189.8" y="497.8" width="125.8" height="44.4" rx="0" fill="#7d8aa0" stroke="#1d2b2a" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="404.4" y="497.8" width="125.8" height="44.4" rx="0" fill="#7d8aa0" stroke="#1d2b2a" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="193.5" y="416.4" width="333.0" height="418.1" rx="22.200000000000003" fill="#d9b77eb0" stroke="#1d2b2a" stroke-width="1.6"/>
+<circle cx="219.4" cy="434.9" r="5.9" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="500.6" cy="434.9" r="5.9" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="219.4" cy="816.0" r="5.9" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="500.6" cy="816.0" r="5.9" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="381.1" cy="610.6" r="4.4" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="338.9" cy="610.6" r="4.4" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="381.1" cy="436.8" r="4.4" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="338.9" cy="436.8" r="4.4" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1"/>
+<polygon points="397.0,793.8 323.0,793.8 323.0,764.2 397.0,764.2" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1" fill-opacity="1.0"/>
+<circle cx="219.4" cy="434.9" r="11.1" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1.2"/>
+<circle cx="500.6" cy="434.9" r="11.1" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1.2"/>
+<circle cx="219.4" cy="816.0" r="11.1" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1.2"/>
+<circle cx="500.6" cy="816.0" r="11.1" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1.2"/>
+<polygon points="290.3,369.5 226.2,406.5 220.7,396.9 284.7,359.9" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1.2" fill-opacity="1.0"/>
+<polygon points="273.5,366.4 231.9,390.4 228.2,384.0 269.8,360.0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1.2" fill-opacity="1.0"/>
+<polygon points="397.0,364.6 323.0,364.6 323.0,353.5 397.0,353.5" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1.2" fill-opacity="1.0"/>
+<polygon points="384.1,353.5 335.9,353.5 335.9,346.1 384.1,346.1" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1.2" fill-opacity="1.0"/>
+<polygon points="493.8,406.5 429.7,369.5 435.3,359.9 499.3,396.9" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1.2" fill-opacity="1.0"/>
+<polygon points="488.1,390.4 446.5,366.4 450.2,360.0 491.8,384.0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1.2" fill-opacity="1.0"/>
+<circle cx="381.1" cy="610.6" r="7.4" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1.2"/>
+<circle cx="338.9" cy="610.6" r="7.4" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1.2"/>
+<circle cx="381.1" cy="436.8" r="7.4" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1.2"/>
+<circle cx="338.9" cy="436.8" r="7.4" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1.2"/>
+<rect x="321.1" y="429.4" width="77.7" height="188.7" rx="0" fill="#2e8b57" stroke="#1d2b2a" stroke-width="1.2"/>
+<rect x="241.6" y="601.4" width="74.0" height="74.0" rx="0" fill="#7b4fc9" stroke="#1d2b2a" stroke-width="1.2"/>
+<rect x="411.8" y="586.6" width="59.2" height="74.0" rx="0" fill="#d9822b" stroke="#1d2b2a" stroke-width="1.2"/>
+<rect x="402.6" y="721.6" width="62.9" height="55.5" rx="0" fill="#e6d34a" stroke="#1d2b2a" stroke-width="1.2"/>
+<polygon points="249.0,372.0 191.2,176.9 108.9,224.4" fill="#2f6fbd" stroke="#2f6fbd" stroke-width="0.8" fill-opacity="0.12"/>
+<polygon points="360.0,346.1 407.5,148.2 312.5,148.2" fill="#2f6fbd" stroke="#2f6fbd" stroke-width="0.8" fill-opacity="0.12"/>
+<polygon points="471.0,372.0 611.1,224.4 528.8,176.9" fill="#2f6fbd" stroke="#2f6fbd" stroke-width="0.8" fill-opacity="0.12"/>
+<line x1="71.4" y1="520.0" x2="648.6" y2="520.0" stroke="#1d2b2a" stroke-width="1" stroke-dasharray="14 4 2 4" />
+<text x="654.6" y="512.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12" text-anchor="start" fill="#555" font-weight="400">tekerlek ekseni</text>
+<circle cx="252.7" cy="520.0" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
+<text x="252.7" y="525.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">6</text>
+<circle cx="360.0" cy="760.5" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
+<text x="360.0" y="765.5" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">8</text>
+<circle cx="360.0" cy="349.8" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
+<text x="360.0" y="354.8" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">7</text>
+<circle cx="360.0" cy="719.8" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
+<text x="360.0" y="724.8" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">5</text>
+<circle cx="360.0" cy="523.7" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
+<text x="360.0" y="528.7" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">1</text>
+<circle cx="278.6" cy="638.4" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
+<text x="278.6" y="643.4" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">2</text>
+<circle cx="441.4" cy="623.6" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
+<text x="441.4" y="628.6" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">3</text>
+<circle cx="434.0" cy="749.4" r="10.0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.2"/>
+<text x="434.0" y="754.4" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="middle" fill="#1d2b2a" font-weight="700">4</text>
+<line x1="526.5" y1="342.4" x2="657.9" y2="342.4" stroke="#b3261e" stroke-width="0.8" />
+<line x1="526.5" y1="834.5" x2="657.9" y2="834.5" stroke="#b3261e" stroke-width="0.8" />
+<line x1="651.9" y1="342.4" x2="651.9" y2="834.5" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="667.9" y="588.5" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400" transform="rotate(90 667.9 588.5)">plaka boyu 133</text>
+<line x1="112.1" y1="834.5" x2="112.1" y2="890.5" stroke="#b3261e" stroke-width="0.8" />
+<line x1="607.9" y1="834.5" x2="607.9" y2="890.5" stroke="#b3261e" stroke-width="0.8" />
+<line x1="112.1" y1="884.5" x2="607.9" y2="884.5" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="360.0" y="879.5" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">toplam genişlik 134</text>
+<line x1="147.2" y1="854.5" x2="147.2" y2="928.5" stroke="#b3261e" stroke-width="0.8" />
+<line x1="572.8" y1="854.5" x2="572.8" y2="928.5" stroke="#b3261e" stroke-width="0.8" />
+<line x1="147.2" y1="922.5" x2="572.8" y2="922.5" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="360.0" y="917.5" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">tekerlek aralığı 115</text>
+<line x1="193.5" y1="342.4" x2="193.5" y2="258.4" stroke="#b3261e" stroke-width="0.8" />
+<line x1="526.5" y1="342.4" x2="526.5" y2="258.4" stroke="#b3261e" stroke-width="0.8" />
+<line x1="193.5" y1="264.4" x2="526.5" y2="264.4" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="360.0" y="259.4" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">plaka genişliği 90</text>
+<text x="1020.0" y="52.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="17" text-anchor="middle" fill="#1d2b2a" font-weight="700">ÖNDEN GÖRÜNÜŞ</text>
+<line x1="720.0" y1="400.0" x2="1320.0" y2="400.0" stroke="#1d2b2a" stroke-width="1.5" />
+<rect x="1149.5" y="216.8" width="22.2" height="74.0" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="868.3" y="216.8" width="22.2" height="74.0" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1038.5" y="301.9" width="22.2" height="18.9" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="979.3" y="301.9" width="22.2" height="18.9" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="914.5" y="190.9" width="62.9" height="14.8" rx="0" fill="#e6d34a" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="1020.0" cy="360.4" r="39.6" fill="#bdbdbd" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="923.8" y="231.7" width="192.4" height="59.2" rx="0" fill="#4a4a4a" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="991.5" y="190.9" width="14.8" height="14.8" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1033.7" y="190.9" width="14.8" height="14.8" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1064.4" y="194.6" width="74.0" height="11.1" rx="0" fill="#7b4fc9" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="909.0" y="194.6" width="59.2" height="11.1" rx="0" fill="#d9822b" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1064.4" y="301.9" width="125.8" height="37.0" rx="0" fill="#7d8aa0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="849.8" y="301.9" width="125.8" height="37.0" rx="0" fill="#7d8aa0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1197.6" y="240.9" width="70.3" height="159.1" rx="0" fill="#2b2b2b" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="772.1" y="240.9" width="70.3" height="159.1" rx="0" fill="#2b2b2b" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="991.5" y="190.9" width="14.8" height="14.8" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1033.7" y="190.9" width="14.8" height="14.8" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="981.1" y="183.5" width="77.7" height="7.4" rx="0" fill="#2e8b57" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1149.5" y="216.8" width="22.2" height="74.0" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="868.3" y="216.8" width="22.2" height="74.0" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="853.5" y="205.8" width="333.0" height="11.1" rx="0" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1106.5" y="176.1" width="45.4" height="66.6" rx="0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="888.2" y="176.1" width="45.4" height="66.6" rx="0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1089.7" y="176.1" width="69.6" height="125.8" rx="0" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="880.7" y="176.1" width="69.6" height="125.8" rx="0" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="983.0" y="176.1" width="74.0" height="125.8" rx="0" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="996.0" y="176.1" width="48.1" height="66.6" rx="0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="853.5" y="290.9" width="333.0" height="11.1" rx="0" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1"/>
+<line x1="772.1" y1="400.0" x2="772.1" y2="456.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="1267.9" y1="400.0" x2="1267.9" y2="456.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="772.1" y1="450.0" x2="1267.9" y2="450.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="1020.0" y="445.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">toplam genişlik 134</text>
+<line x1="1265.9" y1="176.1" x2="1313.9" y2="176.1" stroke="#b3261e" stroke-width="0.8" />
+<line x1="1265.9" y1="400.0" x2="1313.9" y2="400.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="1307.9" y1="176.1" x2="1307.9" y2="400.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="1313.9" y="293.1" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#b3261e" font-weight="400">60.5</text>
+<line x1="774.1" y1="209.4" x2="722.1" y2="209.4" stroke="#b3261e" stroke-width="0.8" />
+<line x1="774.1" y1="400.0" x2="722.1" y2="400.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="728.1" y1="209.4" x2="728.1" y2="400.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="722.1" y="309.7" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="end" fill="#b3261e" font-weight="400">ToF 51.5</text>
+<text x="1090.0" y="500.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="17" text-anchor="middle" fill="#1d2b2a" font-weight="700">YANDAN GÖRÜNÜŞ (sağ yan, ön sağda)</text>
+<line x1="750.0" y1="815.0" x2="1390.0" y2="815.0" stroke="#1d2b2a" stroke-width="1.5" />
+<circle cx="1090.0" cy="735.5" r="79.5" fill="#2b2b2b" stroke="#1d2b2a" stroke-width="1.2"/>
+<rect x="1164.0" y="631.9" width="22.2" height="74.0" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="782.9" y="631.9" width="22.2" height="74.0" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1219.6" y="591.1" width="30.5" height="66.6" rx="0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1203.5" y="591.1" width="46.6" height="125.8" rx="0" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1067.8" y="717.0" width="44.4" height="37.0" rx="0" fill="#7d8aa0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="934.6" y="609.6" width="74.0" height="11.1" rx="0" fill="#7b4fc9" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="838.4" y="717.0" width="22.2" height="18.9" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="992.0" y="606.0" width="14.8" height="14.8" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1165.8" y="606.0" width="14.8" height="14.8" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1256.5" y="591.1" width="7.4" height="66.6" rx="0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="992.0" y="606.0" width="14.8" height="14.8" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1165.8" y="606.0" width="14.8" height="14.8" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1245.4" y="591.1" width="11.1" height="125.8" rx="0" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="992.0" y="598.5" width="188.7" height="7.4" rx="0" fill="#2e8b57" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="849.5" cy="775.4" r="39.6" fill="#bdbdbd" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="838.4" y="717.0" width="22.2" height="18.9" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="782.9" y="646.6" width="214.6" height="59.2" rx="0" fill="#4a4a4a" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="832.8" y="606.0" width="55.5" height="14.8" rx="0" fill="#e6d34a" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="949.4" y="609.6" width="74.0" height="11.1" rx="0" fill="#d9822b" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1219.6" y="591.1" width="30.5" height="66.6" rx="0" fill="#2f6fbd" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1203.5" y="591.1" width="46.6" height="125.8" rx="0" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1164.0" y="631.9" width="22.2" height="74.0" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="782.9" y="631.9" width="22.2" height="74.0" rx="0" fill="#c0c0c0" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="775.5" y="705.9" width="492.1" height="11.1" rx="0" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="775.5" y="620.8" width="418.1" height="11.1" rx="0" fill="#d9b77e" stroke="#1d2b2a" stroke-width="1"/>
+<rect x="1067.8" y="717.0" width="44.4" height="37.0" rx="0" fill="#7d8aa0" stroke="#1d2b2a" stroke-width="1"/>
+<circle cx="1090.0" cy="735.5" r="79.5" fill="#2b2b2b" stroke="#1d2b2a" stroke-width="1.2"/>
+<line x1="775.5" y1="815.0" x2="775.5" y2="863.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="1267.6" y1="815.0" x2="1267.6" y2="863.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="775.5" y1="857.0" x2="1267.6" y2="857.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="1021.5" y="852.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">plaka boyu 133</text>
+<line x1="849.5" y1="825.0" x2="849.5" y2="899.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="1090.0" y1="825.0" x2="1090.0" y2="899.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="849.5" y1="893.0" x2="1090.0" y2="893.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="969.8" y="888.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="middle" fill="#b3261e" font-weight="400">eksen → sarhoş teker 65</text>
+<line x1="1271.6" y1="591.1" x2="1353.6" y2="591.1" stroke="#b3261e" stroke-width="0.8" />
+<line x1="1271.6" y1="815.0" x2="1353.6" y2="815.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="1347.6" y1="591.1" x2="1347.6" y2="815.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="1353.6" y="708.1" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#b3261e" font-weight="400">60.5 (toplam)</text>
+<line x1="775.5" y1="717.0" x2="739.5" y2="717.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="775.5" y1="815.0" x2="739.5" y2="815.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="745.5" y1="717.0" x2="745.5" y2="815.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="739.5" y="771.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="end" fill="#b3261e" font-weight="400">26.5</text>
+<line x1="1185.1" y1="631.9" x2="1211.1" y2="631.9" stroke="#b3261e" stroke-width="0.8" />
+<line x1="1185.1" y1="705.9" x2="1211.1" y2="705.9" stroke="#b3261e" stroke-width="0.8" />
+<line x1="1205.1" y1="631.9" x2="1205.1" y2="705.9" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="1211.1" y="673.9" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#b3261e" font-weight="400">20</text>
+<line x1="1271.6" y1="624.5" x2="1307.6" y2="624.5" stroke="#b3261e" stroke-width="0.8" />
+<line x1="1271.6" y1="815.0" x2="1307.6" y2="815.0" stroke="#b3261e" stroke-width="0.8" />
+<line x1="1301.6" y1="624.5" x2="1301.6" y2="815.0" stroke="#b3261e" stroke-width="1.1" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="1307.6" y="724.7" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#b3261e" font-weight="400">ToF 51.5</text>
+<text x="1430.0" y="60.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="15" text-anchor="start" fill="#1d2b2a" font-weight="700">BİLEŞENLER</text>
+<text x="1430.0" y="80.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12" text-anchor="start" fill="#555" font-weight="400">kesik çizgi = alt kat; * = ölçü varsayım</text>
 <text x="1430.0" y="108.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">1  Raspberry Pi Pico 2 W (51×21)</text>
-<text x="1430.0" y="131.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">2  TB6612FNG motor sürücü</text>
-<text x="1430.0" y="154.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">3  MPU6050 (IMU)</text>
-<text x="1430.0" y="177.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">4  S7V7F5 5 V regülatör</text>
-<text x="1430.0" y="200.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">5  4×AA pil yuvası</text>
-<text x="1430.0" y="223.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">6  N20 motor + enkoder ×2</text>
-<text x="1430.0" y="246.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">7  TOF400C ToF ×3 (+30°, 0°, -30°)</text>
-<text x="1430.0" y="269.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">8  Bilyeli sarhoş teker</text>
-<text x="1430.0" y="316.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="15" text-anchor="start" fill="#1d2b2a" font-weight="700">TEMEL ÖLÇÜLER (mm)</text>
-<text x="1430.0" y="341.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">Tekerlek: Ø43 × 19</text>
-<text x="1430.0" y="362.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">Tekerlek aralığı: 115</text>
-<text x="1430.0" y="383.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">Gövde: 130 × 90 × 40</text>
-<text x="1430.0" y="404.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">Yerden yükseklik: 21.5</text>
-<text x="1430.0" y="425.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">Sarhoş teker: eksenin 65 arkasında</text>
-<text x="1430.0" y="446.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">ToF: yerden ≈ 52, 27° görüş</text>
-<text x="1430.0" y="467.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">Çarpışma dairesi (sim): yarıçap 75</text>
-<rect x="1422.0" y="496.0" width="262.0" height="86.0" rx="0" fill="none" stroke="#b3261e" stroke-width="1" stroke-dasharray="4 3"/>
-<text x="1430.0" y="516.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12.5" text-anchor="start" fill="#b3261e" font-weight="400">Pil yuvası, kartlar ve motorların yeri</text>
-<text x="1430.0" y="534.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12.5" text-anchor="start" fill="#b3261e" font-weight="400">ve boyutları yer tutucudur; gerçek</text>
-<text x="1430.0" y="552.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12.5" text-anchor="start" fill="#b3261e" font-weight="400">parçalar gelince kontrol edilip</text>
-<text x="1430.0" y="570.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12.5" text-anchor="start" fill="#b3261e" font-weight="400">güncellenecek.</text>
-<rect x="10.0" y="10.0" width="1680.0" height="980.0" rx="0" fill="none" stroke="#1d2b2a" stroke-width="2"/>
-<rect x="1050.0" y="890.0" width="640.0" height="100.0" rx="0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.5"/>
-<line x1="1050.0" y1="928.0" x2="1690.0" y2="928.0" stroke="#1d2b2a" stroke-width="1" />
-<text x="1062.0" y="918.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="22" text-anchor="start" fill="#1d2b2a" font-weight="700">Küçük robot (Raspberry Pi Pico 2 W) – teknik resim</text>
-<text x="1062.0" y="948.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">Ölçüler milimetre; üç görünüş (üst, ön, yan)</text>
-<text x="1062.0" y="968.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="start" fill="#1d2b2a" font-weight="400">Ölçek: ekranda 3.8 px = 1 mm (yaklaşık)</text>
-<text x="1062.0" y="984.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12" text-anchor="start" fill="#555" font-weight="400">Kaynak: pai_gym/world.py, pai_bot.urdf</text></svg>
+<text x="1430.0" y="130.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">2  TB6612FNG sürücü *</text>
+<text x="1430.0" y="152.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">3  MPU6050 *</text>
+<text x="1430.0" y="174.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">4  S7V7F5 regülatör *</text>
+<text x="1430.0" y="196.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">5  4×AA pil yuvası *</text>
+<text x="1430.0" y="218.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">6  N20 motor + enkoder ×2 *</text>
+<text x="1430.0" y="240.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">7  TOF400C ToF ×3 *</text>
+<text x="1430.0" y="262.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">8  Bilyeli sarhoş teker *</text>
+<text x="1430.0" y="306.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="15" text-anchor="start" fill="#1d2b2a" font-weight="700">TASARIM (mm)</text>
+<text x="1430.0" y="330.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13.5" text-anchor="start" fill="#1d2b2a" font-weight="400">Plaka: 133 × 90 × 3 (lazer kesim)</text>
+<text x="1430.0" y="351.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13.5" text-anchor="start" fill="#1d2b2a" font-weight="400">Tekerlek: Ø43 × 19, aralık 115</text>
+<text x="1430.0" y="372.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13.5" text-anchor="start" fill="#1d2b2a" font-weight="400">Alt plaka altı: 26.5 (motorlar altında)</text>
+<text x="1430.0" y="393.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13.5" text-anchor="start" fill="#1d2b2a" font-weight="400">Kat arası: 20 (M3 × 20)</text>
+<text x="1430.0" y="414.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13.5" text-anchor="start" fill="#1d2b2a" font-weight="400">ToF: yerden 51.5, 27° görüş</text>
+<text x="1430.0" y="435.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13.5" text-anchor="start" fill="#1d2b2a" font-weight="400">Toplam yükseklik: 60.5</text>
+<text x="1430.0" y="456.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13.5" text-anchor="start" fill="#1d2b2a" font-weight="400">Sarhoş teker: eksenin 65 gerisinde</text>
+<rect x="1422.0" y="483.0" width="262.0" height="86.0" rx="0" fill="none" stroke="#b3261e" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="1430.0" y="503.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12.5" text-anchor="start" fill="#b3261e" font-weight="400">Yıldızlı parçaların boyutu varsayım:</text>
+<text x="1430.0" y="521.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12.5" text-anchor="start" fill="#b3261e" font-weight="400">gerçek parça gelince design/design.py</text>
+<text x="1430.0" y="539.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12.5" text-anchor="start" fill="#b3261e" font-weight="400">güncellenir; bu resim, 3B model, lazer</text>
+<text x="1430.0" y="557.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12.5" text-anchor="start" fill="#b3261e" font-weight="400">dosyaları ve BOM yeniden üretilir.</text>
+<rect x="10.0" y="10.0" width="1680.0" height="1000.0" rx="0" fill="none" stroke="#1d2b2a" stroke-width="2"/>
+<rect x="990.0" y="910.0" width="700.0" height="100.0" rx="0" fill="#f7f5ee" stroke="#1d2b2a" stroke-width="1.5"/>
+<line x1="990.0" y1="948.0" x2="1690.0" y2="948.0" stroke="#1d2b2a" stroke-width="1" />
+<text x="1002.0" y="938.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="22" text-anchor="start" fill="#1d2b2a" font-weight="700">Küçük robot (Raspberry Pi Pico 2 W) – teknik resim</text>
+<text x="1002.0" y="968.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="14" text-anchor="start" fill="#1d2b2a" font-weight="400">Ölçüler milimetre; üç görünüş (üst, ön, yan); kaynak: sanal tasarım v0</text>
+<text x="1002.0" y="988.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="13" text-anchor="start" fill="#1d2b2a" font-weight="400">Ölçek: ekranda 3.7 px = 1 mm (yaklaşık)</text>
+<text x="1002.0" y="1004.0" font-family="Atkinson Hyperlegible, 'Segoe UI', Arial, sans-serif" font-size="12" text-anchor="start" fill="#555" font-weight="400">Kaynak: design/design.py (3B model ve lazer dosyalarıyla aynı)</text></svg>

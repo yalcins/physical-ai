@@ -1,0 +1,275 @@
+{
+  "updated": "auto",
+  "variants": {
+    "pico": [
+      {
+        "name": "Tekerlek Ø43 × 19",
+        "qty": 2,
+        "group": "tahrik",
+        "verified": true,
+        "note": "Şartname: 43 mm çap, 19 mm genişlik; mil tipi motorla uyumlu olmalı"
+      },
+      {
+        "name": "JGA12-N20B motor (6 V, ~300 dev/dk, enkoderli)",
+        "qty": 2,
+        "group": "tahrik",
+        "verified": false,
+        "note": "Genişlik 12, yükseklik 10 standart; gövde uzunluğu 34 varsayıldı, ölçülecek"
+      },
+      {
+        "name": "Bilyeli sarhoş teker (yüksekliği ≈ 21 mm)",
+        "qty": 1,
+        "group": "tahrik",
+        "verified": false,
+        "note": "Model seçilecek; ara parça yüksekliği tekere göre ayarlanır"
+      },
+      {
+        "name": "TB6612FNG motor sürücü kartı",
+        "qty": 1,
+        "group": "kontrol",
+        "verified": false,
+        "note": "Kart boyutu 20 × 20 varsayıldı (çift yüzlü bant)"
+      },
+      {
+        "name": "TOF400C (VL53L1X) ToF modülü",
+        "qty": 3,
+        "group": "algı",
+        "verified": false,
+        "note": "Modül 13 × 18 × 2 varsayıldı; vida deliği düzeni bilinmiyor, yapıştırma/bant"
+      },
+      {
+        "name": "MPU6050 modülü",
+        "qty": 1,
+        "group": "algı",
+        "verified": false,
+        "note": "20 × 16 varsayıldı"
+      },
+      {
+        "name": "Lazer kesim alt plaka (3 mm)",
+        "qty": 1,
+        "group": "mekanik",
+        "verified": true,
+        "note": "laser-pico.svg"
+      },
+      {
+        "name": "Lazer kesim üst plaka (3 mm)",
+        "qty": 1,
+        "group": "mekanik",
+        "verified": true,
+        "note": "laser-pico.svg"
+      },
+      {
+        "name": "Lazer kesim ToF dikmesi (3 mm)",
+        "qty": 3,
+        "group": "mekanik",
+        "verified": true,
+        "note": "laser-pico.svg"
+      },
+      {
+        "name": "M3 × 20 ara parça (dişi-dişi) ya da M3 cıvata + somun",
+        "qty": 4,
+        "group": "mekanik",
+        "verified": true,
+        "note": "plakalar arası"
+      },
+      {
+        "name": "M3 × 8 vida",
+        "qty": 8,
+        "group": "mekanik",
+        "verified": true,
+        "note": "ara parça uçları (yaklaşık)"
+      },
+      {
+        "name": "Kablo bağı (motorları plakaya bağlamak)",
+        "qty": 4,
+        "group": "mekanik",
+        "verified": true,
+        "note": "her motora 2 adet"
+      },
+      {
+        "name": "Dupont/jumper kablo seti",
+        "qty": 1,
+        "group": "elektrik",
+        "verified": true,
+        "note": "tezgâh ve ilk montaj"
+      },
+      {
+        "name": "Çift yüzlü bant (köpük)",
+        "qty": 1,
+        "group": "mekanik",
+        "verified": true,
+        "note": "kartları plakaya yapıştırmak için"
+      },
+      {
+        "name": "Raspberry Pi Pico 2 W (başlık pinli)",
+        "qty": 1,
+        "group": "kontrol",
+        "verified": true,
+        "note": "Delik düzeni datasheet'ten (47 × 11,4)"
+      },
+      {
+        "name": "M2 × 4 ara parça + M2 vida/somun",
+        "qty": 4,
+        "group": "mekanik",
+        "verified": true,
+        "note": "Pico için"
+      },
+      {
+        "name": "4×AA pil yuvası (tek sıra) + 4 NiMH AA",
+        "qty": 1,
+        "group": "güç",
+        "verified": false,
+        "note": "Yuva boyutu 58 × 52 × 16 varsayıldı; Velcro ile bağlanır"
+      },
+      {
+        "name": "Pololu S7V7F5 (5 V regülatör)",
+        "qty": 1,
+        "group": "güç",
+        "verified": false,
+        "note": "Kart boyutu 15 × 17 varsayıldı"
+      },
+      {
+        "name": "1N5819 Schottky diyot",
+        "qty": 1,
+        "group": "güç",
+        "verified": true,
+        "note": "regülatör → VSYS"
+      },
+      {
+        "name": "Velcro şerit (pil bağı)",
+        "qty": 1,
+        "group": "mekanik",
+        "verified": true,
+        "note": ""
+      }
+    ],
+    "pi4": [
+      {
+        "name": "Tekerlek Ø43 × 19",
+        "qty": 2,
+        "group": "tahrik",
+        "verified": true,
+        "note": "Şartname: 43 mm çap, 19 mm genişlik; mil tipi motorla uyumlu olmalı"
+      },
+      {
+        "name": "JGA12-N20B motor (6 V, ~300 dev/dk, enkoderli)",
+        "qty": 2,
+        "group": "tahrik",
+        "verified": false,
+        "note": "Genişlik 12, yükseklik 10 standart; gövde uzunluğu 34 varsayıldı, ölçülecek"
+      },
+      {
+        "name": "Bilyeli sarhoş teker (yüksekliği ≈ 21 mm)",
+        "qty": 1,
+        "group": "tahrik",
+        "verified": false,
+        "note": "Model seçilecek; ara parça yüksekliği tekere göre ayarlanır"
+      },
+      {
+        "name": "TB6612FNG motor sürücü kartı",
+        "qty": 1,
+        "group": "kontrol",
+        "verified": false,
+        "note": "Kart boyutu 20 × 20 varsayıldı (çift yüzlü bant)"
+      },
+      {
+        "name": "TOF400C (VL53L1X) ToF modülü",
+        "qty": 3,
+        "group": "algı",
+        "verified": false,
+        "note": "Modül 13 × 18 × 2 varsayıldı; vida deliği düzeni bilinmiyor, yapıştırma/bant"
+      },
+      {
+        "name": "MPU6050 modülü",
+        "qty": 1,
+        "group": "algı",
+        "verified": false,
+        "note": "20 × 16 varsayıldı"
+      },
+      {
+        "name": "Lazer kesim alt plaka (3 mm)",
+        "qty": 1,
+        "group": "mekanik",
+        "verified": true,
+        "note": "laser-pi4.svg"
+      },
+      {
+        "name": "Lazer kesim üst plaka (3 mm)",
+        "qty": 1,
+        "group": "mekanik",
+        "verified": true,
+        "note": "laser-pi4.svg"
+      },
+      {
+        "name": "Lazer kesim ToF dikmesi (3 mm)",
+        "qty": 3,
+        "group": "mekanik",
+        "verified": true,
+        "note": "laser-pi4.svg"
+      },
+      {
+        "name": "M3 × 20 ara parça (dişi-dişi) ya da M3 cıvata + somun",
+        "qty": 4,
+        "group": "mekanik",
+        "verified": true,
+        "note": "plakalar arası"
+      },
+      {
+        "name": "M3 × 8 vida",
+        "qty": 8,
+        "group": "mekanik",
+        "verified": true,
+        "note": "ara parça uçları (yaklaşık)"
+      },
+      {
+        "name": "Kablo bağı (motorları plakaya bağlamak)",
+        "qty": 4,
+        "group": "mekanik",
+        "verified": true,
+        "note": "her motora 2 adet"
+      },
+      {
+        "name": "Dupont/jumper kablo seti",
+        "qty": 1,
+        "group": "elektrik",
+        "verified": true,
+        "note": "tezgâh ve ilk montaj"
+      },
+      {
+        "name": "Çift yüzlü bant (köpük)",
+        "qty": 1,
+        "group": "mekanik",
+        "verified": true,
+        "note": "kartları plakaya yapıştırmak için"
+      },
+      {
+        "name": "Raspberry Pi 4 (2 GB ya da üstü)",
+        "qty": 1,
+        "group": "kontrol",
+        "verified": true,
+        "note": "85 × 56; M2.5 delik düzeni 58 × 49"
+      },
+      {
+        "name": "M2.5 × 5 ara parça + vida/somun",
+        "qty": 4,
+        "group": "mekanik",
+        "verified": true,
+        "note": "Pi 4 için"
+      },
+      {
+        "name": "microSD kart (Ubuntu 24.04 + ROS 2 Jazzy)",
+        "qty": 1,
+        "group": "kontrol",
+        "verified": true,
+        "note": ""
+      },
+      {
+        "name": "Güç kaynağı modülü (KARAR BEKLİYOR)",
+        "qty": 1,
+        "group": "güç",
+        "verified": false,
+        "note": "5 V yüksek akım + motor 6 V; yer tutucu 70 × 40 × 18. Seçilince boyut güncellenir"
+      }
+    ]
+  }
+}

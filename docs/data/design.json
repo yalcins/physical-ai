@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "pico": {
+      "parts": 28,
+      "unverified": [
+        "battery",
+        "caster_ball",
+        "caster_spacer_n",
+        "caster_spacer_p",
+        "motor_l",
+        "motor_r",
+        "mpu6050",
+        "regulator",
+        "tb6612",
+        "tof_center",
+        "tof_left",
+        "tof_right"
+      ],
+      "envelope_mm": {
+        "x": 133.0,
+        "y": 134.0,
+        "z": 60.5
+      },
+      "collisions": [],
+      "cut_problems": [],
+      "plate_mm": [
+        133.0,
+        90.0,
+        3.0
+      ],
+      "deck_gap_mm": 20.0
+    },
+    "pi4": {
+      "parts": 27,
+      "unverified": [
+        "caster_ball",
+        "caster_spacer_n",
+        "caster_spacer_p",
+        "motor_l",
+        "motor_r",
+        "mpu6050",
+        "power_placeholder",
+        "tb6612",
+        "tof_center",
+        "tof_left",
+        "tof_right"
+      ],
+      "envelope_mm": {
+        "x": 133.0,
+        "y": 134.0,
+        "z": 74.5
+      },
+      "collisions": [],
+      "cut_problems": [],
+      "plate_mm": [
+        133.0,
+        90.0,
+        3.0
+      ],
+      "deck_gap_mm": 20.0
+    }
+  },
+  "sim_radius_note": "Simülasyon çarpışma dairesi 75 mm; tasarımda arka köşeler eksenden ≈96 mm (bulgu: carpisma-yaricapi)."
+}

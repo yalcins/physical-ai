@@ -154,6 +154,14 @@
   .group .first { font-size: 15px; background: var(--ink); color: var(--paper); border-radius: 4px; padding: 3px 10px; display: inline-block; margin-bottom: 8px; }
   .gchip { display: inline-block; font-size: 12px; padding: 0 7px; border-radius: 4px; margin-right: 6px; background: var(--sensor); color: var(--ink); }
   .bsteps .tag.today { background: var(--laser); color: #fff; }
+  .design-status { display: flex; flex-wrap: wrap; gap: 10px 14px; margin: 14px 0 6px; }
+  .design-status .chip { border: 2px solid var(--ink); border-radius: 6px; padding: 4px 12px; font-size: 15px; }
+  .design-status .chip.ok { border-color: var(--mat); } .design-status .chip.bad { border-color: var(--laser); background: rgba(229,72,77,.12); }
+  figure.wide { margin: 18px 0 0; } figure.wide img { width: 100%; height: auto; display: block; border: 2px solid var(--ink); border-radius: 6px; background: #f7f5ee; }
+  figure.wide figcaption { font-size: 15px; margin-top: 8px; }
+  table.maturity td.ok::after { content: " \2713"; color: var(--mat); font-weight: 800; }
+  table.maturity td.guess::after { content: " *"; color: var(--laser); font-weight: 800; }
+  .decisions .prop { display: block; margin-top: 4px; font-size: 14px; color: var(--mat); }
   .arch-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; margin-top: 40px; }
   .arch h3 { font: 800 22px var(--display); margin: 0 0 12px; }
   .flow { list-style: none; margin: 0 0 8px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; counter-reset: flow; }
@@ -273,6 +281,7 @@
       <a href="#deneyler">Deneyler</a>
       <a href="#bulgular">Bulgular</a>
       <a href="#robot">Robot</a>
+      <a href="#tasarim">Tasarım</a>
       <a href="#cizimler">Çizimler</a>
       <a href="#bugun">Bugün</a>
       <a href="#gruplar">Gruplar</a>
@@ -489,14 +498,16 @@
           <tr><td>Gymnasium simülatörü</td><td class="num">4</td><td class="num">4</td><td>2B dünya, iki sensör düzeni, senaryo dosyaları (<code>pico2</code>: gerçek boyutlu Pico engeller), gerçeğe benzetme bozuklukları, 18 birim testi.</td></tr>
           <tr><td>Eğitim ve ölçüm hattı</td><td class="num">4</td><td class="num">4</td><td>12 deney aynı 100 bölümde ölçüldü; bozukluklarla eğitim denendi.</td></tr>
           <tr><td>Site ve yayın hattı</td><td class="num">4</td><td class="num">4</td><td>Sayfa yalnızca veriyle çalışıyor, yayın otomatik. Yapım rehberi de aynı yöntemle (<code>build.json</code>) çalışıyor.</td></tr>
-          <tr><td>Gazebo dijital ikizi</td><td class="num">3</td><td class="num">4</td><td>Başsız Gazebo'da denendi: düz gitme %4, dönme %4-7 içinde uyuşuyor; ToF Python'dan sürekli 1-2 cm kısa okuyor (nedeni incelenmedi).</td></tr>
+          <tr><td>Gazebo dijital ikizi</td><td class="num">3</td><td class="num">4</td><td>Başsız Gazebo'da denendi: düz gitme %1-2, dönme %1-3 içinde uyuşuyor; ToF Python'dan tutarlı biçimde 1,6-2,2 cm kısa okuyor (nedeni incelenmedi).</td></tr>
           <tr><td>Ortak Python arayüzü</td><td class="num">1</td><td class="num">4</td><td>SimRobot, UdpRobot (sahte Pico) ve RosRobot (başsız Gazebo, <code>tests/ros_integration.py</code>) test edildi. Gerçek robotta denenmedi.</td></tr>
           <tr><td>Ana bilgisayar kontrolü</td><td class="num">1</td><td class="num">3</td><td><code>host/fleet.py</code>: durum, rastgele mod, durdurma sahte Pico ile denendi. <code>scp</code> ve <code>ssh</code> adımları denenmedi.</td></tr>
           <tr><td>Küçük robot (Pico 2 W)</td><td class="num">1</td><td class="num">2</td><td><code>firmware/pico2w/</code>: rastgele ve uzaktan mod yazıldı, protokol sahte Pico ile test edildi. ToF kodu gerçek kütüphaneye (<code>vl53l1x_pico</code>) göre yazıldı, sahte modüllerle test edildi. Gerçek kartta ve sensörle denenmedi.</td></tr>
           <tr><td>Büyük robot (Pi 4)</td><td class="num">1</td><td class="num">3</td><td>Sürücü düğümü ROS 2'de sahte donanımla, <code>tof.py</code> sahte sensörlerle, <code>run_policy.py</code> Gazebo'da denendi. Gerçek Pi'de denenmedi, pinler boş.</td></tr>
           <tr><td>Fiziksel yapım planı</td><td class="num">–</td><td class="num">3</td><td>Parçalar, adımlar, açık kararlar ve arena etiketleri yazıldı (<a href="#yapim">Yapım rehberi</a>). Hiçbiri gerçek donanımda doğrulanmadı.</td></tr>
           <tr><td>Fiziksel yapım ilerlemesi</td><td class="num">–</td><td class="num">1</td><td>Fiziksel adımlardan hiçbiri henüz yapılmadı.</td></tr>
-          <tr><td>Sim-gerçek aktarımı</td><td class="num">1</td><td class="num">2</td><td>Benzetme araçları (bozukluklar, Pico engelleri) ve referans değerler hazır. Hiçbir model gerçek robotta denenmedi.</td></tr>
+          <tr><td>Sanal tasarım (3B, çizim, lazer, BOM, kablolama)</td><td class="num">–</td><td class="num">3</td><td>Tek kaynaktan (<code>design/design.py</code>) üretilir; çakışma, delik payı ve ölçü tutarlılığı testle denenir. Yıldızlı parça ölçüleri varsayım, gerçek parçalarla doğrulanmadı.</td></tr>
+          <tr><td>Kalibrasyon hattı</td><td class="num">–</td><td class="num">3</td><td><code>tools/calibrate.py</code>: ölçüm CSV'lerinden simülasyon ve firmware ayarları. Bilinen değerli sentetik ölçümle test edildi; gerçek ölçüm henüz yok.</td></tr>
+          <tr><td>Sim-gerçek aktarımı</td><td class="num">1</td><td class="num">2</td><td>Benzetme araçları, referans değerler ve kalibrasyon hattı hazır. Hiçbir model gerçek robotta denenmedi.</td></tr>
           <tr><td>Sensör düzeni uyumu</td><td class="num">2</td><td class="num">2</td><td><code>side5</code> yalnızca simülasyonda. Pico pin planında yalnızca üç ToF için yer var.</td></tr>
           </tbody>
         </table>
@@ -578,11 +589,11 @@
       <div class="drawings">
         <figure>
           <a href="media/drawings/pico-robot.svg"><img src="media/drawings/pico-robot.svg" alt="Küçük robot (Pico 2 W) teknik resmi: üst, ön ve yan görünüş" loading="lazy"></a>
-          <figcaption><b>Küçük robot (Pico 2 W).</b> Üç görünüş. Tekerlek, gövde ve sensör ölçüleri kesin; kart ve pil yerleşimi <b>öneri</b> (yer tutucu), parçalar gelince kontrol edilecek.</figcaption>
+          <figcaption><b>Küçük robot (Pico 2 W).</b> Üç görünüş, sanal tasarımdan (3B modelle aynı kaynak) üretilir. Tekerlek, plaka, Pico ve sensör konumları kesin; yıldızlı parçaların (pil yuvası, sürücü, motor uzunluğu...) boyutu varsayım.</figcaption>
         </figure>
         <figure>
           <a href="media/drawings/pi4-robot.svg"><img src="media/drawings/pi4-robot.svg" alt="Büyük robot (Pi 4) teknik resmi: üst, ön ve yan görünüş" loading="lazy"></a>
-          <figcaption><b>Büyük robot (Pi 4).</b> Aynı gövde. Pi 4 (85×56 mm) üst katta; yükseklik sığıyor mu, kontrol edilecek. Güç kaynağı kararı bekliyor, çizimde yeri boş bırakıldı.</figcaption>
+          <figcaption><b>Büyük robot (Pi 4).</b> Aynı plakalar; Pi 4 (85×56 mm) üst katta, toplam yükseklik 74,5 mm. Güç kaynağı kararı bekliyor, 70 × 40 × 18 mm'lik yer tutucu ayrıldı.</figcaption>
         </figure>
         <figure>
           <a href="media/drawings/arena.svg"><img src="media/drawings/arena.svg" alt="Arena teknik resmi: üstten plan, duvar kesiti, ön ve yan görünüş" loading="lazy"></a>
@@ -593,7 +604,44 @@
           <figcaption><b>Sistem şeması.</b> Kim kime hangi yolla bağlanıyor: UDP (Pico), ssh ve ROS 2 (Pi 4), Wi-Fi ağı.</figcaption>
         </figure>
       </div>
-      <p class="note">Çizimler <code>tools/drawings/make_drawings.py</code> ile üretilir. Gerçek şasi üretim yöntemi karar bekliyor (karar listesine bak); çizimdeki gövde, simülasyondaki tek kutuyla aynı ölçüdedir.</p>
+      <p class="note">Çizimler <code>tools/drawings/make_drawings.py</code> ile üretilir. Üretim yöntemi önerisi: 3 mm lazer kesim (karar listesine bak). Plakalar simülasyondaki 133 × 90 mm gövdeyle aynı ayak izine sahip.</p>
+    </div>
+  </section>
+
+  <section id="tasarim">
+    <div class="wrap build">
+      <h2>Sanal prototip: tüm tasarım hazır</h2>
+      <p class="intro">Robotun tamamı <b>tek kaynakta</b> (<code>design/design.py</code>) tanımlı. 3B model, teknik resimler, lazer kesim dosyaları, parça listesi ve kablolama bundan üretilir; parçalar çakışıyor mu, delikler kenara çok yakın mı gibi kontroller testle her seferinde sınanır. Fiziksel aşamada tasarım yeniden çizilmez: yalnızca kesilir, monte edilir, gerçek parçalar ölçülüp yıldızlı varsayımlar düzeltilir ve kalibrasyon verisi girilir.</p>
+      <div class="design-status" id="design-status"></div>
+
+      <h3 class="sub">3B model (OpenSCAD): küçük robot (Pico 2 W)</h3>
+      <figure class="wide"><a href="media/design/render-pico-sheet.png"><img src="media/design/render-pico-sheet.png" alt="Küçük robotun 3B modeli: üst, ön, yan ve çapraz görünüş" loading="lazy"></a></figure>
+      <figure class="wide"><a href="media/design/render-pico-exploded.png"><img src="media/design/render-pico-exploded.png" alt="Küçük robotun açılımlı (patlatılmış) montaj görünümü" loading="lazy"></a><figcaption>Montaj sırası (açılımlı görünüm): alttan üste tekerlek ve motorlar, alt plaka, pil, ara parçalar, üst plaka, kartlar.</figcaption></figure>
+      <h3 class="sub">3B model: büyük robot (Pi 4)</h3>
+      <figure class="wide"><a href="media/design/render-pi4-sheet.png"><img src="media/design/render-pi4-sheet.png" alt="Büyük robotun 3B modeli: üst, ön, yan ve çapraz görünüş" loading="lazy"></a></figure>
+      <figure class="wide"><a href="media/design/render-pi4-exploded.png"><img src="media/design/render-pi4-exploded.png" alt="Büyük robotun açılımlı montaj görünümü" loading="lazy"></a></figure>
+
+      <h3 class="sub">İndirilebilir üretim dosyaları</h3>
+      <ul class="plainlist" id="design-files">
+        <li>Lazer kesim (1 birim = 1 mm; kırmızı kes, mavi yerleşim çizgisi): <a href="media/design/laser-pico.svg">laser-pico.svg</a>, <a href="media/design/laser-pi4.svg">laser-pi4.svg</a></li>
+        <li>DXF: <a href="media/design/plate-alt-pico.dxf">alt plaka (Pico)</a>, <a href="media/design/plate-ust-pico.dxf">üst plaka (Pico)</a>, <a href="media/design/plate-alt-pi4.dxf">alt plaka (Pi 4)</a>, <a href="media/design/plate-ust-pi4.dxf">üst plaka (Pi 4)</a></li>
+        <li>3B model (STL): <a href="media/design/robot-pico.stl">robot-pico.stl</a>, <a href="media/design/robot-pi4.stl">robot-pi4.stl</a></li>
+      </ul>
+      <p class="note">İlk kesim için karton ya da ince MDF öneriyoruz: yıldızlı parça ölçüleri henüz varsayım. Parça gelince ölç, <code>design/design.py</code> içinde değiştir, <code>python3 tools/design/build_all.py</code> ile her şeyi yeniden üret.</p>
+
+      <h3 class="sub">Parça listesi</h3>
+      <div class="table-wrap"><table class="maturity" id="bom-pico"></table></div>
+      <div class="table-wrap" style="margin-top:20px"><table class="maturity" id="bom-pi4"></table></div>
+
+      <h3 class="sub">Kablolama</h3>
+      <div class="table-wrap"><table class="maturity" id="wire-pico"></table></div>
+      <ul class="plainlist" id="power-pico"></ul>
+      <div class="table-wrap" style="margin-top:20px"><table class="maturity" id="wire-pi4"></table></div>
+      <ul class="plainlist" id="power-pi4"></ul>
+
+      <h3 class="sub">Kalibrasyon hattı: fiziksel aşama yalnızca veri girişi</h3>
+      <p>Gerçek robotta yapılan ölçümler <code>design/measurements/*.csv</code> dosyalarına yazılır; <code>python3 tools/calibrate.py --firmware</code> motor farkını, gecikmeyi, sensör sapma ve gürültüsünü, robot yarıçapını ve Pico hızını hesaplayıp simülasyona (<code>calibration=True</code>) ve Pico firmware'ine (<code>calibration.py</code>) verir. Hat, bilinen değerlerle üretilmiş sentetik ölçümle test edildi.</p>
+      <div class="design-status" id="cal-status"></div>
     </div>
   </section>
 
@@ -969,7 +1017,7 @@ fetch('data/build.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Prom
   const ph = document.getElementById('build-phases');
   (b.phases || []).forEach(p => { const li = el('li'); li.append(el('b', {}, p.n + '.'), p.name + ': ' + p.goal); ph.append(li); });
   const dec = document.getElementById('build-decisions');
-  (b.decisions || []).forEach(d => { const li = el('li', {}, d.q); li.append(el('small', {}, d.why)); dec.append(li); });
+  (b.decisions || []).forEach(d => { const li = el('li', {}, d.q); li.append(el('small', {}, d.why)); if (d.proposal) li.append(el('small', { class: 'prop' }, d.proposal)); dec.append(li); });
   const body = document.getElementById('build-body');
   (b.targets || []).forEach(t => {
     const sec = el('div', { class: 'target', id: 'yapim-' + t.id });
@@ -1037,6 +1085,45 @@ fetch('data/build.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Prom
     card.append(tl); gb.append(card);
   });
 }).catch(() => { document.getElementById('build-intro').textContent = 'Yapım listesi yüklenemedi.'; });
+
+/* ---------------- tasarim: BOM, kablolama, kontroller, kalibrasyon ---------------- */
+function simpleTable(id, head, rows, classes) {
+  const t = document.getElementById(id); if (!t) return;
+  const th = el('thead'); const hr = el('tr'); head.forEach(h => hr.append(el('th', {}, h))); th.append(hr); t.append(th);
+  const tb = el('tbody'); rows.forEach(r => { const tr = el('tr'); r.forEach((c, i) => { const td = el('td', classes && classes[i] ? { class: classes[i](r) } : {}, String(c)); tr.append(td); }); tb.append(tr); }); t.append(tb);
+}
+fetch('data/bom.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(b => {
+  if (!b) return;
+  [['pico', 'Küçük robot (Pico 2 W)'], ['pi4', 'Büyük robot (Pi 4)']].forEach(([v, name]) => {
+    const rows = (b.variants[v] || []).map(i => [i.name, i.qty, i.group, i.verified ? 'kesin' : 'varsayım *', i.note]);
+    const t = document.getElementById('bom-' + v); if (!t) return;
+    t.append(el('caption', { style: 'text-align:left;font-weight:800;padding-bottom:6px' }, name + ': parça listesi'));
+    simpleTable('bom-' + v, ['Parça', 'Adet', 'Grup', 'Ölçü', 'Not'], rows, [null, null, null, r => r[3] === 'kesin' ? 'ok' : 'guess', null]);
+  });
+});
+fetch('data/wiring.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(w => {
+  if (!w) return;
+  [['pico', 'Küçük robot (Pico 2 W): pin planı'], ['pi4', 'Büyük robot (Pi 4): pin planı (ÖNERİ)']].forEach(([v, name]) => {
+    const x = w.variants[v]; const t = document.getElementById('wire-' + v); if (!t || !x) return;
+    t.append(el('caption', { style: 'text-align:left;font-weight:800;padding-bottom:6px' }, name));
+    simpleTable('wire-' + v, ['Sinyal', 'Kart pini', 'Cihaz', 'Cihaz pini', 'Durum'], x.rows.map(r => [r.signal, r.mcu_pin, r.device, r.device_pin, r.verified ? 'belirlenmiş' : 'öneri']), [null, null, null, null, r => r[4] === 'belirlenmiş' ? 'ok' : 'guess']);
+    const ul = document.getElementById('power-' + v); (x.power || []).forEach(p => ul.append(el('li', {}, p)));
+    if (x.note) ul.append(el('li', {}, x.note));
+  });
+});
+fetch('data/design.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(d => {
+  const box = document.getElementById('design-status'); if (!box || !d) return;
+  Object.entries(d.variants).forEach(([v, x]) => {
+    const bad = x.collisions.length + x.cut_problems.length;
+    box.append(el('span', { class: 'chip ' + (bad ? 'bad' : 'ok') }, (v === 'pico' ? 'Pico' : 'Pi 4') + ': ' + x.parts + ' parça, çakışma ' + x.collisions.length + ', kesim sorunu ' + x.cut_problems.length + ', sığdığı kutu ' + x.envelope_mm.x + ' × ' + x.envelope_mm.y + ' × ' + x.envelope_mm.z + ' mm, varsayım ölçülü parça ' + x.unverified.length));
+  });
+  box.append(el('span', { class: 'chip' }, d.sim_radius_note));
+});
+fetch('data/calibration.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(c => {
+  const box = document.getElementById('cal-status'); if (!box || !c) return;
+  box.append(el('span', { class: 'chip ' + (c.status === 'measured' ? 'ok' : '') }, 'Durum: ' + (c.status === 'measured' ? 'gerçek ölçümle kalibre' : 'nominal (henüz ölçüm yok)')));
+  box.append(el('span', { class: 'chip' }, 'Motor ölçeği: ' + c.motor_scale.join(' / ') + ' · gecikme: ' + c.latency_steps + ' adım · yarıçap: ' + (c.robot_radius_m * 1000).toFixed(0) + ' mm'));
+});
 
 /* ---------------- bulgular (docs/data/findings.json) ---------------- */
 const TYPE_TR = { bulgu: 'Bulgu', karar: 'Karar', donanim: 'Donanım' };

@@ -75,15 +75,37 @@
       "date": "2026-10-07",
       "type": "bulgu",
       "title": "Gazebo ikizi Python simülatörüyle uyumlu çıktı",
-      "text": "Aynı komutları iki dünyada denedik (Python tarafında hareket kinematik formülle birebir aynı, birim testi bunu doğruluyor). 0,2 m/s ile 2 sn düz gitmede Gazebo 0,405-0,416 m, Python 0,400 m. 2,5 rad/s ile 1,5 sn yerinde dönmede Gazebo yaklaşık 0,15-0,28 rad eksik döndü (%4-7). Duvara bakan orta ToF sensörü Gazebo'da 0,333-0,338 m, Python'un ışın hesabında 0,353 m gösterdi: Gazebo sürekli 1-2 cm kısa okuyor, nedenini incelemedik. Bir denemede Gazebo 0,267 m ile 8 cm kısa okudu, nedenini bilmiyoruz. Odometri hızları komutla birebir örtüştü (0,200 m/s ve 2,500 rad/s). Bu, ikizin simülasyonda öğrenilen davranışı aktarmak için yeterince yakın olduğunu gösteriyor; gerçek robotla aynı karşılaştırmayı henüz yapmadık.",
+      "text": "Aynı komutları iki dünyada denedik (Python tarafında hareket kinematik formülle birebir aynı, birim testi bunu doğruluyor). 0,2 m/s ile 2 sn düz gitmede Gazebo 0,403-0,406 m, Python 0,400 m. 2,5 rad/s ile 1,5 sn yerinde dönmede Gazebo 2,45-2,51 rad döndü, Python 2,53 rad (%1-3 eksik). Duvara bakan orta ToF sensörü Gazebo'da 0,331-0,337 m, Python'un ışın hesabında 0,353 m gösterdi: Gazebo tutarlı biçimde 1,6-2,2 cm kısa okuyor, nedenini incelemedik. Odometri hızları komutla birebir örtüştü. Önceki ölçümlerimizde zaman zaman 8 cm'lik sapmalar ve düşük robot hızı görmüştük; sonradan önceki çalıştırmalardan kalan yetim ROS süreçlerinin (eski köprüler ve hareketli engel düğümleri) ortamı kirlettiğini fark ettik. Hepsini temizleyip testi her seferinde süreç grubunu kapatacak şekilde düzelttikten sonra üç denemede sapma görülmedi; eski sapmanın nedeninin bu olduğunu kanıtlamadık. Gerçek robotla aynı karşılaştırmayı henüz yapmadık.",
       "metrics": [
         {
           "label": "Düz gitme (Gazebo / Python)",
-          "value": "0,41 / 0,40 m"
+          "value": "0,404 / 0,400 m"
         },
         {
           "label": "Duvar mesafesi (Gazebo / Python)",
           "value": "0,335 / 0,353 m"
+        }
+      ],
+      "related": []
+    },
+    {
+      "id": "carpisma-yaricapi",
+      "date": "2026-10-07",
+      "type": "bulgu",
+      "title": "Tasarım simülasyondan büyük çıktı; öğrenen modeller bu farka duyarlı, kurallar değil",
+      "text": "Robotun 3B tasarımında arka köşeler tekerlek ekseninden yaklaşık 96 mm uzakta, simülasyondaki çarpışma dairesi ise 75 mm. Farkın etkisini ölçmek için çarpışma yarıçapını 75, 85 ve 95 mm yaptık (Pico engelli senaryo, 100 bölüm). Kurallı kontrolcü %12, %12, %13 çarptı: neredeyse değişmedi. Eski PPO modeli %46, %49, %59, Pico engelleriyle eğitilen model %32, %30, %47 çarptı. Yani eğitilen modeller robotun boyutuna duyarlı. Gerçek robot simülasyondakinden büyükse ilk gerçek denemede çarpma oranı yükselebilir; eğitimi gerçek yarıçapla (ve eksenin gerisindeki merkezle) yenilemek bir sonraki adım.",
+      "metrics": [
+        {
+          "label": "Kurallı (75 → 95 mm)",
+          "value": "%12 → %13"
+        },
+        {
+          "label": "PPO 3 kare (75 → 95 mm)",
+          "value": "%46 → %59"
+        },
+        {
+          "label": "PPO Pico eğitimli (75 → 95 mm)",
+          "value": "%32 → %47"
         }
       ],
       "related": []
@@ -251,5 +273,5 @@
       ]
     }
   ],
-  "updated": "2026-10-07T00:28"
+  "updated": "2026-10-07T12:23"
 }
