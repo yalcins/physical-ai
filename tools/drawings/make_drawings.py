@@ -52,12 +52,16 @@ def robot(kind):
     import design as DS
     pico = kind == 'pico'
     des = DS.build(kind)
+    SP_NAME = des['spec']['name']
     parts = des['parts']
     env = DS.envelope(des)
-    name = 'Küçük robot (Raspberry Pi Pico 2 W)' if pico else 'Büyük robot (Raspberry Pi 4)'
+    name = SP_NAME
     d = Svg(1700, 1020, f'{name} teknik resim',
             'Üst, ön ve yan görünüş; ölçüler milimetre. Parçalar sanal tasarım modelinden (design/design.py) çizilir; yıldızlı ölçüler varsayımdır.')
-    S = 3.7
+    S = 7.0 if pico else 3.7
+    CONE = 22 if pico else 55          # gorus konisi cizim uzunlugu (mm)
+    SP = des['spec']
+    YH = env['y'][1]
     by = {p['name']: p for p in parts}
     pb, pt = des['plate_bottom'], des['plate_top']
 
@@ -94,24 +98,25 @@ def robot(kind):
             footprint(p, '5 3' if p['name'].startswith('caster') else None)
     plate_shape(pb, '#d9b77e')
     for p in parts:                                   # alt kat
-        if p['z0'] >= DS.PLATE_B_Z1 - 1e-6 and p['z1'] <= DS.PLATE_T_Z0 + 1e-6 and not p['name'].startswith(('standoff', 'tof')):
+        if p['z0'] >= SP['plate_b_z1'] - 1e-6 and p['z1'] <= SP['plate_t_z0'] + 1e-6 and not p['name'].startswith(('standoff', 'tof')):
             footprint(p, '5 3')
     for p in parts:
         if p['name'].startswith('motor'):
             footprint(p, '4 3')
     plate_shape(pt, '#d9b77e', 'b0')                   # ust plaka (yari saydam)
     for p in parts:                                   # ust kat + ToF + ara parcalar
-        if p['z0'] >= DS.PLATE_T_Z1 - 1e-6 or p['name'].startswith(('tof', 'standoff')):
+        if p['z0'] >= SP['plate_t_z1'] - 1e-6 or p['name'].startswith(('tof', 'standoff')):
             footprint(p)
     for t in des['tofs']:                              # gorus konileri
         a0 = math.radians(t['ang'])
         pts = [(sx(t['ay']), sy(t['ax']))]
         for k in (-1, 1):
             aa = a0 + k * math.radians(FOV / 2)
-            pts.append((sx(t['ay'] + 55 * math.sin(aa)), sy(t['ax'] + 55 * math.cos(aa))))
+            pts.append((sx(t['ay'] + CONE * math.sin(aa)), sy(t['ax'] + CONE * math.cos(aa))))
         d.poly(pts, SENSOR, SENSOR, 0.8, 0.12)
-    d.line(sx(78), sy(0), sx(-78), sy(0), INK, 1, '14 4 2 4')
-    d.text(sx(-78) + 6, sy(0) - 8, 'tekerlek ekseni', 12, 'start', '#555')
+    ax = YH + 8
+    d.line(sx(ax), sy(0), sx(-ax), sy(0), INK, 1, '14 4 2 4')
+    d.text(sx(-ax) + 6, sy(0) - 8, 'tekerlek orta hatti (referans noktasi)' if pico else 'tekerlek ekseni', 12, 'start', '#555')
     # numaralar
     marks = {}
     for p in parts:
@@ -121,7 +126,7 @@ def robot(kind):
                'motor' if n == 'motor_l' else 'caster' if n == 'caster_ball' else 'tof' if n == 'tof_center' else None)
         if key:
             marks[key] = p
-    order = (['pico'] if pico else ['pi4']) + ['tb6612', 'mpu6050'] + (['regulator', 'battery'] if pico else ['power']) + ['motor', 'tof', 'caster']
+    order = ['pico', 'tb6612', 'battery', 'motor', 'tof', 'caster'] if pico else ['pi4', 'tb6612', 'mpu6050', 'power', 'motor', 'tof', 'caster']
     num = {k: i + 1 for i, k in enumerate(order)}
     for k, p in marks.items():
         if k in num:
@@ -130,11 +135,11 @@ def robot(kind):
             d.circle(sx(cy), sy(cx), 10, PAPER, INK, 1.2)
             d.text(sx(cy), sy(cx) + 5, str(num[k]), 13, 'middle', INK, '700')
     # olculer
-    X0, X1 = DS.BODY_X0, DS.BODY_X1
-    d.dim_v(sy(X1), sy(X0), sx(-67) + 44, f'plaka boyu {X1 - X0:.0f}', ext_from=sx(-45), side='right', rot=True)
-    d.dim_h(sx(67), sx(-67), sy(X0) + 50, f'toplam genişlik {2 * 67:.0f}', ext_from=sy(X0))
-    d.dim_h(sx(DS.TRACK / 2), sx(-DS.TRACK / 2), sy(X0) + 88, f'tekerlek aralığı {DS.TRACK:.0f}', ext_from=sy(X0) + 20)
-    d.dim_h(sx(45), sx(-45), sy(X1) - 78, f'plaka genişliği {90:.0f}', ext_from=sy(X1))
+    X0, X1, HW = SP['plate_b'][0], SP['plate_b'][1], SP['half_w']
+    d.dim_v(sy(X1), sy(X0), sx(-YH) + 44, f'plaka boyu {X1 - X0:.0f}', ext_from=sx(-HW), side='right', rot=True)
+    d.dim_h(sx(YH), sx(-YH), sy(X0) + 50, f'toplam genişlik {2 * YH:.0f}', ext_from=sy(X0))
+    d.dim_h(sx(SP['track'] / 2), sx(-SP['track'] / 2), sy(X0) + 88, f'tekerlek aralığı {SP['track']:.0f}', ext_from=sy(X0) + 20)
+    d.dim_h(sx(HW), sx(-HW), sy(X1) - 78, f'plaka genişliği {2 * HW:.0f}', ext_from=sy(X1))
 
     # ================= ÖNDEN =================
     fx, fg = 1020, 400
@@ -148,9 +153,9 @@ def robot(kind):
         else:
             d.rect(fsx(p['y0']), fsz(p['z1']), (p['y1'] - p['y0']) * S, (p['z1'] - p['z0']) * S, fill_of(p), INK, 1)
     top = env['z'][1]
-    d.dim_h(fsx(-67), fsx(67), fsz(0) + 50, f'toplam genişlik {2 * 67:.0f}', ext_from=fsz(0))
-    d.dim_v(fsz(top), fsz(0), fsx(67) + 40, f'{top:.1f}', ext_from=fsx(67) - 2, side='right')
-    d.dim_v(fsz(DS.TOF_Z), fsz(0), fsx(-67) - 44, f'ToF {DS.TOF_Z:.1f}', ext_from=fsx(-67) + 2, side='left')
+    d.dim_h(fsx(-YH), fsx(YH), fsz(0) + 50, f'toplam genişlik {2 * YH:.0f}', ext_from=fsz(0))
+    d.dim_v(fsz(top), fsz(0), fsx(YH) + 40, f'{top:.1f}', ext_from=fsx(YH) - 2, side='right')
+    d.dim_v(fsz(SP['tof_z']), fsz(0), fsx(-YH) - 44, f'ToF {SP['tof_z']:.1f}', ext_from=fsx(-YH) + 2, side='left')
 
     # ================= YANDAN =================
     yx, yg = 1090, 815
@@ -166,31 +171,31 @@ def robot(kind):
         else:
             d.rect(ysx(p['x0']), ysz(p['z1']), (p['x1'] - p['x0']) * S, (p['z1'] - p['z0']) * S, fill_of(p), INK, 1)
     d.dim_h(ysx(X0), ysx(X1), ysz(0) + 42, f'plaka boyu {X1 - X0:.0f}', ext_from=ysz(0))
-    d.dim_h(ysx(DS.CASTER_X), ysx(0), ysz(0) + 78, f'eksen → sarhoş teker {-DS.CASTER_X:.0f}', ext_from=ysz(0) + 10)
+    d.dim_h(ysx(SP['caster_x']), ysx(0), ysz(0) + 78, f'eksen → sarhoş teker {-SP['caster_x']:.0f}', ext_from=ysz(0) + 10)
     d.dim_v(ysz(top), ysz(0), ysx(X1) + 80, f'{top:.1f} (toplam)', ext_from=ysx(X1) + 4, side='right')
-    d.dim_v(ysz(DS.PLATE_B_Z0), ysz(0), ysx(X0) - 30, f'{DS.PLATE_B_Z0:.1f}', ext_from=ysx(X0), side='left')
-    d.dim_v(ysz(DS.PLATE_T_Z0), ysz(DS.PLATE_B_Z1), ysx(X0) - 30 - 0, f'', ext_from=ysx(X0), side='left') if False else None
-    d.dim_v(ysz(DS.PLATE_T_Z0), ysz(DS.PLATE_B_Z1), ysx(DS.STANDOFFS[0][0]) + 30, f'{DS.DECK_GAP:.0f}', ext_from=ysx(DS.STANDOFFS[0][0]) + 10, side='right')
-    d.dim_v(ysz(DS.TOF_Z), ysz(0), ysx(X1) + 34, f'ToF {DS.TOF_Z:.1f}', ext_from=ysx(X1) + 4, side='right')
+    d.dim_v(ysz(SP['plate_b_z0']), ysz(0), ysx(X0) - 30, f'{SP['plate_b_z0']:.1f}', ext_from=ysx(X0), side='left')
+    d.dim_v(ysz(SP['plate_t_z0']), ysz(SP['plate_b_z1']), ysx(X0) - 30 - 0, f'', ext_from=ysx(X0), side='left') if False else None
+    d.dim_v(ysz(SP['plate_t_z0']), ysz(SP['plate_b_z1']), ysx(SP['standoffs'][0][0]) + 30, f'{SP['deck_gap']:.0f}', ext_from=ysx(SP['standoffs'][0][0]) + 10, side='right')
+    d.dim_v(ysz(SP['tof_z']), ysz(0), ysx(X1) + 34, f'ToF {SP['tof_z']:.1f}', ext_from=ysx(X1) + 4, side='right')
 
     # ================= LEJANT =================
     lx, ly = 1430, 60
     d.text(lx, ly, 'BİLEŞENLER', 15, 'start', INK, '700')
     d.text(lx, ly + 20, 'kesik çizgi = alt kat; * = ölçü varsayım', 12, 'start', '#555')
-    names = {'pico': 'Raspberry Pi Pico 2 W (51×21)', 'pi4': 'Raspberry Pi 4 (85×56×17)', 'tb6612': 'TB6612FNG sürücü *', 'mpu6050': 'MPU6050 *',
-             'regulator': 'S7V7F5 regülatör *', 'battery': '4×AA pil yuvası *', 'power': 'GÜÇ MODÜLÜ (karar bekliyor) *',
+    names = {'pico': 'Pico 2 W (soketli) + 1 katman PCB', 'pi4': 'Raspberry Pi 4 (85×56×17)', 'tb6612': 'TB6612FNG modülü (kartın dışında) *' if pico else 'TB6612FNG sürücü *', 'mpu6050': 'MPU6050 *',
+             'regulator': 'S7V7F5 regülatör *', 'battery': '1S LiPo pil *', 'power': 'GÜÇ MODÜLÜ (karar bekliyor) *',
              'motor': 'N20 motor + enkoder ×2 *', 'tof': 'TOF400C ToF ×3 *', 'caster': 'Bilyeli sarhoş teker *'}
     for i, k in enumerate(order):
         d.text(lx, ly + 48 + i * 22, f'{num[k]}  {names[k]}', 14)
     yy = ly + 48 + len(order) * 22 + 22
     d.text(lx, yy, 'TASARIM (mm)', 15, 'start', INK, '700')
-    rows = [f'Plaka: {X1 - X0:.0f} × 90 × {DS.T:.0f} (lazer kesim)', f'Tekerlek: Ø{DS.WHEEL_D:.0f} × {DS.WHEEL_W:.0f}, aralık {DS.TRACK:.0f}',
-            f'Alt plaka altı: {DS.PLATE_B_Z0:.1f} (motorlar altında)', f'Kat arası: {DS.DECK_GAP:.0f} (M3 × 20)', f'ToF: yerden {DS.TOF_Z:.1f}, {FOV:.0f}° görüş',
-            f'Toplam yükseklik: {top:.1f}', 'Sarhoş teker: eksenin 65 gerisinde']
+    rows = [f'Plaka: {X1 - X0:.0f} × {2 * HW:.0f} × {SP["T"]:.0f} (lazer kesim)', f'Tekerlek: Ø{SP['wheel_d']:.0f} × {SP['wheel_w']:.0f}, aralık {SP['track']:.0f}',
+            f'Alt plaka altı: {SP['plate_b_z0']:.1f} (motorlar altında)', f'Kat arası: {SP["deck_gap"]:.0f} (' + ('M2 × 8' if pico else 'M3 × 20') + ')', f'ToF: yerden {SP['tof_z']:.1f}, {FOV:.0f}° görüş',
+            f'Toplam yükseklik: {top:.1f}', f'Sarhoş teker: referansın {-SP["caster_x"]:.0f} gerisinde']
     for i, t in enumerate(rows):
         d.text(lx, yy + 24 + i * 21, t, 13.5)
     note_y = yy + 24 + len(rows) * 21 + 26
-    notes = (['Yıldızlı parçaların boyutu varsayım:', 'gerçek parça gelince design/design.py', 'güncellenir; bu resim, 3B model, lazer', 'dosyaları ve BOM yeniden üretilir.']
+    notes = (['MİKRO robot: 1S LiPo, regülatör yok.', 'Tek katmanlı PCB üst plakadır.', 'Yıldızlı parça boyutları varsayım:', 'gerçek parça gelince design.py güncellenir.']
              if pico else ['Güç yöntemi seçilince yer tutucu', 'gerçek modülle değiştirilir.', 'Pi 4 üst katta (M2.5 ara parça),', 'toplam yükseklik Pico sürümünden büyük.'])
     d.rect(lx - 8, note_y - 20, 262, 14 + 18 * len(notes), 'none', DIM, 1, '4 3')
     for i, t in enumerate(notes):

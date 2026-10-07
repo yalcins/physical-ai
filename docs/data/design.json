@@ -1,7 +1,7 @@
 {
   "variants": {
     "pico": {
-      "parts": 28,
+      "parts": 37,
       "unverified": [
         "battery",
         "caster_ball",
@@ -9,26 +9,26 @@
         "caster_spacer_p",
         "motor_l",
         "motor_r",
-        "mpu6050",
-        "regulator",
         "tb6612",
         "tof_center",
         "tof_left",
-        "tof_right"
+        "tof_right",
+        "wheel_l",
+        "wheel_r"
       ],
       "envelope_mm": {
-        "x": 133.0,
-        "y": 134.0,
-        "z": 60.5
+        "x": 71.0,
+        "y": 73.0,
+        "z": 39.6
       },
       "collisions": [],
       "cut_problems": [],
       "plate_mm": [
-        133.0,
-        90.0,
-        3.0
+        67.0,
+        55.0,
+        2.0
       ],
-      "deck_gap_mm": 20.0
+      "deck_gap_mm": 8.0
     },
     "pi4": {
       "parts": 27,

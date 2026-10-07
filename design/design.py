@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'pai_gym'))
 from pai_gym import world as W  # noqa: E402
 
-VARIANTS = ('pico', 'pi4')
+VARIANTS = ('pico', 'pi4')      # pico = MIKRO robot (65 x 55 mm), pi4 = buyuk robot
 MM = 1000.0
 
 # ---------------- Simulasyonla ortak (dogrulanmis) ----------------
@@ -104,9 +104,16 @@ def board_holes(origin, spec):
     return [(ox + hx, oy + hy, spec['hole_d'] + 0.3) for hx, hy in spec['holes']]
 
 
-def build(variant):
-    """Bir varyantin tum tasarimini sozluk olarak dondurur."""
-    assert variant in VARIANTS
+# build_pcb/ drawings/ build_all gibi araclar varyanta ozgu olculeri buradan (des['spec']) okur
+BIG_SPEC = dict(name='Büyük robot (Raspberry Pi 4)', T=T, plate_b=(BODY_X0, BODY_X1, BODY_HALF_W), top=(TOP_X0, TOP_X1, BODY_HALF_W), top_is_pcb=False,
+                plate_b_z0=PLATE_B_Z0, plate_b_z1=PLATE_B_Z1, plate_t_z0=PLATE_T_Z0, plate_t_z1=PLATE_T_Z1, deck_gap=DECK_GAP, axle_z=AXLE_Z,
+                wheel_d=WHEEL_D, wheel_w=WHEEL_W, track=TRACK, wheel_x=(0.0, 0.0), caster_x=CASTER_X, standoffs=STANDOFFS, tof_z=TOF_Z,
+                tof_br_w=TOF_BR_W, tof_br_z1=TOF_BR_Z1, slot_fit=SLOT_FIT, tofs=TOFS, half_w=BODY_HALF_W, sim='learner')
+
+
+def _build_big(variant):
+    """Buyuk robot (Pi 4) gövdesi: 133 x 90 mm, O43 tekerlek. (Eski 'pico' sürümü de buradaydı; mikro Pico artik build_micro.)"""
+    assert variant in ('pi4',)
     tofs = tof_geometry()
     parts, bottom_holes, bottom_slots, bottom_marks = [], [], [], []
     top_holes, top_slots, top_marks = [], [], []
@@ -188,7 +195,7 @@ def build(variant):
             p['name'] = f'{base}_{k}'
         seen.add(p['name'])
 
-    return dict(variant=variant, tofs=tofs,
+    return dict(variant=variant, tofs=tofs, spec=BIG_SPEC,
                 plate_bottom=dict(outline=bottom, holes=bottom_holes, slots=bottom_slots, marks=bottom_marks, z0=PLATE_B_Z0, z1=PLATE_B_Z1),
                 plate_top=dict(outline=top, holes=top_holes, slots=top_slots, marks=top_marks, z0=PLATE_T_Z0, z1=PLATE_T_Z1),
                 parts=parts)
@@ -274,6 +281,113 @@ if __name__ == '__main__':
         print('  alt plaka sorun:', hole_problems(d['plate_bottom']) or 'yok', '| ust plaka sorun:', hole_problems(d['plate_top']) or 'yok')
 
 
+# ======================= MIKRO PICO ROBOT (65 x 55 mm, 1S LiPo) =======================
+# Referans noktasi = iki tekerlegin orta noktasi. Tekerlekler arkali onlu (motorlar y'de ust uste biner, x'te 14 mm kayik):
+# diferansiyel surus kinematigi tekerleklerin x konumuna bagli degildir (v_x = v - w*y).
+MICRO = dict(
+    name='Mikro robot (Raspberry Pi Pico 2 W)', T=2.0, t_top=1.6, top_is_pcb=True, corner_r=4.0,
+    plate_b=(-36.0, 31.0, 27.5), top=(-40.0, 18.0, 27.5),                  # PCB arkada 4 mm tasar (tel koprulerin yolu)
+    axle_z=11.0, wheel_d=22.0, wheel_w=8.0, track=65.0, wheel_x=(7.0, -7.0),          # (sol tekerlek x, sag tekerlek x)
+    motor=dict(w=12.0, h=10.0, length=34.0, y_shaft=28.0),                             # sol motor: x = +7, y = 28 -> -6
+    caster_x=-30.0, caster_r=4.75, deck_gap=8.0,
+    standoffs=[(14.0, 24.0), (14.0, -24.0), (-32.0, 24.0), (-32.0, -24.0)], standoff_d=4.0, hole_d=2.2,
+    tof_z=27.0, tof_br_w=12.0, tof_br_z1=36.0, slot_fit=0.2, half_w=27.5, sim='pico_obstacle',
+    tofs=[('left', 26.0, 16.5, 30.0), ('center', 30.0, 0.0, 0.0), ('right', 26.0, -16.5, -30.0)],
+)
+MICRO['plate_b_z0'] = MICRO['axle_z'] + MICRO['motor']['h'] / 2                 # 16
+MICRO['plate_b_z1'] = MICRO['plate_b_z0'] + MICRO['T']                          # 18
+MICRO['plate_t_z0'] = MICRO['plate_b_z1'] + MICRO['deck_gap']                   # 26
+MICRO['plate_t_z1'] = MICRO['plate_t_z0'] + MICRO['t_top']                      # 27.6
+MICRO_PARTS_ON_PCB = {      # PCB uzerindeki parcalarin sinir kutulari (KiCad footprint'lerinden olculdu): (X boyu, Y boyu, yukseklik), kart koordinatinda donme 0
+    'J1': (3.6, 26.5, 8.5), 'J3': (3.6, 13.8, 8.5), 'J4': (3.6, 13.8, 8.5), 'J5': (3.6, 13.8, 8.5), 'J7': (3.6, 11.2, 8.5), 'J8': (3.6, 11.2, 8.5),
+    'J9': (7.0, 5.5, 6.0), 'D1': (5.7, 3.5, 9.0), 'R1': (5.1, 3.0, 7.0), 'R2': (5.1, 3.0, 7.0),
+    'C1': (7.2, 3.0, 6.0), 'C2': (7.0, 6.8, 11.0), 'C4': (7.2, 3.0, 6.0),
+}
+
+
+def _micro_tofs(S):
+    out = []
+    back = S['T'] / 2 + 2.0
+    for name, fwd, side, ang in S['tofs']:
+        a = math.radians(ang)
+        out.append(dict(name=name, cx=fwd - back * math.cos(a), cy=side - back * math.sin(a), ang=ang, ax=fwd, ay=side))
+    return out
+
+
+def build_micro():
+    S = MICRO
+    sys.path.insert(0, str(ROOT / 'design' / 'pcb'))
+    import pcb_design as PCB
+    T_, cr = S['T'], S['corner_r']
+    bx0, bx1, hw = S['plate_b']
+    tx0, tx1, _ = S['top']
+    rr = lambda x0, x1: dict(x0=x0, x1=x1, y0=-hw, y1=hw, r=cr)
+    tofs = _micro_tofs(S)
+    parts, b_holes, b_slots, b_marks, t_holes, t_slots, t_marks = [], [], [], [], [], [], []
+    m = S['motor']
+    z0b, z1b, z0t, z1t, az = S['plate_b_z0'], S['plate_b_z1'], S['plate_t_z0'], S['plate_t_z1'], S['axle_z']
+    parts.append(box('plate_bottom', bx0, bx1, -hw, hw, z0b, z1b, '#d9b77e', True, 'mekanik', '2 mm lazer kesim'))
+    parts.append(box('plate_top', tx0, tx1, -hw, hw, z0t, z1t, '#2e7d32', True, 'kontrol', 'tek katmanli PCB (1,6 mm), lazer plakanin yerine gecer'))
+    for i, (x, y) in enumerate(S['standoffs'], 1):
+        b_holes.append((x, y, S['hole_d']))
+        t_holes.append((x, y, S['hole_d']))
+        parts.append(cylz(f'standoff_{i}', x, y, S['standoff_d'], z1b, z0t, '#c0c0c0', True, 'mekanik', 'M2 x 8 ara parca'))
+    # tekerlekler + motorlar (sol: x = +wheel_x[0], y > 0)
+    for sgn, nm, wx in ((1, 'l', S['wheel_x'][0]), (-1, 'r', S['wheel_x'][1])):
+        yc = sgn * S['track'] / 2
+        parts.append(cyly(f'wheel_{nm}', wx, az, yc - S['wheel_w'] / 2, yc + S['wheel_w'] / 2, S['wheel_d'], '#2b2b2b', False, 'tahrik', 'O22 x 8 (varsayim; mil tipi motora uymali)'))
+        y_out, y_in = sgn * m['y_shaft'], sgn * (m['y_shaft'] - m['length'])
+        parts.append(box(f'motor_{nm}', wx - m['w'] / 2, wx + m['w'] / 2, min(y_out, y_in), max(y_out, y_in), az - m['h'] / 2, az + m['h'] / 2,
+                         '#7d8aa0', False, 'tahrik', 'JGA12-N20B: genislik/yukseklik standart, uzunluk (enkoderli) varsayim 34'))
+        for k, yy in enumerate((4.0, 16.0)):
+            for dx in (-7.0, 7.0):
+                b_slots.append((wx + dx, sgn * yy, 3.4, 1.8, 0.0))
+    parts.append(sphere('caster_ball', S['caster_x'], 0.0, S['caster_r'], S['caster_r'], '#bdbdbd', False, 'tahrik', 'bilyeli sarhos teker O9,5 (model secilecek)'))
+    for yy in (5.0, -5.0):
+        b_holes.append((S['caster_x'], yy, S['hole_d']))
+        parts.append(cylz(f'caster_spacer_{"p" if yy > 0 else "n"}', S['caster_x'], yy, 4.0, 2 * S['caster_r'], z0b, '#c0c0c0', False, 'mekanik', 'teker yuksekligine gore ara parca'))
+    for t in tofs:
+        b_slots.append((t['cx'], t['cy'], S['tof_br_w'] + S['slot_fit'], T_ + S['slot_fit'], t['ang'] + 90.0))
+        parts.append(rbox(f'tof_bracket_{t["name"]}', t['cx'], t['cy'], S['tof_br_w'], T_, z0b, S['tof_br_z1'], t['ang'], '#d9b77e', True, 'algi', 'lazer kesim dikme'))
+        a = math.radians(t['ang'])
+        mw, mh, mt = TOF_MOD
+        parts.append(rbox(f'tof_{t["name"]}', t['ax'] - mt / 2 * math.cos(a), t['ay'] - mt / 2 * math.sin(a), mw, mt, S['tof_z'] - mh / 2, S['tof_z'] + mh / 2, t['ang'],
+                          '#2f6fbd', False, 'algi', 'TOF400C modul boyutu varsayim'))
+    # alt kat: LiPo + TB6612 modulu (kartin disinda)
+    parts.append(box('battery', -34.0, -4.0, -10.0, 10.0, z1b, z1b + 5.5, '#4a4a4a', False, 'guc', '1S LiPo 30 x 20 x 5,5 (varsayim; ornegin 502030)'))
+    parts.append(box('tb6612', -1.0, 19.0, -10.0, 10.0, z1b, z1b + 3.0, '#7b4fc9', False, 'kontrol', 'TB6612FNG modulu 20 x 20 (varsayim); karta 10 telli kablo, motorlara dogrudan'))
+    b_marks += [(-34.0, -10.0, -4.0, 10.0), (-1.0, -10.0, 19.0, 10.0)]
+    # kart: Pico ve yardimci parcalar (yerlesim pcb_design.PLACE'ten)
+    to_robot = lambda X, Y: (tx1 - Y, hw - X)
+    ux, uy, _rot = PCB.PLACE['U1']
+    cx, cy = to_robot(ux, uy)
+    for side, nm in ((1, 'l'), (-1, 'r')):
+        parts.append(box(f'pico_socket_{nm}', cx - 25.4, cx + 25.4, cy + side * 8.89 - 1.27, cy + side * 8.89 + 1.27, z1t, z1t + 8.5, '#222222', True, 'kontrol', '1x20 dişi soket'))
+    parts.append(box('pico', cx - 25.5, cx + 25.5, cy - 10.5, cy + 10.5, z1t + 8.5, z1t + 8.5 + 1.0 + 2.5, '#2e8b57', True, 'kontrol', 'Pico 2 W 51 x 21 (soketli)'))
+    for ref, (sx_, sy_, h) in MICRO_PARTS_ON_PCB.items():
+        X, Y, rot = PCB.PLACE[ref]
+        w_, d_ = (sy_, sx_) if rot % 180 == 90 else (sx_, sy_)
+        x, y = to_robot(X, Y)
+        parts.append(box(ref.lower() + '_part', x - d_ / 2, x + d_ / 2, y - w_ / 2, y + w_ / 2, z1t, z1t + h, '#6b6b6b', True, 'kontrol', f'{ref} (yaklasik sinir kutusu)'))
+    seen = set()
+    for p in parts:
+        base, k = p['name'], 1
+        while p['name'] in seen:
+            k += 1
+            p['name'] = f'{base}_{k}'
+        seen.add(p['name'])
+    return dict(variant='pico', tofs=tofs, spec=S,
+                plate_bottom=dict(outline=rr(bx0, bx1), holes=b_holes, slots=b_slots, marks=b_marks, z0=z0b, z1=z1b),
+                plate_top=dict(outline=rr(tx0, tx1), holes=t_holes, slots=t_slots, marks=t_marks, z0=z0t, z1=z1t),
+                parts=parts)
+
+
+def build(variant):
+    """Bir varyantin tum tasarimini sozluk olarak dondurur (des['spec'] varyanta ozgu olculer)."""
+    assert variant in VARIANTS
+    return build_micro() if variant == 'pico' else _build_big(variant)
+
+
 # ---------------- OpenSCAD'e aktarim ----------------
 def _f(v):
     return f'{v:.4f}'.rstrip('0').rstrip('.') if isinstance(v, float) else str(v)
@@ -305,7 +419,7 @@ def scad_arrays(design):
              f'MARKS_B = {_list(pb["marks"])};', f'Z_B = [{_f(pb["z0"])}, {_f(pb["z1"])}];',
              f'OUT_T = {_list([o(pt)])}[0];', f'HOLES_T = {_list(pt["holes"])};', f'SLOTS_T = {_list(pt["slots"])};',
              f'MARKS_T = {_list(pt["marks"])};', f'Z_T = [{_f(pt["z0"])}, {_f(pt["z1"])}];',
-             f'BRACKET = [{_f(TOF_BR_W)}, {_f(TOF_BR_Z1 - PLATE_B_Z0)}];',
+             f'BRACKET = [{_f(design["spec"]["tof_br_w"])}, {_f(design["spec"]["tof_br_z1"] - design["spec"]["plate_b_z0"])}];',
              f'PARTS = {_list(rows)};']
     return '\n'.join(lines) + '\n'
 

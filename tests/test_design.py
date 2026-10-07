@@ -20,40 +20,57 @@ def test_no_collisions_and_no_cut_problems():
 
 
 def test_matches_simulation_geometry():
-    d = D.build('pico')
+    sys.path.insert(0, str(ROOT / 'pai_gym'))
+    from pai_gym import world as W
+    # --- buyuk robot (ogrenen, Pi 4): world.py'nin tekerlek/sensor sabitleri ---
+    d = D.build('pi4')
+    S = d['spec']
     by = {p['name']: p for p in d['parts']}
-    # tekerlek: simulasyondaki cap ve aralik
-    assert abs((by['wheel_l']['x1'] - by['wheel_l']['x0']) - 43.0) < 1e-6
+    assert abs((by['wheel_l']['x1'] - by['wheel_l']['x0']) - 2 * W.WHEEL_RADIUS * 1000) < 1e-6
+    assert abs(S['track'] - W.WHEEL_SEPARATION * 1000) < 1e-6
     centers = [(by[f'wheel_{s}']['y0'] + by[f'wheel_{s}']['y1']) / 2 for s in 'lr']
-    assert abs(centers[0] - 57.5) < 1e-6 and abs(centers[1] + 57.5) < 1e-6          # iz genisligi 115
-    # ToF acikliklari world.py'deki konumlarda; yukseklik 51.5
+    assert abs(centers[0] - S['track'] / 2) < 1e-6 and abs(centers[1] + S['track'] / 2) < 1e-6
     for t in d['tofs']:
         m = by[f'tof_{t["name"]}']
-        assert abs((m['z0'] + m['z1']) / 2 - D.TOF_Z) < 1e-6
-    assert abs(D.TOF_Z - 51.5) < 1e-6
-    # BILINEN FARK: tasarimin en uzak kosesi (arka kose) eksenden ~96 mm; simulasyonun carpisma dairesi 75 mm.
-    # Bu, tasarimin simulasyondan buyuk oldugunu gosterir (bkz. site bulgusu 'carpisma-yaricapi'). Burada yalnizca sinirlari sabitliyoruz.
-    r = max(math.hypot(x, y) for x in (D.BODY_X0, D.BODY_X1) for y in (-D.BODY_HALF_W, D.BODY_HALF_W))
-    assert 90 < r < 100
-    sim_r = 75.0
-    assert r > sim_r
-    front = max(math.hypot(D.BODY_X1, D.BODY_HALF_W), 0)
-    assert front < sim_r                                         # on kisim simulasyon dairesinin icinde
+        assert abs((m['z0'] + m['z1']) / 2 - S['tof_z']) < 1e-6
+    assert abs(S['tof_z'] - 51.5) < 1e-6
+    # BILINEN FARK: buyuk robotun arka kosesi eksenden ~96 mm, simulasyon dairesi 75 mm (bulgu 'carpisma-yaricapi')
+    r = max(math.hypot(x, y) for x in (S['plate_b'][0], S['plate_b'][1]) for y in (-S['half_w'], S['half_w']))
+    assert 90 < r < 100 and r > W.ROBOT_RADIUS * 1000
+    # --- MIKRO Pico: simulasyondaki hareketli engel (PicoBot) sabitleri ---
+    d = D.build('pico')
+    S = d['spec']
+    by = {p['name']: p for p in d['parts']}
+    assert abs((by['wheel_l']['x1'] - by['wheel_l']['x0']) / 2 - W.PICO_WHEEL_RADIUS * 1000) < 1e-6
+    assert abs(S['track'] - W.PICO_TRACK * 1000) < 1e-6
+    # sensor aciklik konumlari (referans noktasi = iki tekerlegin orta noktasi) PICO_TOF ile ayni
+    sim = {n: (f * 1000, s * 1000, math.degrees(a)) for n, f, s, a in W.PICO_TOF}
+    for n, fwd, side, ang in S['tofs']:
+        assert all(abs(u - v) < 1e-6 for u, v in zip(sim[n], (fwd, side, ang))), n
+    assert abs(sum(S['wheel_x']) / 2) < 1e-9                    # tekerlek merkezlerinin orta noktasi = referans
+    # en uzak nokta (referanstan): plaka kosesi / tekerlek -> PICO_RADIUS'u asmamali (yuvarlak kose payi ile)
+    far = 0.0
+    for p in d['parts']:
+        if p['name'].startswith(('plate', 'wheel')):
+            far = max(far, max(math.hypot(x, y) for x in (p['x0'], p['x1']) for y in (p['y0'], p['y1'])))
+    assert W.PICO_RADIUS * 1000 >= far - 2.0 and W.PICO_RADIUS * 1000 <= far + 4.0, (far, W.PICO_RADIUS)
 
 
 def test_decks_and_heights():
     for v in D.VARIANTS:
         d = D.build(v)
+        S = d['spec']
         e = D.envelope(d)
         assert e['z'][0] == 0.0                                 # zemine degen en alt nokta (tekerlek/teker)
-        # motorlar plakanin altina sigar: motor tepesi = alt plaka tabani
         by = {p['name']: p for p in d['parts']}
-        assert abs(by['motor_l']['z1'] - by['plate_bottom']['z0']) < 1e-6
-        # alt kattaki en yuksek parca ust plakanin altina degmez
-        low = max(p['z1'] for p in d['parts'] if p['z0'] >= D.PLATE_B_Z1 - 1e-6 and p['z1'] <= D.PLATE_T_Z0 + 1e-6 and not p['name'].startswith(('standoff', 'tof')))
-        assert low < D.PLATE_T_Z0
-    assert D.envelope(D.build('pico'))['z'][1] < 62.0           # simulasyondaki govde tepesi 61.5
+        assert abs(by['motor_l']['z1'] - by['plate_bottom']['z0']) < 1e-6      # motorlar plakanin altina sigar
+        top_z = S['plate_t_z0']
+        low = max(p['z1'] for p in d['parts'] if p['z0'] >= S['plate_b_z1'] - 1e-6 and p['z1'] <= top_z + 1e-6 and not p['name'].startswith(('standoff', 'tof')))
+        assert low < top_z                                      # alt kattaki en yuksek parca ust plakaya degmez
+    assert D.envelope(D.build('pico'))['z'][1] < 45.0           # mikro robot: 45 mm'nin altinda
     assert D.envelope(D.build('pi4'))['z'][1] > D.envelope(D.build('pico'))['z'][1]
+    micro = D.envelope(D.build('pico'))
+    assert micro['x'][1] - micro['x'][0] < 75 and micro['y'][1] - micro['y'][0] < 75        # mikro: tekerlekler dahil 75 mm'nin altinda
 
 
 def test_board_holes_match_datasheets():
@@ -65,19 +82,22 @@ def test_board_holes_match_datasheets():
 
 
 def test_standoffs_hit_both_plates():
-    d = D.build('pico')
-    holes_b = {(round(x, 3), round(y, 3)) for x, y, _ in d['plate_bottom']['holes']}
-    holes_t = {(round(x, 3), round(y, 3)) for x, y, _ in d['plate_top']['holes']}
-    for x, y in D.STANDOFFS:
-        assert (x, y) in holes_b and (x, y) in holes_t
+    for v in D.VARIANTS:
+        d = D.build(v)
+        holes_b = {(round(x, 3), round(y, 3)) for x, y, _ in d['plate_bottom']['holes']}
+        holes_t = {(round(x, 3), round(y, 3)) for x, y, _ in d['plate_top']['holes']}
+        for x, y in d['spec']['standoffs']:
+            assert (x, y) in holes_b and (x, y) in holes_t
 
 
 def test_tof_slots_face_sensor_directions():
-    d = D.build('pico')
-    slots = [s for s in d['plate_bottom']['slots'] if abs(s[2] - (D.TOF_BR_W + D.SLOT_FIT)) < 1e-9]
-    assert len(slots) == 3
-    angs = sorted(round((s[4] - 90 + 180) % 360 - 180) for s in slots)
-    assert angs == [-30, 0, 30]                                  # yuvalar sensor yonlerine dik
+    for v in D.VARIANTS:
+        d = D.build(v)
+        S = d['spec']
+        slots = [s for s in d['plate_bottom']['slots'] if abs(s[2] - (S['tof_br_w'] + S['slot_fit'])) < 1e-9]
+        assert len(slots) == 3
+        angs = sorted(round((s[4] - 90 + 180) % 360 - 180) for s in slots)
+        assert angs == [-30, 0, 30]                              # yuvalar sensor yonlerine dik
 
 
 def test_openscad_exports_match_plate_size():
@@ -92,7 +112,10 @@ def test_openscad_exports_match_plate_size():
         subprocess.run(['openscad', '-o', str(out), str(scad)], capture_output=True, check=True)
         head = out.read_text()[:300]
     o = d['plate_bottom']['outline']
-    assert f'width="{o["x1"] - o["x0"]:g}mm"' in head and f'height="{o["y1"] - o["y0"]:g}mm"' in head
+    import re as _re
+    w, h = (float(v) for v in _re.search(r'width="([0-9.]+)mm" height="([0-9.]+)mm"', head).groups())
+    # OpenSCAD SVG sinirini tam sayiya yuvarlar: gercek olcuden en cok 1 mm buyuk olabilir
+    assert 0 <= w - (o['x1'] - o['x0']) <= 1.0 and 0 <= h - (o['y1'] - o['y0']) <= 1.0
 
 
 if __name__ == '__main__':

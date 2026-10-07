@@ -3,81 +3,130 @@
   "variants": {
     "pico": [
       {
-        "name": "Tekerlek Ø43 × 19",
+        "name": "Tekerlek Ø22 × 8 (N20 mil tipine uygun)",
         "qty": 2,
         "group": "tahrik",
-        "verified": true,
-        "note": "Şartname: 43 mm çap, 19 mm genişlik; mil tipi motorla uyumlu olmalı"
+        "verified": false,
+        "note": "Ölçü varsayım; mil D-tipi 3 mm olmalı, lastikli"
       },
       {
         "name": "JGA12-N20B motor (6 V, ~300 dev/dk, enkoderli)",
         "qty": 2,
         "group": "tahrik",
         "verified": false,
-        "note": "Genişlik 12, yükseklik 10 standart; gövde uzunluğu 34 varsayıldı, ölçülecek"
+        "note": "1S LiPo (3,7 V) ile ~185 dev/dk, yaklaşık 0,2 m/s. Genişlik/yükseklik 12 × 10; enkoderli uzunluk 34 varsayıldı"
       },
       {
-        "name": "Bilyeli sarhoş teker (yüksekliği ≈ 21 mm)",
+        "name": "Bilyeli sarhoş teker Ø9,5 (ara parçayla)",
         "qty": 1,
         "group": "tahrik",
         "verified": false,
         "note": "Model seçilecek; ara parça yüksekliği tekere göre ayarlanır"
       },
       {
-        "name": "TB6612FNG motor sürücü kartı",
+        "name": "TB6612FNG motor sürücü modülü",
         "qty": 1,
         "group": "kontrol",
         "verified": false,
-        "note": "Kart boyutu 20 × 20 varsayıldı (çift yüzlü bant)"
+        "note": "Kartın dışında, alt katta; karta 10 telli kablo, motorlara doğrudan kablo. 20 × 20 varsayıldı"
       },
       {
         "name": "TOF400C (VL53L1X) ToF modülü",
         "qty": 3,
         "group": "algı",
         "verified": false,
-        "note": "Modül 13 × 18 × 2 varsayıldı; vida deliği düzeni bilinmiyor, yapıştırma/bant"
+        "note": "Modül 13 × 18 × 2 varsayıldı; dikmeye yapıştırma/bant"
       },
       {
-        "name": "MPU6050 modülü",
+        "name": "Raspberry Pi Pico 2 W",
         "qty": 1,
-        "group": "algı",
+        "group": "kontrol",
+        "verified": true,
+        "note": "Delik düzeni datasheet'ten; kartta 2 × 1×20 dişi soketle"
+      },
+      {
+        "name": "1S LiPo pil (≈30 × 20 × 5,5, korumalı) + harici şarj cihazı",
+        "qty": 1,
+        "group": "güç",
         "verified": false,
-        "note": "20 × 16 varsayıldı"
+        "note": "Boyut varsayım (örn. 502030); kutup yönü JST-PH girişine göre DOĞRULANACAK. Kart şarj etmez"
       },
       {
-        "name": "Lazer kesim alt plaka (3 mm)",
+        "name": "1N5819 Schottky diyot (dikey)",
+        "qty": 1,
+        "group": "güç",
+        "verified": true,
+        "note": "Pil → VSYS"
+      },
+      {
+        "name": "Lazer kesim alt plaka (2 mm)",
         "qty": 1,
         "group": "mekanik",
         "verified": true,
         "note": "laser-pico.svg"
       },
       {
-        "name": "Lazer kesim üst plaka (3 mm)",
-        "qty": 1,
-        "group": "mekanik",
-        "verified": true,
-        "note": "laser-pico.svg"
-      },
-      {
-        "name": "Lazer kesim ToF dikmesi (3 mm)",
+        "name": "Lazer kesim ToF dikmesi (2 mm)",
         "qty": 3,
         "group": "mekanik",
         "verified": true,
         "note": "laser-pico.svg"
       },
       {
-        "name": "M3 × 20 ara parça (dişi-dişi) ya da M3 cıvata + somun",
+        "name": "Tek katmanlı PCB (1,6 mm FR1/FR4, 55 × 58)",
+        "qty": 1,
+        "group": "kontrol",
+        "verified": true,
+        "note": "design/pcb; fab lab frezesi, bakır altta"
+      },
+      {
+        "name": "2,54 mm dişi soket 1×20 (Pico için)",
+        "qty": 2,
+        "group": "kontrol",
+        "verified": true,
+        "note": ""
+      },
+      {
+        "name": "2,54 mm dişi soket 1×5 (ToF) ve erkek başlık 1×4 (enkoder), 1×10 (sürücü), 1×2 (anahtar)",
+        "qty": 1,
+        "group": "kontrol",
+        "verified": true,
+        "note": "3 + 2 + 1 + 1 adet"
+      },
+      {
+        "name": "JST-PH 2 pin (kart konnektörü) + pil kablosu",
+        "qty": 1,
+        "group": "güç",
+        "verified": true,
+        "note": ""
+      },
+      {
+        "name": "Kayar anahtar ya da toggle (pil + hattında)",
+        "qty": 1,
+        "group": "güç",
+        "verified": false,
+        "note": "pil kablosuna seri lehimlenir (kartta anahtar başlığı yok)"
+      },
+      {
+        "name": "Direnç 100 k (1/4 W) ×2, kondansatör 100 nF ×2 ve 100 µF/10 V ×1",
+        "qty": 1,
+        "group": "güç",
+        "verified": true,
+        "note": "pil bölücüsü, filtre, motor gücü"
+      },
+      {
+        "name": "Tel köprü (≈0,5 mm yalıtımlı tel, 1 adet)",
+        "qty": 1,
+        "group": "elektrik",
+        "verified": true,
+        "note": "W2 (3V3): Pico'nun üstünden geçer (tek katmanlı kartta iki adayı birleştirir)"
+      },
+      {
+        "name": "M2 × 8 ara parça + M2 vida/somun",
         "qty": 4,
         "group": "mekanik",
         "verified": true,
-        "note": "plakalar arası"
-      },
-      {
-        "name": "M3 × 8 vida",
-        "qty": 8,
-        "group": "mekanik",
-        "verified": true,
-        "note": "ara parça uçları (yaklaşık)"
+        "note": "plakalar ve PCB arası"
       },
       {
         "name": "Kablo bağı (motorları plakaya bağlamak)",
@@ -87,60 +136,11 @@
         "note": "her motora 2 adet"
       },
       {
-        "name": "Dupont/jumper kablo seti",
-        "qty": 1,
-        "group": "elektrik",
-        "verified": true,
-        "note": "tezgâh ve ilk montaj"
-      },
-      {
-        "name": "Çift yüzlü bant (köpük)",
+        "name": "Çift yüzlü bant",
         "qty": 1,
         "group": "mekanik",
         "verified": true,
-        "note": "kartları plakaya yapıştırmak için"
-      },
-      {
-        "name": "Raspberry Pi Pico 2 W (başlık pinli)",
-        "qty": 1,
-        "group": "kontrol",
-        "verified": true,
-        "note": "Delik düzeni datasheet'ten (47 × 11,4)"
-      },
-      {
-        "name": "M2 × 4 ara parça + M2 vida/somun",
-        "qty": 4,
-        "group": "mekanik",
-        "verified": true,
-        "note": "Pico için"
-      },
-      {
-        "name": "4×AA pil yuvası (tek sıra) + 4 NiMH AA",
-        "qty": 1,
-        "group": "güç",
-        "verified": false,
-        "note": "Yuva boyutu 58 × 52 × 16 varsayıldı; Velcro ile bağlanır"
-      },
-      {
-        "name": "Pololu S7V7F5 (5 V regülatör)",
-        "qty": 1,
-        "group": "güç",
-        "verified": false,
-        "note": "Kart boyutu 15 × 17 varsayıldı"
-      },
-      {
-        "name": "1N5819 Schottky diyot",
-        "qty": 1,
-        "group": "güç",
-        "verified": true,
-        "note": "regülatör → VSYS"
-      },
-      {
-        "name": "Velcro şerit (pil bağı)",
-        "qty": 1,
-        "group": "mekanik",
-        "verified": true,
-        "note": ""
+        "note": "LiPo ve TB6612 modülü için"
       }
     ],
     "pi4": [
