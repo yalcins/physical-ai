@@ -109,7 +109,8 @@
           "state": "todo",
           "phase": 2
         }
-      ]
+      ],
+      "group": "world"
     },
     {
       "id": "host",
@@ -146,7 +147,11 @@
           "kind": "yazılım",
           "state": "todo",
           "cmd": "ssh-copy-id kullanici@pi4-ip",
-          "phase": 5
+          "phase": 5,
+          "group": [
+            "server",
+            "pi4"
+          ]
         },
         {
           "text": "Bilgisayarda testleri çalıştır; hepsi geçmeli (simülatör, robot arayüzü, Pico ve Pi 4 kodları). ROS 2 / Gazebo entegrasyon testi ayrı: --ros ile 1-2 dakika sürer.",
@@ -155,7 +160,8 @@
           "cmd": "tests/run_all.sh\ntests/run_all.sh --ros",
           "phase": 2
         }
-      ]
+      ],
+      "group": "server"
     },
     {
       "id": "pico",
@@ -256,54 +262,63 @@
       ],
       "steps": [
         {
-          "text": "Parçaları say ve eksik olanları sipariş et (parça listesi yukarıda).",
+          "text": "Parçaları say: sipariş edilenleri parça listesiyle (aşağıda) karşılaştır ve eksikleri not et.",
           "kind": "fiziksel",
           "state": "todo",
-          "phase": 3
+          "phase": 3,
+          "today": true
         },
         {
           "text": "Breadboard'da güç hattını kur: 4xAA -> S7V7F5 -> 1N5819 -> Pico VSYS. Bağlamadan önce regülatör çıkışını multimetreyle ölç (5 V).",
           "kind": "fiziksel",
           "state": "todo",
-          "phase": 3
+          "phase": 3,
+          "today": true,
+          "cmd": "# yalnızca GP26'da bölücü direnç varsa:\n>>> import bench_test as b\n>>> b.pil()"
         },
         {
           "text": "TB6612'yi bağla (GP16-GP22). Motor gücü (VM) pil hattından gelir, Pico ise USB ile beslenir; Pico GND, pil GND ve TB6612 GND ortak olmalı. Kodsuz motor testi: geçici olarak STBY, PWMA ve AIN1'i Pico'nun 3V3 pinine, AIN2'yi GND'ye bağla, sol motor dönmeli. Sağ motor için PWMB, BIN1, BIN2 ile aynısı.",
           "kind": "fiziksel",
           "state": "todo",
-          "phase": 3
+          "phase": 3,
+          "today": true
         },
         {
           "text": "Enkoderleri bağla (sol GP10/GP11, sağ GP12/GP13). Enkoder besleme gerilimini motorun veri sayfasından kontrol et. Kodsuz kontrol: multimetreyle çıkış pinini izlerken tekerleği yavaşça çevir; gerilim düşük ve yüksek arasında geçmeli. Darbeleri saymak aşama 4'te.",
           "kind": "fiziksel",
           "state": "todo",
-          "phase": 3
+          "phase": 3,
+          "today": true
         },
         {
           "text": "Üç ToF sensörünü I2C'ye bağla (SDA GP4, SCL GP5), XSHUT'ları GP6, GP7, GP8'e ver. Kodsuz kontrol: her sensörün besleme pininde doğru gerilimi ölç. Sensörleri görmek (I2C taraması) aşama 4'te.",
           "kind": "fiziksel",
           "state": "todo",
-          "phase": 3
+          "phase": 3,
+          "today": true
         },
         {
-          "text": "MicroPython (Pico 2 W için, micropython.org/download adresindeki RPI_PICO2_W .uf2) indir. BOOTSEL düğmesine basılı tutarak USB tak; çıkan sürücüye .uf2 dosyasını kopyala.",
+          "text": "MicroPython'u Pico 2 W'ye kur: micropython.org/download adresinden RPI_PICO2_W .uf2 dosyasını indir. BOOTSEL düğmesine basılı tutarak USB tak; çıkan sürücüye .uf2 dosyasını kopyala. Bu yalnızca yorumlayıcıyı kurar; robot yazılımı (main.py) bugün yüklenmiyor.",
           "kind": "fiziksel",
-          "state": "later",
-          "phase": 4
-        },
-        {
-          "text": "Tezgâh testi, motor ve enkoder: Pico'yu USB ile bağla, REPL'de sol enkoder çıkışına kesme koyup tekerleği elle çevir, sayacın arttığını gör.",
-          "kind": "fiziksel",
-          "state": "later",
+          "state": "todo",
           "phase": 4,
-          "cmd": "mpremote connect auto repl\nfrom machine import Pin\nn = 0\ndef f(p):\n    global n; n += 1\nPin(10, Pin.IN).irq(trigger=Pin.IRQ_RISING, handler=f)\n# tekerleği çevir, sonra:\nprint(n)"
+          "today": true
         },
         {
-          "text": "Tezgâh testi, ToF: I2C taraması yap. Sensörleri önce tek tek bağlayıp her birini gör (adresi 0x29 bekleniyor). Üç sensörün ayrı adres alması, firmware'in XSHUT ile yaptığı adres ataması çalışınca doğrulanır.",
+          "text": "Tezgâh testi, motor ve enkoder (tekerlekler yerden kesik!): bench_test.py'yi Pico'ya kopyala, REPL'de her motoru iki yönde dene, sonra tekerlekleri elle çevirip enkoder darbelerini say. Betik motoru en çok 3 sn ve %60 güçle çalıştırır.",
           "kind": "fiziksel",
-          "state": "later",
+          "state": "todo",
           "phase": 4,
-          "cmd": "mpremote connect auto repl\nfrom machine import I2C, Pin\ni2c = I2C(0, sda=Pin(4), scl=Pin(5))\nprint([hex(a) for a in i2c.scan()])"
+          "cmd": "mpremote connect auto cp firmware/pico2w/bench_test.py :\nmpremote connect auto repl\n>>> import bench_test as b\n>>> b.motor('sol')\n>>> b.motor('sol', geri=True)\n>>> b.motor('sag')\n>>> b.motor('sag', geri=True)\n>>> b.enkoder()",
+          "today": true
+        },
+        {
+          "text": "Tezgâh testi, ToF: I2C taraması yap (b.tara()). Sensörleri önce tek tek bağla ve her birinin 0x29 adresinde göründüğünü gör. İstersen vl53l1x.py ve tof.py'yi de kopyalayıp mesafeyi cetvelle karşılaştır (b.tof()). Üç sensörün ayrı adres alması firmware aşamasında doğrulanır.",
+          "kind": "fiziksel",
+          "state": "todo",
+          "phase": 4,
+          "cmd": ">>> b.tara()\n>>> b.tara((6,))   # yalnızca 1. sensörün XSHUT'u açık\n# isteğe bağlı mesafe testi:\nmpremote connect auto cp firmware/pico2w/vl53l1x.py firmware/pico2w/tof.py :\n>>> b.tof()",
+          "today": true
         },
         {
           "text": "Tezgâh testleri geçince her şeyi şasiye monte et: tekerlekler arası 115 mm, sarhoş teker 65 mm arkada, sensörler yerden yaklaşık 5 cm.",
@@ -354,7 +369,8 @@
           "phase": 4,
           "arena": true
         }
-      ]
+      ],
+      "group": "pico"
     },
     {
       "id": "pi4",
@@ -443,7 +459,8 @@
           "cmd": "python3 host/fleet.py deploy\npython3 host/fleet.py run-policy\npython3 host/fleet.py stop",
           "arena": true
         }
-      ]
+      ],
+      "group": "pi4"
     },
     {
       "id": "calib",
@@ -461,7 +478,11 @@
           "text": "Şasiyi ölç: tekerlek çapı, iki tekerlek arası, sensör konumları. pai_gym/world.py ve arena_sim/urdf/pai_bot.urdf'taki değerleri düzelt.",
           "kind": "fiziksel",
           "state": "todo",
-          "phase": 6
+          "phase": 6,
+          "group": [
+            "pico",
+            "pi4"
+          ]
         },
         {
           "text": "Düz git komutu ver (0,2 m/s); 1 m'yi kaç saniyede aldığını ölç. Simülasyonda beklenen: 5,0 sn (Gazebo 2 sn'de 0,405-0,416 m gitti, Python 0,400 m). Fark büyükse tekerlek çapını ya da motor hızını kontrol et.",
@@ -488,9 +509,11 @@
           "text": "Pico robotun gerçek hızını (komut 0,20 m/s) ve yarıçapını ölç. Simülasyondaki 'pico2' senaryosu 7,5 cm yarıçap ve en çok 0,20 m/s varsayıyor. Fark çıkarsa pai_gym/pai_gym/world.py içinde PicoBot ayarlarını güncelle ve pico2 deneylerini yeniden çalıştır (evaluate.py).",
           "kind": "yazılım",
           "state": "todo",
-          "phase": 6
+          "phase": 6,
+          "group": "pico"
         }
-      ]
+      ],
+      "group": "ai"
     },
     {
       "id": "test",
@@ -513,9 +536,144 @@
           "cmd": "python3 pai_gym/log_finding.py --id sim-gercek --title \"...\" --text \"...\" --publish",
           "phase": 7
         }
-      ]
+      ],
+      "group": "ai"
     }
   ],
   "bench_note": "Tezgâh denemesinde tekerlek, sarhoş teker ve şasi gerekmez. ToF sensörleri firmware olmadan tek tek denenir; üçünün adres ataması firmware aşamasına (daha sonra) bağlı.",
-  "arena_note": "“arena gerekir” etiketi, o adımın 2 x 2 m arenada yapılması gerektiğini gösterir. Etiketsiz adımlar tezgâhta ya da arenasız yapılabilir."
+  "arena_note": "“arena gerekir” etiketi, o adımın 2 x 2 m arenada yapılması gerektiğini gösterir. Etiketsiz adımlar tezgâhta ya da arenasız yapılabilir.",
+  "today": {
+    "group": "pico",
+    "title": "Bugün: Pico robot tezgâh denemesi",
+    "goal": "Bir Pico robotun elektroniğini breadboard'da kurup güç hattını, iki motoru, iki enkoderi ve ToF sensörünü doğrulamak. Şasiye montaj ve robot yazılımının (main.py) yüklenmesi bugün yok.",
+    "before": [
+      "Parçaları say; eksikleri not et (Küçük robot parça listesi aşağıda).",
+      "Multimetre, USB veri kablosu, breadboard ve jumper kablolar hazır olsun.",
+      "Tekerlekleri motorlardan çıkar ya da robotu kutu üstüne koy: tekerlekler havada dönsün."
+    ],
+    "safety": [
+      "Güç hattı tasarımdaki gibi: 4×AA → S7V7F5 → 1N5819 → Pico VSYS. Regülatör çıkışını bağlamadan önce multimetreyle ölç (yaklaşık 5 V).",
+      "Pil kutusunu ters bağlama; bağlantıları pil takılı değilken yap.",
+      "Motor testi en çok 3 sn ve %60 güç: bench_test.py bunu zaten sınırlıyor.",
+      "Bir şey ısınır, kokar ya da duman çıkarırsa pili hemen çıkar.",
+      "GP26 (pil ölçümü) pinine pil gerilimini DOĞRUDAN bağlama: 4×AA 3,3 V'u aşar, pin zarar görür. Önce bölücü direnç gerekir; yoksa b.pil() denemesini atla."
+    ],
+    "success": [
+      "Regülatör çıkışı ölçüldü (yaklaşık 5 V).",
+      "Sol ve sağ motor ayrı ayrı iki yönde dönüyor.",
+      "Her tekerlek elle çevrilince ilgili enkoder darbe sayıyor.",
+      "ToF sensörü I2C taramasında 0x29 adresinde görünüyor.",
+      "(İsteğe bağlı) ToF mesafesi cetvelle uyuşuyor."
+    ],
+    "record": [
+      "Regülatör çıkış gerilimi (V).",
+      "Motor başına: döndü mü, ileri komutta tekerlek öne mi döndü?",
+      "Tekerleği 1 tam tur çevirince enkoder darbe sayısı (sol ve sağ).",
+      "ToF: ölçülen mesafe ve cetvelle fark (cm).",
+      "Sorunlar ve fotoğraflar (öğrenci yüzü ve adı olmadan)."
+    ]
+  },
+  "groups": [
+    {
+      "id": "pico",
+      "name": "Grup 1 · Hareketli cisimler (Pico)",
+      "mission": "Arenadaki hareketli engelleri yap: 2 küçük robot (Raspberry Pi Pico 2 W). Rastgele dolaşırlar, öğrenmezler.",
+      "deliverables": [
+        "2 robot: şasi, 2 motor, enkoder ve 3 ToF çalışıyor",
+        "Firmware yüklü, Wi-Fi'de IP alıyor",
+        "Gerçek hız ve yarıçap ölçümü (simülasyonla karşılaştırmak için)"
+      ],
+      "needs": [
+        "Parçalar (sipariş edildi)",
+        "Wi-Fi adı, şifresi ve sabit IP'ler (Grup 4)",
+        "Hazır arena (Grup 3), son testte"
+      ],
+      "gives": [
+        "Robotların IP adresleri → Grup 4",
+        "Hız ve boyut ölçümleri → Grup 5"
+      ],
+      "first": "Bugün: tezgâh denemesi"
+    },
+    {
+      "id": "pi4",
+      "name": "Grup 2 · Büyük robotlar (Pi 4)",
+      "mission": "Görev çözen 2 robot: Raspberry Pi 4 üzerinde ROS 2 ve eğitilmiş politika çalışacak.",
+      "deliverables": [
+        "2 robot: Pi 4, motor sürücü ve 3 ToF kablolu",
+        "Sürücü düğümü çalışıyor (/cmd_vel, /tof_*/range)",
+        "Politika robotun üstünde çalışıyor, komutla durdurulabiliyor"
+      ],
+      "needs": [
+        "Güç yöntemi kararı",
+        "Politika dosyası ve ssh anahtarı (Grup 4)",
+        "Wi-Fi ve sabit IP (Grup 4)"
+      ],
+      "gives": [
+        "Pin planı ve kablolama şeması → depo ve teknik resim",
+        "Çalışan robotlar → Grup 5"
+      ],
+      "first": "Güç yöntemine karar ver ve parçaları al"
+    },
+    {
+      "id": "world",
+      "name": "Grup 3 · Dünya (arena)",
+      "mission": "2 × 2 m arenayı kur: duvarlar, sabit engeller, zemin ve işaretler.",
+      "deliverables": [
+        "İç ölçü 2000 × 2000 mm, iki köşegen eşit",
+        "Merkez (0,0) işaretli; kutu ve silindir koordinatlarında",
+        "Mat, düz zemin; duvar yüzeyi ToF için uygun"
+      ],
+      "needs": [
+        "Teknik resim (Teknik çizimler bölümü)",
+        "MDF ve zemin malzemesi"
+      ],
+      "gives": [
+        "Hazır arena → Grup 1, 2 ve 5 (son testler)",
+        "Gerçek ölçüler: köşegenler ve engel konumları → Grup 5"
+      ],
+      "first": "Duvarları kes ve birleştir"
+    },
+    {
+      "id": "server",
+      "name": "Grup 4 · Sunucu ve bilgisayar",
+      "mission": "Ağı kur ve robotları yönet: yönlendirici, sabit IP, ssh, host/fleet.py; politika gönderimi ve testler.",
+      "deliverables": [
+        "2,4 GHz robot ağı, her robota sabit IP",
+        "host/fleet.json dolu; fleet.py status hepsini görüyor",
+        "ssh anahtarları; politika gönderme, başlatma ve durdurma çalışıyor",
+        "tests/run_all.sh yeşil"
+      ],
+      "needs": [
+        "Robot IP'leri (Grup 1 ve 2)",
+        "Eğitilmiş politika (Grup 5)"
+      ],
+      "gives": [
+        "Ağ bilgileri → Grup 1 ve 2",
+        "fleet.py ile yönetim → Grup 5"
+      ],
+      "first": "Robot ağını kur, sabit IP ver"
+    },
+    {
+      "id": "ai",
+      "name": "Grup 5 · Yapay zekâ denemeleri",
+      "mission": "Toplam deneme: simülasyon-gerçek farkını ölç, politikayı gerçek robotla sına, sonuçları bulgu olarak kaydet.",
+      "deliverables": [
+        "Düz gitme, dönme ve ToF ölçümleri, simülasyonla karşılaştırma",
+        "Gerçek robotta 10 bölümlük deneme ve çarpma oranı",
+        "Bulgular siteye (log_finding.py)",
+        "Gerekirse gerçek ölçülerle yeni eğitim"
+      ],
+      "needs": [
+        "Çalışan robotlar (Grup 1 ve 2)",
+        "Arena (Grup 3)",
+        "Ağ ve fleet.py (Grup 4)"
+      ],
+      "gives": [
+        "Bulgular ve deney sonuçları → site",
+        "Güncellenen simülasyon ayarları → herkes"
+      ],
+      "first": "Simülasyon referans değerlerini oku; ölçüm tablosunu hazırla"
+    }
+  ],
+  "groups_note": "Sıra: Grup 1 (bugün tezgâh denemesi), Grup 2 (karar bekliyor), Grup 3 ve Grup 4 hemen başlar ve birbirinden bağımsızdır. Grup 4 ağı en erken kurmalı, çünkü Grup 1 ve 2'nin Wi-Fi adımları ona bağlı. Grup 5 gerçek ölçümleri son yapar, ama simülasyon hazırlığı şimdiden hazır."
 }

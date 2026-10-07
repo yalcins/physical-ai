@@ -46,9 +46,11 @@
     max-width: 1120px; margin: 0 auto 40px; display: flex;
     justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
   }
-  .brand { font: 800 20px/1 var(--display); letter-spacing: -.01em; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  .brand { font: 800 20px/1 var(--display); letter-spacing: -.01em; text-decoration: none; color: inherit; }
   .brand small { font: 400 14px var(--body); opacity: .75; margin-left: 8px; }
-  .topbar nav { display: flex; gap: 20px; font-size: 16px; }
+  .topbar nav { display: flex; flex-wrap: wrap; row-gap: 6px; gap: 6px 20px; font-size: 16px; }
   .topbar nav a { text-decoration: none; opacity: .85; white-space: nowrap; }
   .topbar nav a:hover { opacity: 1; text-decoration: underline; }
 
@@ -121,6 +123,37 @@
   .sims figcaption { font-size: 16px; margin-top: 10px; }
   .sims figcaption b { font-family: var(--display); }
   .sims .shot { display: block; margin-top: 8px; font-size: 15px; }
+  .sub { font: 800 20px var(--display); margin: 32px 0 0; }
+  .sims3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 14px; }
+  .sims3 figure, .stills3 figure, .stills4 figure, .drawings figure { margin: 0; }
+  .sims3 video { width: 100%; height: auto; display: block; border: 2px solid var(--ink); border-radius: 6px; background: var(--ink); }
+  .sims3 figcaption, .stills3 figcaption, .stills4 figcaption { font-size: 15px; margin-top: 8px; }
+  .stills3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 14px; }
+  .stills4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 14px; }
+  .stills3 img, .stills4 img { width: 100%; height: auto; display: block; border: 2px solid var(--ink); border-radius: 6px; }
+  .drawings { display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; margin-top: 28px; }
+  .drawings img { width: 100%; height: auto; display: block; border: 2px solid var(--ink); border-radius: 6px; background: #f7f5ee; }
+  .drawings figcaption { font-size: 16px; margin-top: 10px; }
+  .today-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 48px; margin-top: 18px; }
+  .today-cols h3 { margin-bottom: 8px; }
+  .plainlist { margin: 0; padding-left: 22px; font-size: 16px; }
+  .plainlist li { margin-bottom: 6px; }
+  .plainlist.warn li::marker { color: var(--laser); }
+  .plainlist.ok li::marker { color: var(--mat); }
+  .groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; margin-top: 18px; }
+  .group { border: 2px solid var(--ink); border-radius: 8px; padding: 20px; min-width: 0; }
+  .group h3 { margin: 0 0 6px; }
+  .group h4 { font: 700 15px var(--display); margin: 14px 0 4px; }
+  .group ul { margin: 0; padding-left: 20px; font-size: 15px; }
+  .group .tasks { list-style: none; padding: 0; margin: 6px 0 0; }
+  .group .tasks li { padding: 4px 0 4px 24px; position: relative; border-bottom: 1px solid rgba(29,43,42,.12); font-size: 15px; }
+  .group .tasks li::before { position: absolute; left: 0; top: 4px; font-weight: 800; }
+  .group .tasks .todo::before { content: "\25CB"; opacity: .6; }
+  .group .tasks .later::before { content: "\25D0"; opacity: .7; }
+  .group .tasks .done::before { content: "\2713"; color: var(--mat); }
+  .group .first { font-size: 15px; background: var(--ink); color: var(--paper); border-radius: 4px; padding: 3px 10px; display: inline-block; margin-bottom: 8px; }
+  .gchip { display: inline-block; font-size: 12px; padding: 0 7px; border-radius: 4px; margin-right: 6px; background: var(--sensor); color: var(--ink); }
+  .bsteps .tag.today { background: var(--laser); color: #fff; }
   .arch-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; margin-top: 40px; }
   .arch h3 { font: 800 22px var(--display); margin: 0 0 12px; }
   .flow { list-style: none; margin: 0 0 8px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; counter-reset: flow; }
@@ -182,7 +215,7 @@
   .bsteps li { position: relative; padding: 8px 0 8px 36px; border-bottom: 1px solid rgba(29,43,42,.15); font-size: 16px; }
   .bsteps li::before { position: absolute; left: 0; top: 8px; width: 24px; text-align: center; font-weight: 800; }
   .bsteps .todo::before { content: "\25CB"; opacity: .6; }
-  .bsteps .later::before { content: "\23F8"; opacity: .7; }
+  .bsteps .later::before { content: "\25D0"; opacity: .7; }
   .bsteps .done::before { content: "\2713"; color: var(--mat); }
   .bsteps .tag { display: inline-block; font-size: 12px; padding: 0 7px; border-radius: 4px; margin-right: 8px; background: var(--ink); color: var(--paper); }
   .bsteps .tag.later { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
@@ -215,23 +248,24 @@
     .hero-grid, .robot { grid-template-columns: 1fr; }
     .worlds { grid-template-columns: 1fr; }
     .arch-cols { grid-template-columns: 1fr; gap: 32px; }
-    .sims { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .sims, .sims3, .stills3, .drawings, .today-cols, .groups { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .stills4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .flow { grid-template-columns: 1fr; }
     .finding { grid-template-columns: 1fr; gap: 8px; }
     .hero { padding-bottom: 40px; }
     .topbar { margin-bottom: 24px; }
-    .topbar nav { width: 100%; overflow-x: auto; gap: 16px; font-size: 15px; padding-bottom: 4px; }
+    .topbar nav { width: 100%; overflow-x: auto; flex-wrap: nowrap; gap: 16px; font-size: 15px; padding-bottom: 4px; }
     .sim { order: -1; }
     h1 { margin-top: 0; }
   }
   @media (pointer: coarse) { .pad { display: grid; } }
 </style>
 </head>
-<body>
+<body id="top">
 
 <header class="hero">
   <div class="topbar">
-    <div class="brand">Physical AI Arena <small>Hisar School · Advanced AI</small></div>
+    <a class="brand" href="#top" aria-label="Sayfanın başına git">Physical AI Arena <small>Hisar School · Advanced AI</small></a>
     <nav>
       <a href="#dunyalar">Üç dünya</a>
       <a href="#simulasyonlar">Simülasyon</a>
@@ -239,6 +273,9 @@
       <a href="#deneyler">Deneyler</a>
       <a href="#bulgular">Bulgular</a>
       <a href="#robot">Robot</a>
+      <a href="#cizimler">Çizimler</a>
+      <a href="#bugun">Bugün</a>
+      <a href="#gruplar">Gruplar</a>
       <a href="#yapim">Yapım</a>
       <a href="#plan">Dönem planı</a>
       <a href="#basla">Başla</a>
@@ -319,23 +356,63 @@
 
   <section id="simulasyonlar">
     <div class="wrap">
-      <h2>Simülasyonda iş başında</h2>
-      <p class="intro">Aynı eğitilmiş politika iki ayrı simülatörde robotu sürüyor: solda hızlı Python dünyası, sağda ROS 2 ve Gazebo ikizi. Her iki video da ekran açılmadan, bellekte çizilerek kaydedildi ve yaklaşık 6 saniye sürüyor.</p>
-      <div class="sims">
+      <h2>Simülasyon: son denemeler, üç yönden</h2>
+      <p class="intro">Aynı eğitilmiş politika iki ayrı simülatörde robotu sürüyor: hızlı Python dünyası ve ROS 2 ile Gazebo ikizi. Gazebo denemesini aynı anda üstten, önden ve yandan kaydettik. Tüm videolar pencere açılmadan alındı ve yaklaşık 6 saniye sürüyor.</p>
+
+      <h3 class="sub">Gazebo: son deneme (üst, ön, yan)</h3>
+      <div class="sims3">
         <figure>
-          <video controls muted loop playsinline preload="metadata" poster="media/pai-gym.png" aria-label="Python simülatöründe politikanın robotu sürmesi, ustten görünüm">
-            <source src="media/pai-gym.mp4" type="video/mp4">
+          <video controls muted loop playsinline preload="metadata" poster="media/sim/trial-top.png" aria-label="Gazebo son deneme, üstten görünüm">
+            <source src="media/sim/trial-top.mp4" type="video/mp4">
           </video>
-          <figcaption><b>Python / Gymnasium.</b> PPO, 3 kare hafıza. Turuncu daire robot, yeşil koniler ToF sensörleri, kırmızı daireler hareketli engeller. 40 farklı başlangıç arasından çarpmadan biten ve hareketli engele en çok yaklaşan bölüm seçildi, yani bu bir ortalama değil, seçilmiş bir an.<a class="shot" href="media/pai-gym.png">Ekran görüntüsü</a></figcaption>
+          <figcaption><b>Üstten.</b> Mavi kutu sabit engel; kırmızı silindirler iki hareketli engel ve bir sabit silindir; açık renkli kutu robot.</figcaption>
         </figure>
         <figure>
-          <video controls muted loop playsinline preload="metadata" poster="media/gazebo.png" aria-label="Gazebo simülatöründe politikanın robotu sürmesi, tepeden kamera">
-            <source src="media/gazebo.mp4" type="video/mp4">
+          <video controls muted loop playsinline preload="metadata" poster="media/sim/trial-front.png" aria-label="Gazebo son deneme, önden görünüm">
+            <source src="media/sim/trial-front.mp4" type="video/mp4">
           </video>
-          <figcaption><b>ROS 2 / Gazebo.</b> Sitedeki "Öğrenmiş" politika (<code>ppo-500k-f3</code>), ROS 2 konularıyla (<code>/tof_*/range</code> ve <code>/cmd_vel</code>) robotu sürüyor. Tepeden bir kamera arenayı görüyor; mavi kutu sabit engel, kırmızı silindirler iki hareketli engel ve bir sabit silindir. Video, kayıt betiğinin son çalıştırmasının çıktısı; içeriğine bakılarak seçilmedi.<a class="shot" href="media/gazebo.png">Ekran görüntüsü</a></figcaption>
+          <figcaption><b>Önden.</b> Arenanın güney tarafından, hafif yukarıdan bakış.</figcaption>
+        </figure>
+        <figure>
+          <video controls muted loop playsinline preload="metadata" poster="media/sim/trial-side.png" aria-label="Gazebo son deneme, yandan görünüm">
+            <source src="media/sim/trial-side.mp4" type="video/mp4">
+          </video>
+          <figcaption><b>Yandan.</b> Arenanın doğu tarafından bakış.</figcaption>
         </figure>
       </div>
-      <p class="note">Python tarafındaki model ile sitedeki politikanın 500 rastgele sensör okumasında aynı eylemi seçtiğini ayrıca doğruladık. Videolar <code>pai_gym/record.py</code> ve <code>tools/capture_gazebo/run.sh</code> ile üretilir.</p>
+      <p class="note">Sitedeki "Öğrenmiş" politika (<code>ppo-500k-f3</code>) ROS 2 konularıyla (<code>/tof_*/range</code>, <code>/cmd_vel</code>) robotu sürüyor. Üç video aynı denemenin kayıtları; içeriğine bakılarak seçilmedi. Gazebo'da hareketli engeller henüz sekerek giden toplar; Pico robot benzeri engeller yalnızca Python simülatöründe var.</p>
+
+      <h3 class="sub">Python simülatörü</h3>
+      <div class="sims">
+        <figure>
+          <video controls muted loop playsinline preload="metadata" poster="media/pai-gym-pico2.png" aria-label="Python simülatöründe gerçek Pico engelleriyle deneme">
+            <source src="media/pai-gym-pico2.mp4" type="video/mp4">
+          </video>
+          <figcaption><b>Gerçek Pico benzeri engellerle.</b> Hareketli engeller, firmware'deki rastgele dolaşmayı yapan 7,5 cm yarıçaplı simüle Pico robotlar. Model: Pico engelleriyle ve rastgele bozukluklarla eğitilmiş PPO. 40 başlangıç arasından çarpmadan biten ve engele en çok yaklaşan bölüm seçildi; yani bu bir ortalama değil, seçilmiş bir an.<a class="shot" href="media/pai-gym-pico2.png">Ekran görüntüsü</a></figcaption>
+        </figure>
+        <figure>
+          <video controls muted loop playsinline preload="metadata" poster="media/pai-gym.png" aria-label="Python simülatöründe politikanın robotu sürmesi, üstten görünüm">
+            <source src="media/pai-gym.mp4" type="video/mp4">
+          </video>
+          <figcaption><b>Sekerek giden toplarla (ilk senaryo).</b> PPO, 3 kare hafıza. Turuncu daire robot, yeşil koniler ToF sensörleri, kırmızı daireler hareketli engeller. Bu da seçilmiş bir an.<a class="shot" href="media/pai-gym.png">Ekran görüntüsü</a></figcaption>
+        </figure>
+      </div>
+
+      <h3 class="sub">Tüm simülasyon, üç yönden (robot doğma noktasında)</h3>
+      <div class="stills3">
+        <figure><a href="media/sim/scene-top.png"><img src="media/sim/scene-top.png" alt="Arena ve robot, üstten" loading="lazy"></a><figcaption>Üstten</figcaption></figure>
+        <figure><a href="media/sim/scene-front.png"><img src="media/sim/scene-front.png" alt="Arena ve robot, önden" loading="lazy"></a><figcaption>Önden</figcaption></figure>
+        <figure><a href="media/sim/scene-side.png"><img src="media/sim/scene-side.png" alt="Arena ve robot, yandan" loading="lazy"></a><figcaption>Yandan</figcaption></figure>
+      </div>
+
+      <h3 class="sub">Robot yakın çekim: simülasyondaki hâli</h3>
+      <div class="stills4">
+        <figure><a href="media/sim/close-top.png"><img src="media/sim/close-top.png" alt="Robot, üstten yakın çekim" loading="lazy"></a><figcaption>Üstten</figcaption></figure>
+        <figure><a href="media/sim/close-front.png"><img src="media/sim/close-front.png" alt="Robot, önden yakın çekim" loading="lazy"></a><figcaption>Önden (3 mavi ToF sensörü)</figcaption></figure>
+        <figure><a href="media/sim/close-side.png"><img src="media/sim/close-side.png" alt="Robot, yandan yakın çekim" loading="lazy"></a><figcaption>Yandan</figcaption></figure>
+        <figure><a href="media/sim/close-iso.png"><img src="media/sim/close-iso.png" alt="Robot, önden çapraz yakın çekim" loading="lazy"></a><figcaption>Önden çapraz</figcaption></figure>
+      </div>
+      <p class="note">Simülasyondaki robot tek bir gövde kutusu ve iki tekerlekten oluşur; gerçek robotun yerleşimi için aşağıdaki <a href="#cizimler">Teknik çizimler</a> bölümüne bak. Görüntüler <code>tools/capture_gazebo/run.sh</code> ve <code>pai_gym/record.py</code> ile üretilir.</p>
     </div>
   </section>
 
@@ -494,6 +571,56 @@
     </div>
   </section>
 
+  <section id="cizimler">
+    <div class="wrap">
+      <h2>Teknik çizimler</h2>
+      <p class="intro">Yapılacak her şeyin ölçülü çizimi: iki robot, arena ve sistem şeması. Ölçüler simülasyonla aynı kaynaklardan (<code>world.py</code>, <code>pai_bot.urdf</code>, <code>arena.sdf</code>) üretilir, böylece çizim ile simülasyon ayrışmaz. Büyütmek için çizime tıkla.</p>
+      <div class="drawings">
+        <figure>
+          <a href="media/drawings/pico-robot.svg"><img src="media/drawings/pico-robot.svg" alt="Küçük robot (Pico 2 W) teknik resmi: üst, ön ve yan görünüş" loading="lazy"></a>
+          <figcaption><b>Küçük robot (Pico 2 W).</b> Üç görünüş. Tekerlek, gövde ve sensör ölçüleri kesin; kart ve pil yerleşimi <b>öneri</b> (yer tutucu), parçalar gelince kontrol edilecek.</figcaption>
+        </figure>
+        <figure>
+          <a href="media/drawings/pi4-robot.svg"><img src="media/drawings/pi4-robot.svg" alt="Büyük robot (Pi 4) teknik resmi: üst, ön ve yan görünüş" loading="lazy"></a>
+          <figcaption><b>Büyük robot (Pi 4).</b> Aynı gövde. Pi 4 (85×56 mm) üst katta; yükseklik sığıyor mu, kontrol edilecek. Güç kaynağı kararı bekliyor, çizimde yeri boş bırakıldı.</figcaption>
+        </figure>
+        <figure>
+          <a href="media/drawings/arena.svg"><img src="media/drawings/arena.svg" alt="Arena teknik resmi: üstten plan, duvar kesiti, ön ve yan görünüş" loading="lazy"></a>
+          <figcaption><b>Arena.</b> 2000 × 2000 mm iç ölçü, 18 mm MDF, 120 mm yükseklik. Engellerin koordinatları, Pico robotların ve öğrenen robotun başlangıç noktaları işaretli.</figcaption>
+        </figure>
+        <figure>
+          <a href="media/drawings/system.svg"><img src="media/drawings/system.svg" alt="Sistem şeması: bilgisayar, yönlendirici, Pico ve Pi 4 robotlar, arena" loading="lazy"></a>
+          <figcaption><b>Sistem şeması.</b> Kim kime hangi yolla bağlanıyor: UDP (Pico), ssh ve ROS 2 (Pi 4), Wi-Fi ağı.</figcaption>
+        </figure>
+      </div>
+      <p class="note">Çizimler <code>tools/drawings/make_drawings.py</code> ile üretilir. Gerçek şasi üretim yöntemi karar bekliyor (karar listesine bak); çizimdeki gövde, simülasyondaki tek kutuyla aynı ölçüdedir.</p>
+    </div>
+  </section>
+
+  <section id="bugun">
+    <div class="wrap build">
+      <h2 id="today-title">Bugün: Pico robot tezgâh denemesi</h2>
+      <p class="intro" id="today-goal">Yükleniyor.</p>
+      <div class="today-cols">
+        <div><h3>Başlamadan önce</h3><ul class="plainlist" id="today-before"></ul></div>
+        <div><h3>Güvenlik</h3><ul class="plainlist warn" id="today-safety"></ul></div>
+        <div><h3>Başarı ölçütü</h3><ul class="plainlist ok" id="today-success"></ul></div>
+        <div><h3>Kaydedilecekler</h3><ul class="plainlist" id="today-record"></ul></div>
+      </div>
+      <h3 style="margin-top:28px">Bugünün adımları</h3>
+      <ol class="bsteps" id="today-steps"></ol>
+    </div>
+  </section>
+
+  <section id="gruplar">
+    <div class="wrap build">
+      <h2>Beş grup, beş iş paketi</h2>
+      <p class="intro">Hareketli cisimleri yapan, Pi 4'leri kuran, dünyayı oluşturan, sunucu ve bilgisayar sistemini yöneten ve toplam yapay zekâ denemelerini yapan beş grup. Her grubun görevi, çıktısı ve diğer gruplarla alışverişi aşağıda.</p>
+      <p class="note" id="groups-note"></p>
+      <div class="groups" id="groups-body"></div>
+    </div>
+  </section>
+
   <section id="yapim">
     <div class="wrap build">
       <h2>Yapım rehberi: fiziksel işler</h2>
@@ -540,7 +667,7 @@ python play.py --mode model      # eğitilmiş robotu izle</code></pre>
 
 <footer>
   <div class="wrap">
-    <span>Hisar School · Advanced AI · 11. ve 12. sınıflar</span>
+    <span>Hisar School · Advanced AI</span>
     <span>Sedat Yalçın · <a href="https://github.com/yalcins/physical-ai">github.com/yalcins/physical-ai</a></span>
   </div>
 </footer>
@@ -818,9 +945,25 @@ fetch('data/robot.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null
   setLayout(cfg.default || layouts[0].id);
 }).catch(() => {});
 
-/* ---------------- yapim rehberi (docs/data/build.json) ---------------- */
+/* ---------------- yapim rehberi, bugun ve gruplar (docs/data/build.json) ---------------- */
 const KIND_TR = { fiziksel: 'Fiziksel', 'yazılım': 'Yazılım' };
 fetch('data/build.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Promise.reject()).then(b => {
+  const gname = {}; (b.groups || []).forEach((g, i) => { gname[g.id] = 'Grup ' + (i + 1); });
+  const groupsOf = (t, s) => [].concat(s.group || t.group || []);
+  function stepItem(t, s, withGroup) {
+    const li = el('li', { class: s.state });
+    if (withGroup) groupsOf(t, s).forEach(g => li.append(el('span', { class: 'gchip' }, gname[g] || g)));
+    li.append(el('span', { class: 'tag' }, KIND_TR[s.kind] || s.kind));
+    if (s.today) li.append(el('span', { class: 'tag today' }, 'bugün'));
+    if (s.state === 'later') li.append(el('span', { class: 'tag later' }, 'daha sonra'));
+    if (s.arena) li.append(el('span', { class: 'tag arena' }, 'arena gerekir'));
+    li.append(document.createTextNode(s.text + ' '), el('small', {}, '(aşama ' + s.phase + ')'));
+    if (s.cmd) li.append(el('pre', {}, s.cmd));
+    return li;
+  }
+  const fillList = (id, items) => { const ul = document.getElementById(id); (items || []).forEach(x => ul.append(el('li', {}, x))); };
+
+  /* --- yapim rehberi --- */
   document.getElementById('build-intro').textContent = b.intro + ' Son güncelleme: ' + new Date(b.updated).toLocaleDateString('tr-TR', { dateStyle: 'long' }) + '.';
   if (b.arena_note) document.getElementById('build-intro').append(' ' + b.arena_note);
   const ph = document.getElementById('build-phases');
@@ -852,17 +995,46 @@ fetch('data/build.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : Prom
     const right = el('div');
     right.append(el('h4', {}, 'Adım adım'));
     const ol = el('ol', { class: 'bsteps' });
-    t.steps.forEach(s => {
-      const li = el('li', { class: s.state });
-      li.append(el('span', { class: 'tag' }, KIND_TR[s.kind] || s.kind));
-      if (s.state === 'later') li.append(el('span', { class: 'tag later' }, 'daha sonra'));
-      if (s.arena) li.append(el('span', { class: 'tag arena' }, 'arena gerekir'));
-      li.append(document.createTextNode(s.text + ' '), el('small', {}, '(aşama ' + s.phase + ')'));
-      if (s.cmd) li.append(el('pre', {}, s.cmd));
-      ol.append(li);
-    });
+    t.steps.forEach(s => ol.append(stepItem(t, s, true)));
     right.append(ol);
     cols.append(left, right); sec.append(cols); body.append(sec);
+  });
+
+  /* --- bugun --- */
+  const td = b.today;
+  if (td) {
+    document.getElementById('today-title').textContent = td.title;
+    document.getElementById('today-goal').textContent = td.goal;
+    fillList('today-before', td.before); fillList('today-safety', td.safety);
+    fillList('today-success', td.success); fillList('today-record', td.record);
+    const ol = document.getElementById('today-steps');
+    (b.targets || []).forEach(t => t.steps.filter(s => s.today).forEach(s => ol.append(stepItem(t, s, false))));
+  }
+
+  /* --- gruplar --- */
+  document.getElementById('groups-note').textContent = b.groups_note || '';
+  const gb = document.getElementById('groups-body');
+  (b.groups || []).forEach((g, i) => {
+    const card = el('article', { class: 'group', id: 'grup-' + g.id });
+    card.append(el('h3', {}, g.name), el('p', {}, g.mission));
+    if (g.first) card.append(el('span', { class: 'first' }, 'İlk iş: ' + g.first));
+    [['Çıktısı', g.deliverables], ['İhtiyacı olan', g.needs], ['Başkalarına verdiği', g.gives]].forEach(([title, items]) => {
+      card.append(el('h4', {}, title));
+      const ul = el('ul'); (items || []).forEach(x => ul.append(el('li', {}, x))); card.append(ul);
+    });
+    const mine = [];
+    (b.targets || []).forEach(t => t.steps.forEach(s => { if (groupsOf(t, s).includes(g.id)) mine.push(s); }));
+    const done = mine.filter(s => s.state === 'done').length;
+    mine.sort((x, y) => x.phase - y.phase);          // aşama sırasıyla (kararlı sıralama)
+    card.append(el('h4', {}, 'Görevler: ' + done + ' / ' + mine.length + ' tamam'));
+    const tl = el('ul', { class: 'tasks' });
+    mine.forEach(s => {
+      const li = el('li', { class: s.state });
+      if (s.today) li.append(el('span', { class: 'tag today', style: 'display:inline-block;font-size:12px;padding:0 7px;border-radius:4px;margin-right:6px;background:var(--laser);color:#fff' }, 'bugün'));
+      li.append(document.createTextNode(s.text.length > 150 ? s.text.slice(0, 147).replace(/\s+\S*$/, '') + '…' : s.text));
+      tl.append(li);
+    });
+    card.append(tl); gb.append(card);
   });
 }).catch(() => { document.getElementById('build-intro').textContent = 'Yapım listesi yüklenemedi.'; });
 

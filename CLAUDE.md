@@ -113,3 +113,8 @@ Simülatörde davranış değişikliği yaparsan eski sonuçların aynı kaldı�
 ## Simülasyon kayıtları (docs/media/)
 `pai_gym/record.py` (pygame, pencere açmaz) ve `tools/capture_gazebo/run.sh` (Gazebo başsız, tepeden kamera) 6 sn'lik PNG + MP4 üretir.
 Gazebo kaydı için `colcon build` yapılmış olmalı, .venv'siz terminalde çalıştır. Depodaki `arena.sdf`'e dokunulmaz, kamera geçici bir kopyaya eklenir.
+
+## Gruplar, bugünkü plan, çizimler (site)
+`docs/data/build.json` ayrıca `groups` (5 grup: Pico, Pi 4, dünya, sunucu, AI denemeleri), `today` (bugünkü Pico tezgâh denemesi) ve adımlarda `group`/`today` alanları taşır; site bunları çizer.
+Teknik çizimler `tools/drawings/make_drawings.py` ile üretilir (`docs/media/drawings/*.svg`); ölçüler world.py, pai_bot.urdf ve arena.sdf'ten okunur. Parça yerleşimi ÖNERİdir, gerçek parçalar gelince güncelle.
+Gazebo kayıtları: `tools/capture_gazebo/run.sh [stills|trial]` (docs/media/sim/); Python: `pai_gym/record.py`. Pico tezgâh testi: `firmware/pico2w/bench_test.py` (main.py'den bağımsız, REPL'de).
