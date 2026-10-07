@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path[:0] = [str(Path(__file__).resolve().parent), str(ROOT / 'pai_gym')]
+sys.path[:0] = [str(Path(__file__).resolve().parent), str(ROOT / 'pai_gym'), str(ROOT / 'design')]
 
 from svgkit import BODY, DIM, GRID, INK, PAPER, SENSOR, WHEEL, Svg  # noqa: E402
 from pai_gym import world as W  # noqa: E402
@@ -39,127 +39,165 @@ TOTAL_W = TRACK + WHEEL_W                      # 134
 S = 3.8   # px / mm
 
 
+def rot_rect_pts(cx, cy, w, d, ang):
+    """z etrafinda donmus dikdortgenin kosegen noktalari (w: acinin dik yonu, d: kalinlik)."""
+    a = math.radians(ang)
+    ux, uy = -math.sin(a), math.cos(a)          # genislik yonu
+    vx, vy = math.cos(a), math.sin(a)           # kalinlik yonu
+    return [(cx + sx * w / 2 * ux + sy * d / 2 * vx, cy + sx * w / 2 * uy + sy * d / 2 * vy) for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+
+
 def robot(kind):
+    """Teknik resim, TASARIMDAN (design/design.py) uretilir: ayni parcalar 3B modelde de kullanilir."""
+    import design as DS
     pico = kind == 'pico'
+    des = DS.build(kind)
+    parts = des['parts']
+    env = DS.envelope(des)
     name = 'Küçük robot (Raspberry Pi Pico 2 W)' if pico else 'Büyük robot (Raspberry Pi 4)'
-    d = Svg(1700, 1000, f'{name} teknik resim',
-            'Üst, ön ve yan görünüş; ölçüler milimetre. Tekerlek, gövde ve sensör ölçüleri simülasyonla aynıdır.')
+    d = Svg(1700, 1020, f'{name} teknik resim',
+            'Üst, ön ve yan görünüş; ölçüler milimetre. Parçalar sanal tasarım modelinden (design/design.py) çizilir; yıldızlı ölçüler varsayımdır.')
+    S = 3.7
+    by = {p['name']: p for p in parts}
+    pb, pt = des['plate_bottom'], des['plate_top']
+
+    def fill_of(p):
+        return p['color']
 
     # ================= ÜSTTEN =================
-    ox, oy = 380, 500
-    sx = lambda y: ox - y * S           # robotun solu (y>0) ekranin solunda
-    sy = lambda x: oy - x * S           # on yukari
+    ox, oy = 360, 520
+    sx = lambda y: ox - y * S
+    sy = lambda x: oy - x * S
     d.text(ox, 52, 'ÜSTTEN GÖRÜNÜŞ', 17, 'middle', INK, '700')
-    for sgn in (1, -1):                 # tekerlekler
-        d.rect(sx(sgn * TRACK / 2 + WHEEL_W / 2), sy(WR), WHEEL_W * S, 2 * WR * S, WHEEL, INK, 1.2)
-    d.circle(sx(0), sy(CASTER_X), CASTER_R * S, '#cfcfcf', INK, 1, '5 3')              # sarhos teker (govdenin altinda)
-    d.rect(sx(45), sy(BODY_X1), 90 * S, bx * S, BODY, INK, 2)                           # govde
 
-    # bilesenler: (no, merkez x, merkez y, x boyu, y boyu, dolgu, alt kat mi)
-    if pico:
-        parts = [(6, 0, 31.5, 12, 27, '#d9d9d9', True), (6, 0, -31.5, 12, 27, '#d9d9d9', True),
-                 (5, -65, 0, 35, 76, '#e9e4d4', True), (2, -30, 22, 16, 20, '#c9b8e8', True),
-                 (4, -55, 18, 12, 17, '#f3e08a', True),
-                 (1, 10, 0, 51, 21, '#9bd49b', False), (3, -28, -22, 20, 16, '#f0c0a0', False)]
-    else:
-        parts = [(6, 0, 31.5, 12, 27, '#d9d9d9', True), (6, 0, -31.5, 12, 27, '#d9d9d9', True),
-                 (2, -40, -22, 16, 20, '#c9b8e8', True), (3, -40, 22, 20, 16, '#f0c0a0', True),
-                 (4, -72, -28, 14, 24, '#f3e08a', True),
-                 (1, -20, 0, 85, 56, '#9bd49bb8', False)]
-    done = set()
-    for n, px_, py_, lx_, ly_, col, low in parts:
-        d.rect(sx(py_ + ly_ / 2), sy(px_ + lx_ / 2), ly_ * S, lx_ * S, col, INK, 1.2, '5 3' if low else None)
-        if n not in done:
-            done.add(n)
-            d.circle(sx(py_), sy(px_), 10, PAPER, INK, 1.2)
-            d.text(sx(py_), sy(px_) + 5, str(n), 13, 'middle', INK, '700')
-    for (n, f, s_, ang) in TOFS:                                                        # ToF konileri + sensorler
-        a0 = math.radians(ang)
-        pts = [(sx(s_), sy(f))]
+    def plate_shape(pl, fill, opacity_hex=''):
+        o = pl['outline']
+        d.rect(sx(o['y1']), sy(o['x1']), (o['y1'] - o['y0']) * S, (o['x1'] - o['x0']) * S, fill + opacity_hex, INK, 1.6, None, o['r'] * S)
+        for (x, y, dia) in pl['holes']:
+            d.circle(sx(y), sy(x), dia / 2 * S, PAPER, INK, 1)
+        for (x, y, l, w, ang) in pl['slots']:
+            d.poly([(sx(py_), sy(px_)) for px_, py_ in rot_rect_pts(x, y, w, l, ang - 90 if False else ang)], PAPER, INK, 1)
+
+    def footprint(p, dash=None, opacity=1.0, outline=INK):
+        k = p['kind']
+        if k == 'cyly':
+            d.rect(sx(p['y1']), sy(p['x1']), (p['y1'] - p['y0']) * S, (p['x1'] - p['x0']) * S, fill_of(p), outline, 1.2)
+        elif k == 'box':
+            d.rect(sx(p['y1']), sy(p['x1']), (p['y1'] - p['y0']) * S, (p['x1'] - p['x0']) * S, fill_of(p), outline, 1.2, dash)
+        elif k == 'rbox':
+            d.poly([(sx(py_), sy(px_)) for px_, py_ in rot_rect_pts(p['cx'], p['cy'], p['w'], p['d'], p['ang'])], fill_of(p), outline, 1.2, opacity)
+        elif k in ('cylz', 'sphere'):
+            d.circle(sx(p['cy']), sy(p['cx']), (p['d'] / 2 if k == 'cylz' else p['r']) * S, fill_of(p), outline, 1.2, dash)
+
+    for p in parts:                                   # tekerlekler, motorlar, sarhos teker (alt)
+        if p['name'].startswith(('wheel', 'caster')):
+            footprint(p, '5 3' if p['name'].startswith('caster') else None)
+    plate_shape(pb, '#d9b77e')
+    for p in parts:                                   # alt kat
+        if p['z0'] >= DS.PLATE_B_Z1 - 1e-6 and p['z1'] <= DS.PLATE_T_Z0 + 1e-6 and not p['name'].startswith(('standoff', 'tof')):
+            footprint(p, '5 3')
+    for p in parts:
+        if p['name'].startswith('motor'):
+            footprint(p, '4 3')
+    plate_shape(pt, '#d9b77e', 'b0')                   # ust plaka (yari saydam)
+    for p in parts:                                   # ust kat + ToF + ara parcalar
+        if p['z0'] >= DS.PLATE_T_Z1 - 1e-6 or p['name'].startswith(('tof', 'standoff')):
+            footprint(p)
+    for t in des['tofs']:                              # gorus konileri
+        a0 = math.radians(t['ang'])
+        pts = [(sx(t['ay']), sy(t['ax']))]
         for k in (-1, 1):
             aa = a0 + k * math.radians(FOV / 2)
-            pts.append((sx(s_ + 55 * math.sin(aa)), sy(f + 55 * math.cos(aa))))
+            pts.append((sx(t['ay'] + 55 * math.sin(aa)), sy(t['ax'] + 55 * math.cos(aa))))
         d.poly(pts, SENSOR, SENSOR, 0.8, 0.12)
-        d.add(f'<g transform="translate({sx(s_):.1f},{sy(f):.1f}) rotate({-ang})"><rect x="{-5 * S:.1f}" y="{-1.5 * S:.1f}" '
-              f'width="{10 * S:.1f}" height="{3 * S:.1f}" fill="{SENSOR}" stroke="{INK}" stroke-width="1"/></g>')
-    d.circle(sx(0), sy(47), 10, PAPER, INK, 1.2)
-    d.text(sx(0), sy(47) + 5, '7', 13, 'middle', INK, '700')
-    d.circle(sx(0), sy(CASTER_X), 10, PAPER, INK, 1.2)
-    d.text(sx(0), sy(CASTER_X) + 5, '8', 13, 'middle', INK, '700')
-    d.line(sx(78), sy(0), sx(-78), sy(0), INK, 1, '14 4 2 4')                           # tekerlek ekseni
+    d.line(sx(78), sy(0), sx(-78), sy(0), INK, 1, '14 4 2 4')
     d.text(sx(-78) + 6, sy(0) - 8, 'tekerlek ekseni', 12, 'start', '#555')
-    # olculer (disarida, tekerleklere carpmayacak sekilde)
-    d.dim_v(sy(BODY_X1), sy(BODY_X0), sx(-TOTAL_W / 2) + 44, f'gövde boyu {bx:.0f}', ext_from=sx(45), side='right', rot=True)
-    d.dim_h(sx(TOTAL_W / 2), sx(-TOTAL_W / 2), sy(BODY_X0) + 50, f'toplam genişlik {TOTAL_W:.0f}', ext_from=sy(BODY_X0))
-    d.dim_h(sx(TRACK / 2), sx(-TRACK / 2), sy(BODY_X0) + 88, f'tekerlek aralığı {TRACK:.0f}', ext_from=sy(BODY_X0) + 20)
+    # numaralar
+    marks = {}
+    for p in parts:
+        n = p['name']
+        key = ('pico' if n == 'pico' else 'pi4' if n == 'pi4' else 'tb6612' if n == 'tb6612' else 'mpu6050' if n == 'mpu6050' else
+               'regulator' if n == 'regulator' else 'battery' if n in ('battery',) else 'power' if n == 'power_placeholder' else
+               'motor' if n == 'motor_l' else 'caster' if n == 'caster_ball' else 'tof' if n == 'tof_center' else None)
+        if key:
+            marks[key] = p
+    order = (['pico'] if pico else ['pi4']) + ['tb6612', 'mpu6050'] + (['regulator', 'battery'] if pico else ['power']) + ['motor', 'tof', 'caster']
+    num = {k: i + 1 for i, k in enumerate(order)}
+    for k, p in marks.items():
+        if k in num:
+            cx = (p['x0'] + p['x1']) / 2
+            cy = (p['y0'] + p['y1']) / 2
+            d.circle(sx(cy), sy(cx), 10, PAPER, INK, 1.2)
+            d.text(sx(cy), sy(cx) + 5, str(num[k]), 13, 'middle', INK, '700')
+    # olculer
+    X0, X1 = DS.BODY_X0, DS.BODY_X1
+    d.dim_v(sy(X1), sy(X0), sx(-67) + 44, f'plaka boyu {X1 - X0:.0f}', ext_from=sx(-45), side='right', rot=True)
+    d.dim_h(sx(67), sx(-67), sy(X0) + 50, f'toplam genişlik {2 * 67:.0f}', ext_from=sy(X0))
+    d.dim_h(sx(DS.TRACK / 2), sx(-DS.TRACK / 2), sy(X0) + 88, f'tekerlek aralığı {DS.TRACK:.0f}', ext_from=sy(X0) + 20)
+    d.dim_h(sx(45), sx(-45), sy(X1) - 78, f'plaka genişliği {90:.0f}', ext_from=sy(X1))
 
     # ================= ÖNDEN =================
-    fx, fg = 1000, 380
-    fsx = lambda y: fx + y * S          # onden bakinca robotun solu (y>0) sagda
+    fx, fg = 1020, 400
+    fsx = lambda y: fx + y * S
     fsz = lambda z: fg - z * S
     d.text(fx, 52, 'ÖNDEN GÖRÜNÜŞ', 17, 'middle', INK, '700')
     d.line(fx - 300, fsz(0), fx + 300, fsz(0), INK, 1.5)
-    d.circle(fsx(0), fsz(CASTER_R), CASTER_R * S, '#cfcfcf', INK, 1, '5 3')
-    for sgn in (1, -1):
-        d.rect(fsx(sgn * TRACK / 2 - WHEEL_W / 2), fsz(2 * WR), WHEEL_W * S, 2 * WR * S, WHEEL, INK, 1.2)
-    d.rect(fsx(-45), fsz(BODY_Z1), 90 * S, bz * S, BODY, INK, 2)
-    for (n, f, s_, ang) in TOFS:
-        d.rect(fsx(s_) - 5 * S, fsz(TOF_Z + 3), 10 * S, 6 * S, SENSOR, INK, 1)
-    d.dim_h(fsx(-TOTAL_W / 2), fsx(TOTAL_W / 2), fsz(0) + 50, f'toplam genişlik {TOTAL_W:.0f}', ext_from=fsz(0))
-    d.dim_h(fsx(-45), fsx(45), fsz(BODY_Z1) - 34, f'gövde genişliği {by:.0f}', ext_from=fsz(BODY_Z1))
-    d.dim_v(fsz(BODY_Z1), fsz(0), fsx(TOTAL_W / 2) + 44, f'{BODY_Z1:.1f}', ext_from=fsx(TOTAL_W / 2) - 2, side='right')
-    d.dim_v(fsz(TOF_Z), fsz(0), fsx(-TOTAL_W / 2) - 44, f'ToF {TOF_Z:.1f}', ext_from=fsx(-TOTAL_W / 2) + 2, side='left')
+    for p in sorted(parts, key=lambda q: q['x1']):
+        if p['kind'] == 'sphere':
+            d.circle(fsx(p['cy']), fsz(p['cz']), p['r'] * S, fill_of(p), INK, 1)
+        else:
+            d.rect(fsx(p['y0']), fsz(p['z1']), (p['y1'] - p['y0']) * S, (p['z1'] - p['z0']) * S, fill_of(p), INK, 1)
+    top = env['z'][1]
+    d.dim_h(fsx(-67), fsx(67), fsz(0) + 50, f'toplam genişlik {2 * 67:.0f}', ext_from=fsz(0))
+    d.dim_v(fsz(top), fsz(0), fsx(67) + 40, f'{top:.1f}', ext_from=fsx(67) - 2, side='right')
+    d.dim_v(fsz(DS.TOF_Z), fsz(0), fsx(-67) - 44, f'ToF {DS.TOF_Z:.1f}', ext_from=fsx(-67) + 2, side='left')
 
     # ================= YANDAN =================
-    yx, yg = 1100, 800
-    ysx = lambda x: yx + x * S           # sag yan: on sagda
+    yx, yg = 1090, 815
+    ysx = lambda x: yx + x * S
     ysz = lambda z: yg - z * S
-    d.text(yx, 545, 'YANDAN GÖRÜNÜŞ (sağ yan, ön sağda)', 17, 'middle', INK, '700')
+    d.text(yx, 500, 'YANDAN GÖRÜNÜŞ (sağ yan, ön sağda)', 17, 'middle', INK, '700')
     d.line(yx - 340, ysz(0), yx + 300, ysz(0), INK, 1.5)
-    d.rect(ysx(BODY_X0), ysz(BODY_Z1), bx * S, bz * S, BODY, INK, 2)
-    d.circle(ysx(0), ysz(AXLE_Z), WR * S, WHEEL, INK, 1.5)
-    d.circle(ysx(0), ysz(AXLE_Z), 3, PAPER, PAPER, 1)
-    d.text(ysx(0), ysz(AXLE_Z) + 38, f'Ø{2 * WR:.0f}', 13, 'middle', PAPER, '700')
-    d.circle(ysx(CASTER_X), ysz(CASTER_R), CASTER_R * S, '#cfcfcf', INK, 1.5)
-    d.rect(ysx(BODY_X1), ysz(TOF_Z + 3), 4 * S, 6 * S, SENSOR, INK, 1)
-    d.dim_h(ysx(BODY_X0), ysx(BODY_X1), ysz(0) + 42, f'gövde boyu {bx:.0f}', ext_from=ysz(0))
-    d.dim_h(ysx(CASTER_X), ysx(0), ysz(0) + 78, f'eksen → sarhoş teker {-CASTER_X:.0f}', ext_from=ysz(0) + 10)
-    d.dim_v(ysz(BODY_Z1), ysz(0), ysx(BODY_X1) + 100, f'{BODY_Z1:.1f}', ext_from=ysx(BODY_X1) + 4, side='right')
-    d.dim_v(ysz(BODY_Z0), ysz(0), ysx(BODY_X0) - 50, f'{BODY_Z0:.1f}', ext_from=ysx(BODY_X0), side='left')
-    d.dim_v(ysz(TOF_Z), ysz(0), ysx(BODY_X1) + 30, f'ToF {TOF_Z:.1f}', ext_from=ysx(BODY_X1) + 4, side='right')
+    for p in sorted(parts, key=lambda q: -q['y0']):
+        if p['kind'] in ('sphere',):
+            d.circle(ysx(p['cx']), ysz(p['cz']), p['r'] * S, fill_of(p), INK, 1)
+        elif p['kind'] == 'cyly':
+            d.circle(ysx(p['cx']), ysz(p['cz']), p['d'] / 2 * S, fill_of(p), INK, 1.2)
+        else:
+            d.rect(ysx(p['x0']), ysz(p['z1']), (p['x1'] - p['x0']) * S, (p['z1'] - p['z0']) * S, fill_of(p), INK, 1)
+    d.dim_h(ysx(X0), ysx(X1), ysz(0) + 42, f'plaka boyu {X1 - X0:.0f}', ext_from=ysz(0))
+    d.dim_h(ysx(DS.CASTER_X), ysx(0), ysz(0) + 78, f'eksen → sarhoş teker {-DS.CASTER_X:.0f}', ext_from=ysz(0) + 10)
+    d.dim_v(ysz(top), ysz(0), ysx(X1) + 80, f'{top:.1f} (toplam)', ext_from=ysx(X1) + 4, side='right')
+    d.dim_v(ysz(DS.PLATE_B_Z0), ysz(0), ysx(X0) - 30, f'{DS.PLATE_B_Z0:.1f}', ext_from=ysx(X0), side='left')
+    d.dim_v(ysz(DS.PLATE_T_Z0), ysz(DS.PLATE_B_Z1), ysx(X0) - 30 - 0, f'', ext_from=ysx(X0), side='left') if False else None
+    d.dim_v(ysz(DS.PLATE_T_Z0), ysz(DS.PLATE_B_Z1), ysx(DS.STANDOFFS[0][0]) + 30, f'{DS.DECK_GAP:.0f}', ext_from=ysx(DS.STANDOFFS[0][0]) + 10, side='right')
+    d.dim_v(ysz(DS.TOF_Z), ysz(0), ysx(X1) + 34, f'ToF {DS.TOF_Z:.1f}', ext_from=ysx(X1) + 4, side='right')
 
     # ================= LEJANT =================
     lx, ly = 1430, 60
-    d.text(lx, ly, 'BİLEŞENLER (yerleşim ÖNERİ)', 15, 'start', INK, '700')
-    d.text(lx, ly + 20, 'kesik çizgili = alt kat', 12, 'start', '#555')
-    if pico:
-        items = ['1  Raspberry Pi Pico 2 W (51×21)', '2  TB6612FNG motor sürücü', '3  MPU6050 (IMU)',
-                 '4  S7V7F5 5 V regülatör', '5  4×AA pil yuvası', '6  N20 motor + enkoder ×2',
-                 '7  TOF400C ToF ×3 (+30°, 0°, -30°)', '8  Bilyeli sarhoş teker']
-    else:
-        items = ['1  Raspberry Pi 4 (85×56, üst kat)', '2  TB6612FNG motor sürücü', '3  MPU6050 (IMU)',
-                 '4  Güç kaynağı: KARAR BEKLİYOR', '6  N20 motor + enkoder ×2', '7  TOF400C ToF ×3 (+30°, 0°, -30°)',
-                 '8  Bilyeli sarhoş teker']
-    for i, t in enumerate(items):
-        d.text(lx, ly + 48 + i * 23, t, 14)
-    yy = ly + 48 + len(items) * 23 + 24
-    d.text(lx, yy, 'TEMEL ÖLÇÜLER (mm)', 15, 'start', INK, '700')
-    rows = [f'Tekerlek: Ø{2 * WR:.0f} × {WHEEL_W:.0f}', f'Tekerlek aralığı: {TRACK:.0f}', f'Gövde: {bx:.0f} × {by:.0f} × {bz:.0f}',
-            f'Yerden yükseklik: {BODY_Z0:.1f}', f'Sarhoş teker: eksenin {-CASTER_X:.0f} arkasında',
-            f'ToF: yerden ≈ {TOF_Z:.0f}, {FOV:.0f}° görüş', f'Çarpışma dairesi (sim): yarıçap {W.ROBOT_RADIUS * MM:.0f}']
+    d.text(lx, ly, 'BİLEŞENLER', 15, 'start', INK, '700')
+    d.text(lx, ly + 20, 'kesik çizgi = alt kat; * = ölçü varsayım', 12, 'start', '#555')
+    names = {'pico': 'Raspberry Pi Pico 2 W (51×21)', 'pi4': 'Raspberry Pi 4 (85×56×17)', 'tb6612': 'TB6612FNG sürücü *', 'mpu6050': 'MPU6050 *',
+             'regulator': 'S7V7F5 regülatör *', 'battery': '4×AA pil yuvası *', 'power': 'GÜÇ MODÜLÜ (karar bekliyor) *',
+             'motor': 'N20 motor + enkoder ×2 *', 'tof': 'TOF400C ToF ×3 *', 'caster': 'Bilyeli sarhoş teker *'}
+    for i, k in enumerate(order):
+        d.text(lx, ly + 48 + i * 22, f'{num[k]}  {names[k]}', 14)
+    yy = ly + 48 + len(order) * 22 + 22
+    d.text(lx, yy, 'TASARIM (mm)', 15, 'start', INK, '700')
+    rows = [f'Plaka: {X1 - X0:.0f} × 90 × {DS.T:.0f} (lazer kesim)', f'Tekerlek: Ø{DS.WHEEL_D:.0f} × {DS.WHEEL_W:.0f}, aralık {DS.TRACK:.0f}',
+            f'Alt plaka altı: {DS.PLATE_B_Z0:.1f} (motorlar altında)', f'Kat arası: {DS.DECK_GAP:.0f} (M3 × 20)', f'ToF: yerden {DS.TOF_Z:.1f}, {FOV:.0f}° görüş',
+            f'Toplam yükseklik: {top:.1f}', 'Sarhoş teker: eksenin 65 gerisinde']
     for i, t in enumerate(rows):
-        d.text(lx, yy + 25 + i * 21, t, 14)
-    note_y = yy + 25 + len(rows) * 21 + 28
-    if pico:
-        notes = ['Pil yuvası, kartlar ve motorların yeri', 've boyutları yer tutucudur; gerçek', 'parçalar gelince kontrol edilip', 'güncellenecek.']
-    else:
-        notes = ['Pi 4 gövdeye sığıyor (85×56 < 130×90).', 'Yükseklik kontrol edilecek: Pi ≈ 17 mm;', 'altta motor + sürücü de olacak.', 'Güç yöntemi seçilince çizilecek.']
+        d.text(lx, yy + 24 + i * 21, t, 13.5)
+    note_y = yy + 24 + len(rows) * 21 + 26
+    notes = (['Yıldızlı parçaların boyutu varsayım:', 'gerçek parça gelince design/design.py', 'güncellenir; bu resim, 3B model, lazer', 'dosyaları ve BOM yeniden üretilir.']
+             if pico else ['Güç yöntemi seçilince yer tutucu', 'gerçek modülle değiştirilir.', 'Pi 4 üst katta (M2.5 ara parça),', 'toplam yükseklik Pico sürümünden büyük.'])
     d.rect(lx - 8, note_y - 20, 262, 14 + 18 * len(notes), 'none', DIM, 1, '4 3')
     for i, t in enumerate(notes):
         d.text(lx, note_y + i * 18, t, 12.5, 'start', DIM)
 
-    d.title_block(name + ' – teknik resim', 'Ölçüler milimetre; üç görünüş (üst, ön, yan)',
-                  f'Ölçek: ekranda {S:.1f} px = 1 mm (yaklaşık)', 'Kaynak: pai_gym/world.py, pai_bot.urdf', width=640)
+    d.title_block(name + ' – teknik resim', 'Ölçüler milimetre; üç görünüş (üst, ön, yan); kaynak: sanal tasarım v0',
+                  f'Ölçek: ekranda {S:.1f} px = 1 mm (yaklaşık)', 'Kaynak: design/design.py (3B model ve lazer dosyalarıyla aynı)', width=700)
     d.save(OUT / f'{kind}-robot.svg')
 
 
