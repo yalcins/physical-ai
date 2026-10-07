@@ -3,7 +3,7 @@
     python3 tools/design/build_board.py                # yerlesim + netler -> design/pcb/kicad/pico-carrier.kicad_pcb
     python3 tools/design/build_board.py --route        # + Freerouting ile yonlendir (java ve freerouting.jar gerekir)
 
-Kart = lazer kesim UST PLAKANIN yerine gecer: ayni dis cizgi (113 x 90, kose 6 mm) ve ayni 4 M3 delik; M3 x 20 ara parcalara oturur.
+Kart = MIKRO robotun UST PLAKASI (55 x 58 mm, kose 4 mm): 4 M2 delik, M2 x 8 ara parcalara oturur. TEK KATMAN: bakir yalniz altta (B.Cu).
 Kart koordinati: ust gorunus, robotun onu YUKARI (Y=0 on kenar). X: sol -> sag (robotun solu X=0).
 Gereken: KiCad 7 (pcbnew Python modulu).
 """
@@ -23,24 +23,11 @@ import design as D  # noqa: E402
 KDIR = ROOT / 'design' / 'pcb' / 'kicad'
 BOARD_FILE = KDIR / 'pico-carrier.kicad_pcb'
 FP_BASE = Path('/usr/share/kicad/footprints')
-W, H, R = 90.0, 113.0, 6.0                       # kart: X genisligi (robotun y ekseni), Y uzunlugu (robotun x ekseni)
+W, H, R = P.BOARD_W, P.BOARD_H, 4.0                  # kart: X genisligi (robotun y ekseni), Y uzunlugu (robotun x ekseni)
 MM = pcbnew.FromMM
 
-# yerlesim: ref -> (merkez X, merkez Y, donme derece). Pad merkezi (centroid) bu noktaya konur.
-PLACE = {
-    'U1': (45.0, 40.0, 180),                                       # Pico: USB arkada (asagida)
-    'J3': (22.0, 9.0, 90), 'J4': (45.0, 9.0, 90), 'J5': (68.0, 9.0, 90),    # ToF (sol, orta, sag) on kenarda
-    'J6': (14.0, 33.0, 0),                                         # MPU6050
-    'J1': (66.0, 62.0, 0), 'J2': (81.0, 62.0, 0),                  # TB6612 (iki sira)
-    'JP1': (12.0, 16.0, 90),
-    'J7': (11.0, 90.0, 0), 'J8': (79.0, 90.0, 0),                  # motorlar
-    'J9': (45.0, 101.0, 0), 'SW1': (27.0, 101.0, 90), 'J10': (63.0, 101.0, 90),
-    'D1': (45.0, 90.0, 90),
-    'R1': (24.0, 74.0, 0), 'R2': (24.0, 80.0, 0), 'C1': (36.0, 77.0, 0),
-    'C2': (58.0, 82.0, 0), 'C3': (36.0, 86.0, 0), 'C4': (52.0, 74.0, 0), 'C5': (60.0, 50.0, 0),
-    'TP1': (6.0, 42.0, 0), 'TP2': (6.0, 47.0, 0), 'TP3': (6.0, 52.0, 0), 'TP4': (6.0, 57.0, 0),
-}
-HOLES = [(7.0, 5.0), (83.0, 5.0), (7.0, 108.0), (83.0, 108.0)]      # robot uzerindeki 4 standoff (23,+-38), (-80,+-38)
+PLACE = P.PLACE
+HOLES = P.HOLES
 
 
 def vec(x, y):
@@ -49,11 +36,8 @@ def vec(x, y):
 
 def load_fp(ref):
     lib, name = P.COMPONENTS[ref][1].split(':')
-    if ref == 'U1':
-        fp = pcbnew.FootprintLoad(str(KDIR / 'pico-carrier.pretty'), 'RaspberryPi_Pico_THT')
-        fp.SetFPID(pcbnew.LIB_ID('pico-carrier', 'RaspberryPi_Pico_THT'))
-        return fp
-    fp = pcbnew.FootprintLoad(str(FP_BASE / f'{lib}.pretty'), name)
+    libdir = KDIR / 'pico-carrier.pretty' if lib == 'pico-carrier' else FP_BASE / f'{lib}.pretty'
+    fp = pcbnew.FootprintLoad(str(libdir), name)
     fp.SetFPID(pcbnew.LIB_ID(lib, name))
     return fp
 
@@ -135,10 +119,11 @@ def build():
         fp.Value().SetVisible(False)                   # deger yazisi ipek baskiyi kalabaliklastirmasin
         cx, cy, rot = PLACE[ref]
         place(fp, cx, cy, rot)
+        if ref == 'D1':                                # DO-41 pedleri 2,54 mm aralikli: kendi arasi 0,34 mm, freze icin yeterli
+            for pad in fp.Pads():
+                pad.SetLocalClearance(MM(0.3))
         board.Add(fp)
         fps[ref] = fp
-        if ref == 'J9':                                  # klemens pedine cok yakin: referansi yukari al
-            fp.Reference().SetPosition(pcbnew.VECTOR2I(fp.Reference().GetPosition().x, fp.Reference().GetPosition().y - MM(4)))
     for name, pins in P.nets().items():
         for ref, pin in pins:
             pad = fps[ref].FindPadByNumber(str(pin_no(ref, pin)))
@@ -146,8 +131,8 @@ def build():
             pad.SetNet(infos[name])
     # montaj delikleri
     for i, (x, y) in enumerate(HOLES, 1):
-        mh = pcbnew.FootprintLoad(str(FP_BASE / 'MountingHole.pretty'), 'MountingHole_3.2mm_M3')
-        mh.SetFPID(pcbnew.LIB_ID('MountingHole', 'MountingHole_3.2mm_M3'))
+        mh = pcbnew.FootprintLoad(str(FP_BASE / 'MountingHole.pretty'), 'MountingHole_2.2mm_M2')
+        mh.SetFPID(pcbnew.LIB_ID('MountingHole', 'MountingHole_2.2mm_M2'))
         mh.Value().SetVisible(False)
         mh.Reference().SetVisible(False)
         mh.SetReference(f'H{i}')
@@ -156,8 +141,8 @@ def build():
     add_outline(board)
     # baslik yazisi
     t = pcbnew.PCB_TEXT(board)
-    t.SetText('Pico robot tasiyici karti v0')
-    t.SetPosition(vec(W / 2, H - 7))
+    t.SetText('Mikro Pico karti v0')
+    t.SetPosition(vec(W - 14, H - 2.0))
     t.SetLayer(pcbnew.F_SilkS)
     t.SetTextSize(pcbnew.VECTOR2I(MM(1.2), MM(1.2)))
     board.Add(t)
@@ -165,16 +150,24 @@ def build():
 
 
 def problems(board):
-    """Yerlesim denetimi: kart disina tasan ya da birbirine giren parcalar."""
+    """Yerlesim denetimi: kart disina tasan ya da birbirine giren parcalar. Tel koprulerde (W*) yalniz PEDLER kutu sayilir:
+    aradaki tel kartin disindan dolanir, Pico'nun ustunden gecmez."""
     out = []
     boxes = {}
+    W_PADS = {}
     for fp in board.GetFootprints():
-        if fp.GetReference().startswith('H'):
+        ref = fp.GetReference()
+        if ref.startswith('H'):
+            continue
+        if ref.startswith('W'):
+            W_PADS[ref] = [(pcbnew.ToMM(p.GetPosition().x), pcbnew.ToMM(p.GetPosition().y)) for p in fp.Pads()]
+            for k, (px, py) in enumerate(W_PADS[ref], 1):
+                boxes[f'{ref}.{k}'] = (px - 1.1, py - 1.1, px + 1.1, py + 1.1)
             continue
         b = fp.GetBoundingBox(False, False)
-        boxes[fp.GetReference()] = (pcbnew.ToMM(b.GetLeft()), pcbnew.ToMM(b.GetTop()), pcbnew.ToMM(b.GetRight()), pcbnew.ToMM(b.GetBottom()))
+        boxes[ref] = (pcbnew.ToMM(b.GetLeft()), pcbnew.ToMM(b.GetTop()), pcbnew.ToMM(b.GetRight()), pcbnew.ToMM(b.GetBottom()))
     for ref, (l, t, r, b) in boxes.items():
-        if l < 1.5 or t < 1.5 or r > W - 1.5 or b > H - 1.5:
+        if l < 1.2 or t < 1.2 or r > W - 1.2 or b > H - 1.2:
             out.append(f'{ref} kart kenarina cok yakin/disinda ({l:.1f},{t:.1f},{r:.1f},{b:.1f})')
     refs = sorted(boxes)
     for i, a in enumerate(refs):
@@ -183,11 +176,11 @@ def problems(board):
             lc, tc, rc, bc = boxes[c]
             if la < rc - 0.3 and lc < ra - 0.3 and ta < bc - 0.3 and tc < ba - 0.3:
                 out.append(f'{a} ve {c} cakisiyor')
-    for fp in board.GetFootprints():      # delikler de dahil: montaj deliklerine yakinlik
+    for fp in board.GetFootprints():      # montaj delikleri
         if fp.GetReference().startswith('H'):
             hx, hy = pcbnew.ToMM(fp.GetPosition().x), pcbnew.ToMM(fp.GetPosition().y)
             for ref, (l, t, r, b) in boxes.items():
-                if l - 3.6 < hx < r + 3.6 and t - 3.6 < hy < b + 3.6:
+                if l - 2.8 < hx < r + 2.8 and t - 2.8 < hy < b + 2.8:
                     out.append(f'{ref} montaj deligi {fp.GetReference()} yakininda')
     return out
 
@@ -306,7 +299,31 @@ def cleanup(board):
     return removed
 
 
-def route(board):
+def _remove_block(text, start_pat):
+    """Dengeli parantezli bir blogu (basi start_pat ile baslayan) siler."""
+    import re
+    while True:
+        m = re.search(start_pat, text)
+        if not m:
+            return text
+        i, depth = m.start(), 0
+        for j in range(i, len(text)):
+            depth += (text[j] == '(') - (text[j] == ')')
+            if depth == 0:
+                text = text[:i] + text[j + 1:]
+                break
+
+
+def single_layer_dsn(text):
+    """Specctra DSN'i TEK KATMANA indirger: F.Cu katmani ve pedlerin F.Cu sekilleri silinir; yalniz B.Cu'da yol cekilebilir.
+    Via tanimi KALIR (silinirse Freerouting 'via_rule null' hatasi verir) ama tek katmanda via kurulamaz; ice aktarimda via varsa hata verilir."""
+    import re
+    text = _remove_block(text, r'\(layer F\.Cu')
+    text = re.sub(r'\(shape \((?:circle|rect|oval|path|polygon) F\.Cu[^()]*\)\)', '', text)
+    return text
+
+
+def route(board, single_layer=True):
     """Specctra DSN -> Freerouting (pencere acmadan) -> SES -> karta geri yukle. Dondurur: (kalan baglanti sayisi, DRC raporu yolu)."""
     build = KDIR / 'build'
     build.mkdir(exist_ok=True)
@@ -316,9 +333,11 @@ def route(board):
         subprocess.run(['curl', '-sL', '-o', str(JAR), JAR_URL], check=True)
     if not pcbnew.ExportSpecctraDSN(board, str(dsn)):
         raise RuntimeError('DSN disa aktarilamadi')
+    if single_layer:
+        dsn.write_text(single_layer_dsn(dsn.read_text(encoding='utf-8')), encoding='utf-8')
     ses.unlink(missing_ok=True)
-    r = subprocess.run(['java', '-Djava.awt.headless=true', '-jar', str(JAR), '--gui.enabled=false', '-de', str(dsn), '-do', str(ses), '-mp', '60'],
-                       capture_output=True, text=True, timeout=600)
+    r = subprocess.run(['java', '-Djava.awt.headless=true', '-jar', str(JAR), '--gui.enabled=false', '-de', str(dsn), '-do', str(ses), '--router.job_timeout=00:01:00'],
+                       capture_output=True, text=True, timeout=170)
     if not ses.exists():
         raise RuntimeError('Freerouting cikti uretmedi: ' + r.stdout[-500:] + r.stderr[-500:])
     import_ses(board, ses)
@@ -357,14 +376,14 @@ def outputs(res, tracks, vias, stats):
     rpt = (build / 'drc.rpt').read_text(encoding='utf-8')
     kinds = re.findall(r'^\[(\w+)\]', rpt, re.M)
     real = [k for k in kinds if k not in ('lib_footprint_issues',)]
-    summary = dict(size_mm=[W, H, 1.6], layers=2, tracks=tracks, vias=vias, unconnected=res['unconnected'], drc_total=res['violations'],
+    summary = dict(size_mm=[W, H, 1.6], layers=1, tracks=tracks, vias=vias, unconnected=res['unconnected'], drc_total=res['violations'],
                    drc_real=sorted(set(real)), drc_real_count=len(real), drc_lib_link_notes=kinds.count('lib_footprint_issues'),
-                   track_mm=stats, rules=dict(track_mm=0.6, clearance_mm=0.4, via_mm='1.4/0.8'),
+                   track_mm=stats, rules=dict(track_mm=0.6, clearance_mm=0.4, via_mm=None),
                    note='KiCad 7.0.11; Freerouting 2.1.0 ile yonlendirildi; lib_footprint_issues = kutuphane tablosu bulunamadi bilgi notu, tasarim hatasi degil.')
     pj = ROOT / 'docs' / 'data' / 'pcb.json'
     data = json.loads(pj.read_text(encoding='utf-8'))
     data['board'] = summary
-    data['status'] = 'KiCad 7.0.11 ile şema okundu (ağlar birebir eşleşti), kart yerleştirildi ve yönlendirildi; DRC: bağlanmamış 0. Fiziksel olarak frezelenmedi; modül pin sıraları gerçek modüllerle doğrulanacak.'
+    data['status'] = 'KiCad 7.0.11 ile şema okundu (ağlar birebir eşleşti), kart yerleştirildi ve TEK KATMANDA (yalnız alt bakır, via yok) yönlendirildi; DRC: bağlanmamış 0. Fiziksel olarak frezelenmedi; modül pin sıraları gerçek modüllerle doğrulanacak.'
     pj.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
 
 
@@ -377,9 +396,9 @@ def main():
     for p in probs:
         print('YERLESIM:', p)
     if a.route:
-        # Freerouting her calistirmada biraz farkli sonuc verir: baglanti kalmayana kadar (en cok 8 deneme) tekrarla, en iyisini sakla
+        # Freerouting her calistirmada biraz farkli sonuc verir: baglanti kalmayana kadar (en cok 12 deneme) tekrarla, en iyisini sakla
         best = None
-        for attempt in range(1, 9):
+        for attempt in range(1, 13):
             board, fps = build()
             route(board)
             tmp = KDIR / 'build' / f'attempt-{attempt}.kicad_pcb'
@@ -392,12 +411,13 @@ def main():
             if best is None or key < best[0]:
                 best = (key, attempt)
                 board.Save(str(KDIR / 'build' / 'best.kicad_pcb'))
-            if res['unconnected'] == 0 and attempt >= 3:
+            if res['unconnected'] == 0:
                 break
         board = pcbnew.LoadBoard(str(KDIR / 'build' / 'best.kicad_pcb'))
         print('secilen deneme:', best[1], best[0])
-    board.Save(str(BOARD_FILE))
-    print('yazildi:', BOARD_FILE, '| yerlesim sorunu:', len(probs))
+    target = BOARD_FILE if a.route else KDIR / 'build' / 'yalniz-yerlesim.kicad_pcb'      # --route olmadan yonlendirilmis karti EZME
+    board.Save(str(target))
+    print('yazildi:', target, '| yerlesim sorunu:', len(probs))
     res = drc(board, KDIR / 'build' / 'drc.rpt')
     tracks = sum(1 for t in board.GetTracks() if t.GetClass() == 'PCB_TRACK')
     vias = sum(1 for t in board.GetTracks() if t.GetClass() == 'PCB_VIA')

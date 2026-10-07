@@ -3,29 +3,22 @@
     {
       "ref": "U1",
       "value": "Raspberry Pi Pico 2 W",
-      "footprint": "Module:RaspberryPi_Pico_Common_THT",
+      "footprint": "pico-carrier:RaspberryPi_Pico_THT",
       "description": "MCU modulu (2 x 20 soket)",
       "pins": 40
     },
     {
       "ref": "J1",
-      "value": "TB6612FNG modulu, sol sira",
-      "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x08_P2.54mm_Vertical",
-      "description": "Surucu modulu (SparkFun siralamasi VARSAYIM)",
-      "pins": 8
-    },
-    {
-      "ref": "J2",
-      "value": "TB6612FNG modulu, sag sira",
-      "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x08_P2.54mm_Vertical",
-      "description": "Surucu modulu",
-      "pins": 8
+      "value": "Surucu baglantisi (TB6612)",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical",
+      "description": "TB6612 modulune 10 telli kablo",
+      "pins": 10
     },
     {
       "ref": "J3",
       "value": "TOF400C sol",
       "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical",
-      "description": "ToF modulu (VIN GND SDA SCL XSHUT)",
+      "description": "ToF modulu (kart sirasi: GND VIN SDA SCL XSHUT; modul kablosu pin sirasini duzeltir)",
       "pins": 5
     },
     {
@@ -43,72 +36,44 @@
       "pins": 5
     },
     {
-      "ref": "J6",
-      "value": "MPU6050 (GY-521)",
-      "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical",
-      "description": "IMU modulu (VCC GND SCL SDA)",
+      "ref": "J7",
+      "value": "Sol enkoder",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical",
+      "description": "Sol motor enkoderi (sira motora gore DOGRULANACAK)",
       "pins": 4
     },
     {
-      "ref": "J7",
-      "value": "Sol motor + enkoder",
-      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical",
-      "description": "N20 motor (6 uc; sira motora gore DOGRULANACAK)",
-      "pins": 6
-    },
-    {
       "ref": "J8",
-      "value": "Sag motor + enkoder",
-      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical",
-      "description": "N20 motor",
-      "pins": 6
+      "value": "Sag enkoder",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical",
+      "description": "Sag motor enkoderi",
+      "pins": 4
     },
     {
       "ref": "J9",
-      "value": "Pil girisi 4xAA",
-      "footprint": "TerminalBlock:TerminalBlock_bornier-2_P5.08mm",
-      "description": "Pil + / -",
+      "value": "LiPo girisi (1S)",
+      "footprint": "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical",
+      "description": "JST-PH 2 pin: pil + / - (KUTUP YONUNU pile gore DOGRULA)",
       "pins": 2
-    },
-    {
-      "ref": "SW1",
-      "value": "Guc anahtari (harici)",
-      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
-      "description": "Pil + hattinda; harici sivic",
-      "pins": 2
-    },
-    {
-      "ref": "J10",
-      "value": "S7V7F5 5 V regulator",
-      "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical",
-      "description": "Regulator modulu (VIN GND VOUT)",
-      "pins": 3
     },
     {
       "ref": "D1",
       "value": "1N5819",
-      "footprint": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
-      "description": "Regulator cikisi -> VSYS (geri akis korumasi)",
+      "footprint": "Diode_THT:D_DO-41_SOD81_P2.54mm_Vertical_KathodeUp",
+      "description": "Pil -> VSYS (USB ile besleme geri akisini engeller)",
       "pins": 2
     },
     {
-      "ref": "JP1",
-      "value": "Sensor besleme secimi",
-      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical",
-      "description": "1-2 = 3V3, 2-3 = 5 V (ToF modulunun gerilim araligina gore)",
-      "pins": 3
-    },
-    {
       "ref": "R1",
-      "value": "20 k",
-      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "value": "100 k",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical",
       "description": "Pil bolucu ust",
       "pins": 2
     },
     {
       "ref": "R2",
-      "value": "10 k",
-      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal",
+      "value": "100 k",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical",
       "description": "Pil bolucu alt",
       "pins": 2
     },
@@ -121,16 +86,9 @@
     },
     {
       "ref": "C2",
-      "value": "470 uF / 16 V",
-      "footprint": "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm",
+      "value": "100 uF / 10 V",
+      "footprint": "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm",
       "description": "Motor gucu (VM) depolama",
-      "pins": 2
-    },
-    {
-      "ref": "C3",
-      "value": "10 uF",
-      "footprint": "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm",
-      "description": "5 V hatti",
       "pins": 2
     },
     {
@@ -141,53 +99,29 @@
       "pins": 2
     },
     {
-      "ref": "C5",
-      "value": "100 nF",
-      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
-      "description": "TB6612 mantik besleme (VCC)",
+      "ref": "W2",
+      "value": "Tel kopru 3V3",
+      "footprint": "pico-carrier:WireLink_P30.48mm",
+      "description": "+3V3 ve +3V3_L adalarini Pico'nun ustunden (yalitimli tel) birlestirir",
       "pins": 2
-    },
-    {
-      "ref": "TP1",
-      "value": "TP_3V3",
-      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical",
-      "description": "Test noktasi 3V3",
-      "pins": 1
-    },
-    {
-      "ref": "TP2",
-      "value": "TP_5V",
-      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical",
-      "description": "Test noktasi 5 V",
-      "pins": 1
-    },
-    {
-      "ref": "TP3",
-      "value": "TP_VM",
-      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical",
-      "description": "Test noktasi pil (VM)",
-      "pins": 1
-    },
-    {
-      "ref": "TP4",
-      "value": "TP_GND",
-      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical",
-      "description": "Test noktasi GND",
-      "pins": 1
     }
   ],
   "nets": [
     {
       "name": "GND",
-      "pins": 26
+      "pins": 6
     },
     {
-      "name": "+3V3",
+      "name": "GND_L",
       "pins": 7
     },
     {
-      "name": "+5V",
-      "pins": 5
+      "name": "+3V3",
+      "pins": 2
+    },
+    {
+      "name": "+3V3_L",
+      "pins": 7
     },
     {
       "name": "VSYS",
@@ -198,20 +132,12 @@
       "pins": 6
     },
     {
-      "name": "VBAT_RAW",
-      "pins": 2
-    },
-    {
-      "name": "+SENS",
-      "pins": 6
-    },
-    {
       "name": "I2C_SDA",
-      "pins": 5
+      "pins": 4
     },
     {
       "name": "I2C_SCL",
-      "pins": 5
+      "pins": 4
     },
     {
       "name": "XSHUT_L",
@@ -272,61 +198,45 @@
     {
       "name": "VBAT_SENSE",
       "pins": 4
-    },
-    {
-      "name": "MOT_L+",
-      "pins": 2
-    },
-    {
-      "name": "MOT_L-",
-      "pins": 2
-    },
-    {
-      "name": "MOT_R+",
-      "pins": 2
-    },
-    {
-      "name": "MOT_R-",
-      "pins": 2
     }
   ],
   "summary": {
-    "adc_max_v": 2.13,
-    "divider_ratio": 3.0,
-    "components": 25,
-    "nets": 28
+    "adc_max_v": 2.1,
+    "divider_ratio": 2.0,
+    "components": 15,
+    "nets": 23
   },
   "problems": [],
-  "status": "KiCad 7.0.11 ile şema okundu (ağlar birebir eşleşti), kart yerleştirildi ve yönlendirildi; DRC: bağlanmamış 0. Fiziksel olarak frezelenmedi; modül pin sıraları gerçek modüllerle doğrulanacak.",
+  "status": "KiCad 7.0.11 ile şema okundu (ağlar birebir eşleşti), kart yerleştirildi ve TEK KATMANDA (yalnız alt bakır, via yok) yönlendirildi; DRC: bağlanmamış 0. Fiziksel olarak frezelenmedi; modül pin sıraları gerçek modüllerle doğrulanacak.",
   "board_mm_proposal": [
-    85,
-    65,
+    55.0,
+    58.0,
     1.6
   ],
   "board": {
     "size_mm": [
-      90.0,
-      113.0,
+      55.0,
+      58.0,
       1.6
     ],
-    "layers": 2,
-    "tracks": 337,
-    "vias": 6,
+    "layers": 1,
+    "tracks": 116,
+    "vias": 0,
     "unconnected": 0,
-    "drc_total": 32,
+    "drc_total": 25,
     "drc_real": [
+      "silk_over_copper",
       "silk_overlap"
     ],
-    "drc_real_count": 3,
-    "drc_lib_link_notes": 29,
+    "drc_real_count": 6,
+    "drc_lib_link_notes": 19,
     "track_mm": {
-      "F.Cu": 1742.5,
-      "B.Cu": 1071.6
+      "B.Cu": 421.7
     },
     "rules": {
       "track_mm": 0.6,
       "clearance_mm": 0.4,
-      "via_mm": "1.4/0.8"
+      "via_mm": null
     },
     "note": "KiCad 7.0.11; Freerouting 2.1.0 ile yonlendirildi; lib_footprint_issues = kutuphane tablosu bulunamadi bilgi notu, tasarim hatasi degil."
   }

@@ -31,8 +31,8 @@ def test_footprints_exist_in_installed_kicad():
         return
     for ref, (_v, fp, _d, _p) in P.COMPONENTS.items():
         lib, name = fp.split(':')
-        if ref == 'U1':
-            assert (ROOT / 'design' / 'pcb' / 'kicad' / 'pico-carrier.pretty' / 'RaspberryPi_Pico_THT.kicad_mod').exists()
+        if lib == 'pico-carrier':                                   # kartin kendi footprint kutuphanesi
+            assert (ROOT / 'design' / 'pcb' / 'kicad' / 'pico-carrier.pretty' / f'{name}.kicad_mod').exists(), fp
             continue
         assert (base / f'{lib}.pretty' / f'{name}.kicad_mod').exists(), fp
 

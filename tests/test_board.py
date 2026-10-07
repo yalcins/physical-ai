@@ -47,14 +47,25 @@ def test_outline_and_mounting_holes_match_design():
     if not pcbnew:
         return
     import design as D
+    S = D.build('pico')['spec']
     b = pcbnew.LoadBoard(str(BOARD))
     bb = b.GetBoardEdgesBoundingBox()
     w, h = pcbnew.ToMM(bb.GetWidth()), pcbnew.ToMM(bb.GetHeight())
-    assert abs(w - 2 * D.BODY_HALF_W) < 0.3 and abs(h - (D.TOP_X1 - D.TOP_X0)) < 0.3          # ust plaka boyutu
+    assert abs(w - 2 * S['half_w']) < 0.3 and abs(h - (S['top'][1] - S['top'][0])) < 0.3          # ust plaka (PCB) boyutu
     holes = sorted((round(pcbnew.ToMM(fp.GetPosition().x), 1), round(pcbnew.ToMM(fp.GetPosition().y), 1)) for fp in b.GetFootprints() if fp.GetReference().startswith('H'))
-    # kart (X, Y) -> robot (x ileri, y sol): x = TOP_X1 - Y, y = BODY_HALF_W - X
-    robot = sorted((round(D.TOP_X1 - y, 1), round(D.BODY_HALF_W - x, 1)) for x, y in holes)
-    assert robot == sorted((round(x, 1), round(y, 1)) for x, y in D.STANDOFFS)
+    # kart (X, Y) -> robot (x ileri, y sol): x = top_x1 - Y, y = half_w - X
+    robot = sorted((round(S['top'][1] - y, 1), round(S['half_w'] - x, 1)) for x, y in holes)
+    assert robot == sorted((round(x, 1), round(y, 1)) for x, y in S['standoffs'])
+
+
+def test_board_is_single_layer():
+    """TEK KATMAN: bakir yalniz altta (B.Cu); ust katmanda iz ve via yok."""
+    if not pcbnew:
+        return
+    b = pcbnew.LoadBoard(str(BOARD))
+    tracks = [t for t in b.GetTracks() if t.GetClass() == 'PCB_TRACK']
+    assert tracks and all(t.GetLayerName() == 'B.Cu' for t in tracks)
+    assert not [t for t in b.GetTracks() if t.GetClass() == 'PCB_VIA']
 
 
 def test_drc_clean_of_real_problems():

@@ -34,7 +34,7 @@ def test_checks_catch_mistakes():
 
         def broken_unconnected():
             n = orig()
-            n['I2C_SDA'] = [p for p in n['I2C_SDA'] if p != ('J6', 'SDA')]
+            n['I2C_SDA'] = [p for p in n['I2C_SDA'] if p != ('J5', 'SDA')]
             return n
         P.nets = broken_unconnected
         assert any('bagli olmayan' in p for p in P.checks())
@@ -66,8 +66,8 @@ def test_pico_pins_match_firmware():
     for net, gp in expect.items():
         pico_pins = [p for r, p in P.nets()[net] if r == 'U1']
         assert pico_pins == [f'GP{gp}'], (net, pico_pins, gp)
-    assert 'x 3' in (ROOT / 'firmware' / 'pico2w' / 'main.py').read_text(encoding='utf-8') or '* 3' in main
-    assert (P.DIVIDER[0] + P.DIVIDER[1]) / P.DIVIDER[1] == 3.0
+    assert '3.3 * 2' in main                                       # firmware pil olcumu x2
+    assert (P.DIVIDER[0] + P.DIVIDER[1]) / P.DIVIDER[1] == 2.0      # karttaki bolucu ile ayni
 
 
 def test_matches_wiring_json():

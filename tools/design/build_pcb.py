@@ -116,28 +116,27 @@ def schematic():
     block(40, 60, 330, 'U1', 'Raspberry Pi Pico 2 W', used + ['GND_3'], 'yalniz bagli pinler; 8 GND pini ortak GND\'ye; kalanlar NC')
     # guc
     y = 60
-    for ref, title, pins in (('J9', 'Pil girisi', None), ('SW1', 'Guc anahtari', None), ('J10', 'S7V7F5 5 V regulator', None), ('D1', '1N5819', None), ('JP1', 'Sensor besleme secimi', None)):
-        h = block(430, y, 300, ref, title, pins)
-        y += h + 22
-    # surucu + motor
+    for ref, title in (('J9', 'LiPo girisi (1S)'), ('D1', '1N5819 (pil -> VSYS)'), ('R1', 'Pil bolucu ust 100 k'), ('R2', 'Pil bolucu alt 100 k'), ('C1', 'ADC filtre 100 nF'), ('C2', 'VM 100 uF')):
+        h = block(430, y, 300, ref, title)
+        y += h + 20
+    # surucu + enkoder
     y = 60
-    for ref, title in (('J1', 'TB6612FNG (sol sira)'), ('J2', 'TB6612FNG (sag sira)'), ('J7', 'Sol motor + enkoder'), ('J8', 'Sag motor + enkoder')):
-        h = block(790, y, 310, ref, title, None, 'modul pin sirasi DOGRULANACAK' if ref.startswith('J_TB') else None)
+    for ref, title, sub in (('J1', 'Surucu baglantisi (TB6612)', 'modul kartin DISINDA, 10 telli kablo'), ('J7', 'Sol enkoder', None), ('J8', 'Sag enkoder', None)):
+        h = block(790, y, 310, ref, title, None, sub)
         y += h + 22
     # sensorler
     y = 60
-    for ref, title in (('J3', 'ToF sol'), ('J4', 'ToF orta'), ('J5', 'ToF sag'), ('J6', 'MPU6050')):
+    for ref, title in (('J3', 'ToF sol'), ('J4', 'ToF orta'), ('J5', 'ToF sag'), ('C4', 'Sensor 100 nF')):
         h = block(1160, y, 290, ref, title)
         y += h + 22
-    # pasif
+    # tel kopruler
     y = 60
-    for ref, title in (('R1', 'Pil bolucu ust 20 k'), ('R2', 'Pil bolucu alt 10 k'), ('C1', 'ADC filtre 100 nF'), ('C2', 'VM 470 uF'), ('C3', '5 V 10 uF'), ('C4', 'Sensor 100 nF'),
-                       ('TP1', 'Test 3V3'), ('TP2', 'Test 5 V'), ('TP3', 'Test VM'), ('TP4', 'Test GND')):
-        h = block(1500, y, 250, ref, title)
-        y += h + 14
-    d.text(40, 1215, 'Renkler: kirmizi/turuncu = guc, mavi = I2C, yesil = motor, mor = enkoder, camgobegi = XSHUT, kahve = ADC. Ayni adli netler birbirine baglidir.', 13, 'start', '#444')
-    d.title_block('Pico tasiyici karti sematigi (v0)', f'{len(P.COMPONENTS)} parca, {len(N)} net; ADC en cok {P.summary()["adc_max_v"]} V; bolucu orani 3',
-                  'KiCad\'de henuz acilmadi (KiCad kurulu degil)', 'Kaynak: design/pcb/pcb_design.py', width=760)
+    for ref, title, sub in (('W2', 'Tel kopru +3V3 <-> +3V3_L', 'kartin arka kenarindan dolanir'),):
+        h = block(1500, y, 250, ref, title, None, sub)
+        y += h + 22
+    d.text(40, 1215, 'Renkler: kirmizi/turuncu = guc, mavi = I2C, mor = enkoder, camgobegi = XSHUT, kahve = ADC. Ayni adli netler birbirine baglidir. Tek katman: _L ile biten netler Pico nun sol yanindaki adadir.', 13, 'start', '#444')
+    d.title_block('Mikro Pico tasiyici karti sematigi (v0, tek katman)', f'{len(P.COMPONENTS)} parca, {len(N)} net; ADC en cok {P.summary()["adc_max_v"]} V; bolucu orani 3',
+                  'KiCad 7 ile okundu; frezelenmedi', 'Kaynak: design/pcb/pcb_design.py', width=760)
     d.save(MEDIA / 'pcb-schematic.svg')
 
 
@@ -151,7 +150,7 @@ def main():
     info = dict(components=[dict(ref=r, value=v[0], footprint=v[1], description=v[2], pins=len(v[3])) for r, v in P.COMPONENTS.items()],
                 nets=[dict(name=n, pins=len(p)) for n, p in N.items()], summary=P.summary(), problems=probs,
                 status='KiCad\'de açılmadı/doğrulanmadı (KiCad kurulu değil). Modül pin sıraları gerçek modüllerle doğrulanacak.',
-                board_mm_proposal=[85, 65, 1.6])
+                board_mm_proposal=[P.BOARD_W, P.BOARD_H, 1.6])
     pj = ROOT / 'docs' / 'data' / 'pcb.json'
     if pj.exists():                                   # tools/design/build_board.py'nin yazdigi 'board' ozetini ve durumunu koru
         old = json.loads(pj.read_text(encoding='utf-8'))

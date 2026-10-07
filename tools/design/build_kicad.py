@@ -25,6 +25,18 @@ def u():
     return str(uuid.uuid4())
 
 
+def wire_link_footprint(pitch):
+    """Iki delikli tel kopru: pad araligi `pitch` mm (X ekseninde); pedler arasi tel kartin DISINDAN dolanir."""
+    half = pitch / 2
+    name = f'WireLink_P{pitch:.2f}mm'
+    txt = (f'(footprint "{name}" (version 20221018) (generator pcb_design)\n  (layer "F.Cu")\n  (descr "Tel kopru, {pitch:.2f} mm")\n  (attr through_hole)\n'
+           f'  (fp_text reference "REF**" (at 0 -2.2) (layer "F.SilkS") (effects (font (size 1 1) (thickness 0.15))))\n'
+           f'  (fp_text value "{name}" (at 0 2.2) (layer "F.Fab") (effects (font (size 1 1) (thickness 0.15))))\n'
+           f'  (pad "1" thru_hole rect (at {-half:.3f} 0) (size 1.8 1.8) (drill 0.9) (layers "*.Cu" "*.Mask"))\n'
+           f'  (pad "2" thru_hole circle (at {half:.3f} 0) (size 1.8 1.8) (drill 0.9) (layers "*.Cu" "*.Mask"))\n)\n')
+    return name, txt
+
+
 def pico_footprint():
     """Pico: 2 sira x 20 pin, sira araligi 17,78 mm (0,7 inc), pin 1 sol ust, 21 sag alt, 40 sag ust."""
     pads = []
@@ -91,8 +103,7 @@ def schematic():
     out += [lib_symbol(r) for r in P.COMPONENTS]
     out.append('  )')
     # yerlesim: sutunlar halinde, 2,54 izgarasina oturt
-    cols = [['U1'], ['J9', 'SW1', 'J10', 'D1', 'JP1'], ['J1', 'J2', 'J7', 'J8'], ['J3', 'J4', 'J5', 'J6'],
-            ['R1', 'R2', 'C1', 'C2', 'C3', 'C4', 'C5', 'TP1', 'TP2', 'TP3', 'TP4']]
+    cols = [['U1'], ['J9', 'D1', 'R1', 'R2', 'C1', 'C2'], ['J1', 'J7', 'J8'], ['J3', 'J4', 'J5', 'C4'], ['W2']]
     x0 = 76.2
     for ci, col in enumerate(cols):
         x = x0 + ci * 127.0
@@ -105,8 +116,7 @@ def schematic():
             out.append(f'  (symbol (lib_id "{FP_LIB}:{ref}") (at {x:.2f} {cy:.2f} 0) (unit 1) (in_bom yes) (on_board yes) (dnp no) (uuid {u()})')
             out.append(f'    (property "Reference" "{ref}" (at {x:.2f} {cy - h / 2 - 1.27:.2f} 0) (effects (font (size 1.27 1.27))))')
             out.append(f'    (property "Value" "{val}" (at {x:.2f} {cy + h / 2 + 1.27:.2f} 0) (effects (font (size 1.27 1.27))))')
-            out.append(f'    (property "Footprint" "{FP_LIB}:{FP_NAME}" (at {x:.2f} {cy:.2f} 0) (effects (font (size 1.27 1.27)) hide))' if ref == 'U1'
-                       else f'    (property "Footprint" "{fp}" (at {x:.2f} {cy:.2f} 0) (effects (font (size 1.27 1.27)) hide))')
+            out.append(f'    (property "Footprint" "{fp}" (at {x:.2f} {cy:.2f} 0) (effects (font (size 1.27 1.27)) hide))')
             out.append(f'    (property "Datasheet" "" (at {x:.2f} {cy:.2f} 0) (effects (font (size 1.27 1.27)) hide))')
             for pin in pins:
                 out.append(f'    (pin "{pin_no(ref, pin)}" (uuid {u()}))')
@@ -133,6 +143,9 @@ def schematic():
 def project_files():
     (KDIR / 'pico-carrier.pretty').mkdir(parents=True, exist_ok=True)
     (KDIR / 'pico-carrier.pretty' / f'{FP_NAME}.kicad_mod').write_text(pico_footprint(), encoding='utf-8')
+    for pitch in (30.48,):
+        name, txt = wire_link_footprint(pitch)
+        (KDIR / 'pico-carrier.pretty' / f'{name}.kicad_mod').write_text(txt, encoding='utf-8')
     (KDIR / 'fp-lib-table').write_text(f'(fp_lib_table\n  (version 7)\n  (lib (name "{FP_LIB}") (type "KiCad") (uri "${{KIPRJ_DIR}}/pico-carrier.pretty") (options "") (descr "Pico tasiyici karti"))\n)\n', encoding='utf-8')
     (KDIR / 'pico-carrier.kicad_pro').write_text(json.dumps({'meta': {'filename': 'pico-carrier.kicad_pro', 'version': 1}, 'board': {}, 'sheets': [[u(), '']]}, indent=2), encoding='utf-8')
     (KDIR / 'pico-carrier.kicad_sch').write_text(schematic(), encoding='utf-8')
