@@ -130,6 +130,9 @@ Bilinen fark: simülasyon çarpışma dairesi 75 mm, tasarımın arka köşeleri
 Yetim ROS süreçleri testleri bozar: testler/kayıt betikleri süreç GRUBUNU kapatır; elle başlattıklarını `ps -eo pid,args | grep -a launch` ile kontrol et.
 
 ## PCB (design/pcb/)
-`design/pcb/pcb_design.py` Pico taşıyıcı kartının TEK KAYNAĞI (parçalar, footprint önerileri, netler, elektrik kontrolleri). `python3 tools/design/build_pcb.py` ->
-`pico-carrier.net` (KiCad netlist), `netlist.csv`, `bom.csv`, `docs/media/design/pcb-schematic.svg`, `docs/data/pcb.json`. Testi: `tests/test_pcb.py` (Pico pinleri main.py/bench_test.py ile aynı olmalı).
-DURUM: KiCad bilgisayarda kurulu değil (sudo gerekir, kullanıcı kurar: `sudo apt install kicad`); şema ve netlist KiCad'de AÇILMADI. Kurulunca: pcbnew'de netlist içe aktar, `kicad-cli` ile ERC/DRC.
+`design/pcb/pcb_design.py` Pico taşıyıcı kartının TEK KAYNAĞI (parçalar, footprint, netler, elektrik kontrolleri; referanslar KiCad kuralı: J1..J10, U1, D1, R/C/TP). Sıra:
+`python3 tools/design/build_pcb.py` (netlist, tablolar, okunabilir şema SVG, docs/data/pcb.json) -> `python3 tools/design/build_kicad.py` (design/pcb/kicad: Pico footprint kütüphanesi, `.kicad_sch`)
+-> `python3 tools/design/build_board.py --route` (`.kicad_pcb`: yerleşim + Freerouting + temizlik + DRC + Gerber zip + SVG). Kart lazer kesim üst plakanın yerine geçer (113 x 90, aynı 4 M3 delik).
+KiCad 7.0.11 kurulu (apt: `kicad occt-misc=7.6.3+dfsg1-7.1build1`; eski KiCad PPA'sı occt-misc'i çakıştırıyor). 7.0 komut satırında ERC/DRC YOK: DRC `pcbnew.WriteDRCReport` ile (Python, sistem python3), ağlar `kicad-cli sch export netlist` ile doğrulanır.
+Freerouting 2.1.0 jar'ı `~/.cache/freerouting/` altında (Java 21; 2.2+ Java 25 ister), depoya girmez; `ImportSpecctraSES` KiCad 7 Python'unda çalışmadığı için SES kendi okuyucumuzla içe aktarılır. Sonuç her seferinde farklı: betik en çok 8 kez dener.
+Testler: `tests/test_pcb.py`, `test_kicad_schematic.py`, `test_board.py` (sistem python3, pcbnew gerekir). DURUM: frezelenmedi; modül pin sıraları gerçek modüllerle doğrulanacak; arayüzde ERC çalıştırılmadı.

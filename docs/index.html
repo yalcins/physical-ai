@@ -507,7 +507,7 @@
           <tr><td>Fiziksel yapım planı</td><td class="num">–</td><td class="num">3</td><td>Parçalar, adımlar, açık kararlar ve arena etiketleri yazıldı (<a href="#yapim">Yapım rehberi</a>). Hiçbiri gerçek donanımda doğrulanmadı.</td></tr>
           <tr><td>Fiziksel yapım ilerlemesi</td><td class="num">–</td><td class="num">1</td><td>Fiziksel adımlardan hiçbiri henüz yapılmadı.</td></tr>
           <tr><td>Sanal tasarım (3B, çizim, lazer, BOM, kablolama)</td><td class="num">–</td><td class="num">3</td><td>Tek kaynaktan (<code>design/design.py</code>) üretilir; çakışma, delik payı ve ölçü tutarlılığı testle denenir. Yıldızlı parça ölçüleri varsayım, gerçek parçalarla doğrulanmadı.</td></tr>
-          <tr><td>PCB şeması (Pico taşıyıcı kartı)</td><td class="num">–</td><td class="num">2</td><td>Parça ve net verisi, netlist ve şema üretildi; elektrik kontrolleri ve firmware pin eşleşmesi testli. KiCad'de açılmadı, yerleşim ve yönlendirme yok.</td></tr>
+          <tr><td>PCB (Pico taşıyıcı kartı)</td><td class="num">–</td><td class="num">4</td><td>KiCad 7'de şema, yerleşim ve yönlendirme yapıldı; KiCad'in kendi okuyucusu ağları doğruladı, DRC'de bağlantı eksiği yok, Gerber üretildi. Frezelenmedi; modül pin sıraları gerçek modüllerle doğrulanmadı; GUI'de ERC çalıştırılmadı.</td></tr>
           <tr><td>Kalibrasyon hattı</td><td class="num">–</td><td class="num">3</td><td><code>tools/calibrate.py</code>: ölçüm CSV'lerinden simülasyon ve firmware ayarları. Bilinen değerli sentetik ölçümle test edildi; gerçek ölçüm henüz yok.</td></tr>
           <tr><td>Sim-gerçek aktarımı</td><td class="num">1</td><td class="num">2</td><td>Benzetme araçları, referans değerler ve kalibrasyon hattı hazır. Hiçbir model gerçek robotta denenmedi.</td></tr>
           <tr><td>Sensör düzeni uyumu</td><td class="num">2</td><td class="num">2</td><td><code>side5</code> yalnızca simülasyonda. Pico pin planında yalnızca üç ToF için yer var.</td></tr>
@@ -641,14 +641,17 @@
       <div class="table-wrap" style="margin-top:20px"><table class="maturity" id="wire-pi4"></table></div>
       <ul class="plainlist" id="power-pi4"></ul>
 
-      <h3 class="sub">PCB şeması: Pico taşıyıcı kartı (v0)</h3>
-      <p>Pico 2 W, TB6612 sürücü modülü, 3 ToF, MPU6050, iki motor ve enkoder, pil girişi ve 5 V regülatör tek kartta, 2,54 mm soketlerle birleşir (lehim az, parça değişimi kolay). Şema parça ve net verisinden üretilir; elektrik kontrolleri (tek pinli net, çifte bağlı pin, bağlanmamış pin, ADC gerilimi, bölücü oranı) ve Pico pinlerinin firmware ile aynı olup olmadığı testle denenir.</p>
+      <h3 class="sub">PCB: Pico taşıyıcı kartı (v0), KiCad 7'de şema, yerleşim ve yönlendirme</h3>
+      <p>Pico 2 W, TB6612 sürücü modülü, 3 ToF, MPU6050, iki motor ve enkoder, pil girişi ve 5 V regülatör tek kartta, 2,54 mm soketlerle birleşir (lehim az, parça değişimi kolay). Kart, lazer kesim <b>üst plakanın yerine</b> geçer: aynı dış çizgi (113 × 90 mm) ve aynı dört M3 delik. Şema, yerleşim ve yönlendirme KiCad 7.0.11 ile üretildi; kuralları fab lab frezesine göre seçtik (iz 0,6 mm, aralık 0,4 mm).</p>
       <div class="design-status" id="pcb-status"></div>
-      <figure class="wide"><a href="media/design/pcb-schematic.svg"><img src="media/design/pcb-schematic.svg" alt="Pico taşıyıcı kartı şeması: bloklar ve net etiketleri" loading="lazy"></a><figcaption>Net etiketli şema: aynı adlı etiketler birbirine bağlıdır. Büyütmek için tıkla.</figcaption></figure>
+      <figure class="wide"><a href="media/design/pcb-schematic.svg"><img src="media/design/pcb-schematic.svg" alt="Pico taşıyıcı kartı şeması: bloklar ve net etiketleri" loading="lazy"></a><figcaption>Şema (net etiketli): aynı adlı etiketler birbirine bağlıdır. Büyütmek için tıkla.</figcaption></figure>
+      <figure class="wide" style="max-width:640px"><a href="media/design/pico-carrier-board.svg"><img src="media/design/pico-carrier-board.svg" alt="Pico taşıyıcı kartı: yerleşim ve yönlendirilmiş bakır katmanlar" loading="lazy"></a><figcaption>Kart (üstten, robotun önü yukarıda): kırmızı = üst bakır, mavi = alt bakır. İki katmanlı; hepsi KiCad DRC'den bağlantı eksiği olmadan geçti.</figcaption></figure>
       <ul class="plainlist">
-        <li><a href="https://github.com/yalcins/physical-ai/blob/main/design/pcb/pico-carrier.net">pico-carrier.net</a> (KiCad netlist, PCB düzenleyicide içe aktarılır), <a href="https://github.com/yalcins/physical-ai/blob/main/design/pcb/netlist.csv">netlist.csv</a>, <a href="https://github.com/yalcins/physical-ai/blob/main/design/pcb/bom.csv">bom.csv</a></li>
-        <li class="warnitem">Bu şema KiCad'de henüz açılmadı: bilgisayarda KiCad kurulu değil (kurulum yönetici parolası ister). Modül pin sıraları (TB6612, motor, regülatör) gerçek modüllerle doğrulanacak.</li>
-        <li class="warnitem">Bilinen eksikler: ters pil bağlantısına karşı koruma yok; yerleşim ve yönlendirme yapılmadı; ToF modülünün besleme aralığı bilinmediği için JP1 ile 3,3 V ya da 5 V seçilir; enkoder beslemesi yalnızca 3,3 V (5 V gerekiyorsa seviye çevirici lazım).</li>
+        <li>KiCad projesi (GitHub): <a href="https://github.com/yalcins/physical-ai/tree/main/design/pcb/kicad">design/pcb/kicad</a> (şema, kart, Pico footprint'i). Üretim: <a href="media/design/pico-carrier-gerber.zip">Gerber + delik dosyaları (zip)</a>.</li>
+        <li>Veri: <a href="https://github.com/yalcins/physical-ai/blob/main/design/pcb/pico-carrier.net">pico-carrier.net</a>, <a href="https://github.com/yalcins/physical-ai/blob/main/design/pcb/netlist.csv">netlist.csv</a>, <a href="https://github.com/yalcins/physical-ai/blob/main/design/pcb/bom.csv">bom.csv</a>.</li>
+        <li>Doğrulama: KiCad'in kendi okuyucusu şemadan benim 28 netimi birebir aynı pin kümeleriyle çıkardı; kart dosyasındaki bağlantılar bu netlerle eşleşiyor; kart ölçüsü ve montaj delikleri üst plakayla (ve standoff konumlarıyla) uyuşuyor; DRC kısa devre yakalıyor mu diye bilerek bozulmuş bir kartla da denendi.</li>
+        <li class="warnitem">Yapılmadı: KiCad 7 komut satırında ERC yok (8'de var) ve arayüzde (GUI) ERC çalıştırılmadı; kart frezelenmedi. Modül pin sıraları (TB6612, motor, regülatör) ve yerleşimin gerçek modüllerle uyumu doğrulanacak.</li>
+        <li class="warnitem">Bilinen eksikler: ters pil bağlantısına karşı koruma yok; ToF modülünün besleme aralığı bilinmediği için JP1 ile 3,3 V ya da 5 V seçilir; enkoder beslemesi yalnızca 3,3 V; kart iki katmanlı (çift yüz frezeleme ya da delik kaplama gerekir). Yönlendirmeyi Freerouting 2.1.0 yaptı, her çalıştırmada biraz farklı çıkar.</li>
       </ul>
 
       <h3 class="sub">Kalibrasyon hattı: fiziksel aşama yalnızca veri girişi</h3>
@@ -1141,8 +1144,11 @@ fetch('data/pcb.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).
   const box = document.getElementById('pcb-status'); if (!box || !c) return;
   box.append(el('span', { class: 'chip ' + (c.problems.length ? 'bad' : 'ok') }, c.components.length + ' parça, ' + c.nets.length + ' net, elektrik kontrolü: ' + (c.problems.length ? c.problems.length + ' sorun' : 'temiz')));
   box.append(el('span', { class: 'chip' }, 'ADC en çok ' + c.summary.adc_max_v + ' V (bölücü oranı ' + c.summary.divider_ratio + ')'));
-  box.append(el('span', { class: 'chip bad' }, 'KiCad\'de doğrulanmadı'));
-  box.append(el('span', { class: 'chip' }, 'kart önerisi ' + c.board_mm_proposal.join(' × ') + ' mm'));
+  if (c.board) {
+    box.append(el('span', { class: 'chip ' + (c.board.unconnected ? 'bad' : 'ok') }, 'Kart: ' + c.board.size_mm.slice(0, 2).join(' × ') + ' mm, ' + c.board.layers + ' katman, ' + c.board.tracks + ' iz, ' + c.board.vias + ' via, bağlanmamış ' + c.board.unconnected));
+    const real = c.board.drc_real.filter(k => k !== 'silk_overlap' && k !== 'silk_over_copper');
+    box.append(el('span', { class: 'chip ' + (real.length ? 'bad' : 'ok') }, real.length ? 'DRC: ' + real.join(', ') : 'DRC: gerçek hata yok, yalnızca ipek baskı uyarıları'));
+  }
 });
 /* ---------------- bulgular (docs/data/findings.json) ---------------- */
 const TYPE_TR = { bulgu: 'Bulgu', karar: 'Karar', donanim: 'Donanım' };

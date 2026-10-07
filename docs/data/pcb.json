@@ -8,63 +8,63 @@
       "pins": 40
     },
     {
-      "ref": "J_TB_A",
+      "ref": "J1",
       "value": "TB6612FNG modulu, sol sira",
       "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x08_P2.54mm_Vertical",
       "description": "Surucu modulu (SparkFun siralamasi VARSAYIM)",
       "pins": 8
     },
     {
-      "ref": "J_TB_B",
+      "ref": "J2",
       "value": "TB6612FNG modulu, sag sira",
       "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x08_P2.54mm_Vertical",
       "description": "Surucu modulu",
       "pins": 8
     },
     {
-      "ref": "J_TOF1",
+      "ref": "J3",
       "value": "TOF400C sol",
       "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical",
       "description": "ToF modulu (VIN GND SDA SCL XSHUT)",
       "pins": 5
     },
     {
-      "ref": "J_TOF2",
+      "ref": "J4",
       "value": "TOF400C orta",
       "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical",
       "description": "ToF modulu",
       "pins": 5
     },
     {
-      "ref": "J_TOF3",
+      "ref": "J5",
       "value": "TOF400C sag",
       "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical",
       "description": "ToF modulu",
       "pins": 5
     },
     {
-      "ref": "J_IMU",
+      "ref": "J6",
       "value": "MPU6050 (GY-521)",
       "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical",
       "description": "IMU modulu (VCC GND SCL SDA)",
       "pins": 4
     },
     {
-      "ref": "J_ML",
+      "ref": "J7",
       "value": "Sol motor + enkoder",
       "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical",
       "description": "N20 motor (6 uc; sira motora gore DOGRULANACAK)",
       "pins": 6
     },
     {
-      "ref": "J_MR",
+      "ref": "J8",
       "value": "Sag motor + enkoder",
       "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical",
       "description": "N20 motor",
       "pins": 6
     },
     {
-      "ref": "J_BAT",
+      "ref": "J9",
       "value": "Pil girisi 4xAA",
       "footprint": "TerminalBlock:TerminalBlock_bornier-2_P5.08mm",
       "description": "Pil + / -",
@@ -78,7 +78,7 @@
       "pins": 2
     },
     {
-      "ref": "J_REG",
+      "ref": "J10",
       "value": "S7V7F5 5 V regulator",
       "footprint": "Connector_PinSocket_2.54mm:PinSocket_1x03_P2.54mm_Vertical",
       "description": "Regulator modulu (VIN GND VOUT)",
@@ -297,10 +297,37 @@
     "nets": 28
   },
   "problems": [],
-  "status": "KiCad'de açılmadı/doğrulanmadı (KiCad kurulu değil). Modül pin sıraları gerçek modüllerle doğrulanacak.",
+  "status": "KiCad 7.0.11 ile şema okundu (ağlar birebir eşleşti), kart yerleştirildi ve yönlendirildi; DRC: bağlanmamış 0. Fiziksel olarak frezelenmedi; modül pin sıraları gerçek modüllerle doğrulanacak.",
   "board_mm_proposal": [
     85,
     65,
     1.6
-  ]
+  ],
+  "board": {
+    "size_mm": [
+      90.0,
+      113.0,
+      1.6
+    ],
+    "layers": 2,
+    "tracks": 337,
+    "vias": 6,
+    "unconnected": 0,
+    "drc_total": 32,
+    "drc_real": [
+      "silk_overlap"
+    ],
+    "drc_real_count": 3,
+    "drc_lib_link_notes": 29,
+    "track_mm": {
+      "F.Cu": 1742.5,
+      "B.Cu": 1071.6
+    },
+    "rules": {
+      "track_mm": 0.6,
+      "clearance_mm": 0.4,
+      "via_mm": "1.4/0.8"
+    },
+    "note": "KiCad 7.0.11; Freerouting 2.1.0 ile yonlendirildi; lib_footprint_issues = kutuphane tablosu bulunamadi bilgi notu, tasarim hatasi degil."
+  }
 }

@@ -14,3 +14,5 @@ firmware/pico2w/vl53l1x.py
 .run/
 design/build/
 design/summary.json
+design/pcb/kicad/build/
+design/pcb/kicad/*-backups/

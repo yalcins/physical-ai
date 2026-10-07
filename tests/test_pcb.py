@@ -34,7 +34,7 @@ def test_checks_catch_mistakes():
 
         def broken_unconnected():
             n = orig()
-            n['I2C_SDA'] = [p for p in n['I2C_SDA'] if p != ('J_IMU', 'SDA')]
+            n['I2C_SDA'] = [p for p in n['I2C_SDA'] if p != ('J6', 'SDA')]
             return n
         P.nets = broken_unconnected
         assert any('bagli olmayan' in p for p in P.checks())

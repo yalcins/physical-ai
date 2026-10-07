@@ -71,7 +71,7 @@
     {
       "q": "Pico robot kartı (PCB) KiCad'de tasarlanıp fab lab'da mı frezelenecek, yoksa önce breadboard/delikli plaket mi?",
       "why": "Kart henüz tasarlanmadı. Tezgâh denemesi kart olmadan başlayabilir.",
-      "proposal": "ÖNERİ: ilk sürüm lazer kesim plaka + breadboard ya da delikli plaket. PCB şeması hazır (Tasarım bölümü, 25 parça, 28 net); KiCad kurulunca yerleşim yapılır. Ters bağlantı koruması şemada YOK."
+      "proposal": "ÖNERİ: ilk sürüm lazer kesim plaka + breadboard ya da delikli plaket. PCB de hazır (KiCad 7: şema, yerleşim, yönlendirme, Gerber; lazer kesim üst plakanın yerine geçer). Ters bağlantı koruması yok; iki katmanlı."
     }
   ],
   "targets": [
@@ -167,11 +167,11 @@
           "phase": 2
         },
         {
-          "text": "Bilgisayara KiCad 7'yi kur (yönetici parolası gerekir; Claude kuramaz). Sonra şemayı ve netlisti doğrula.",
+          "text": "Bilgisayara KiCad 7 kuruldu (7.0.11; Ubuntu depolarından, eski KiCad PPA'sındaki occt-misc çakışması için sürüm sabitlendi). Şema, kart ve Gerber buradan üretiliyor.",
           "kind": "yazılım",
-          "state": "todo",
+          "state": "done",
           "phase": 2,
-          "cmd": "sudo apt install kicad\nkicad-cli --version",
+          "cmd": "sudo apt install kicad occt-misc=7.6.3+dfsg1-7.1build1\nkicad-cli --version",
           "group": [
             "server",
             "pico"
@@ -353,15 +353,15 @@
           "group": "pico"
         },
         {
-          "text": "PCB: design/pcb/pico-carrier.net dosyasını KiCad PCB düzenleyicide içe aktar (Dosya > İçe Aktar > Netlist), modül soket sırasını gerçek modüllerle doğrula, yerleştir, yönlendir (fab lab frezesi için en az 0,4 mm iz), ERC/DRC çalıştır. Kart ölçüsü önerisi 85 × 65 mm.",
+          "text": "PCB: şema, yerleşim ve yönlendirme KiCad 7'de hazır (design/pcb/kicad). Kalan: modül soket sırasını gerçek TB6612, motor ve regülatör modülleriyle doğrula (farklıysa pcb_design.py'de değiştirip kartı yeniden üret), KiCad arayüzünde ERC çalıştır, ipek baskı uyarılarını düzelt.",
           "kind": "yazılım",
           "state": "later",
           "phase": 4,
-          "cmd": "python3 tools/design/build_pcb.py\nkicad-cli pcb drc kart.kicad_pcb",
+          "cmd": "python3 tools/design/build_pcb.py && python3 tools/design/build_kicad.py\npython3 tools/design/build_board.py --route\npython3 tests/test_board.py",
           "group": "pico"
         },
         {
-          "text": "PCB'yi fab lab'da freze et, soketleri ve pasifleri lehimle, Pico'yu takmadan önce kısa devre ve besleme (VM, 5 V, 3V3) kontrolü yap.",
+          "text": "PCB'yi fab lab'da freze et (docs/media/design/pico-carrier-gerber.zip; iki katmanlı: çift yüz frezeleme ya da delik kaplama gerekir), soketleri ve pasifleri lehimle, Pico'yu takmadan önce kısa devre ve besleme (VM, 5 V, 3V3) kontrolü yap.",
           "kind": "fiziksel",
           "state": "later",
           "phase": 4,

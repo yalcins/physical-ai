@@ -116,17 +116,17 @@ def schematic():
     block(40, 60, 330, 'U1', 'Raspberry Pi Pico 2 W', used + ['GND_3'], 'yalniz bagli pinler; 8 GND pini ortak GND\'ye; kalanlar NC')
     # guc
     y = 60
-    for ref, title, pins in (('J_BAT', 'Pil girisi', None), ('SW1', 'Guc anahtari', None), ('J_REG', 'S7V7F5 5 V regulator', None), ('D1', '1N5819', None), ('JP1', 'Sensor besleme secimi', None)):
+    for ref, title, pins in (('J9', 'Pil girisi', None), ('SW1', 'Guc anahtari', None), ('J10', 'S7V7F5 5 V regulator', None), ('D1', '1N5819', None), ('JP1', 'Sensor besleme secimi', None)):
         h = block(430, y, 300, ref, title, pins)
         y += h + 22
     # surucu + motor
     y = 60
-    for ref, title in (('J_TB_A', 'TB6612FNG (sol sira)'), ('J_TB_B', 'TB6612FNG (sag sira)'), ('J_ML', 'Sol motor + enkoder'), ('J_MR', 'Sag motor + enkoder')):
+    for ref, title in (('J1', 'TB6612FNG (sol sira)'), ('J2', 'TB6612FNG (sag sira)'), ('J7', 'Sol motor + enkoder'), ('J8', 'Sag motor + enkoder')):
         h = block(790, y, 310, ref, title, None, 'modul pin sirasi DOGRULANACAK' if ref.startswith('J_TB') else None)
         y += h + 22
     # sensorler
     y = 60
-    for ref, title in (('J_TOF1', 'ToF sol'), ('J_TOF2', 'ToF orta'), ('J_TOF3', 'ToF sag'), ('J_IMU', 'MPU6050')):
+    for ref, title in (('J3', 'ToF sol'), ('J4', 'ToF orta'), ('J5', 'ToF sag'), ('J6', 'MPU6050')):
         h = block(1160, y, 290, ref, title)
         y += h + 22
     # pasif
@@ -152,7 +152,12 @@ def main():
                 nets=[dict(name=n, pins=len(p)) for n, p in N.items()], summary=P.summary(), problems=probs,
                 status='KiCad\'de açılmadı/doğrulanmadı (KiCad kurulu değil). Modül pin sıraları gerçek modüllerle doğrulanacak.',
                 board_mm_proposal=[85, 65, 1.6])
-    (ROOT / 'docs' / 'data' / 'pcb.json').write_text(json.dumps(info, ensure_ascii=False, indent=2), encoding='utf-8')
+    pj = ROOT / 'docs' / 'data' / 'pcb.json'
+    if pj.exists():                                   # tools/design/build_board.py'nin yazdigi 'board' ozetini ve durumunu koru
+        old = json.loads(pj.read_text(encoding='utf-8'))
+        if 'board' in old:
+            info['board'], info['status'] = old['board'], old['status']
+    pj.write_text(json.dumps(info, ensure_ascii=False, indent=2), encoding='utf-8')
     print('tamam:', P.summary())
 
 
