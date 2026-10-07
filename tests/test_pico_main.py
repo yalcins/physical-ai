@@ -100,6 +100,26 @@ def test_immediate_connection():
     assert FakeWLAN.connects == 1 and ('disconnect',) not in LOG
 
 
+def test_calibration_module_scales_motors():
+    import importlib
+    LOG.clear()
+    sys.modules['calibration'] = types.SimpleNamespace(MAX_WHEEL_RAD_S=40.0, MOTOR_SCALE_L=0.5, MOTOR_SCALE_R=1.0)
+    try:
+        importlib.reload(main)
+        main.drive(0.2, 0.0)
+        duties = [e[1] for e in LOG if e[0] == 'duty']
+        left, right = duties[-2], duties[-1]
+        assert main.MAX_WHEEL_RAD_S == 40.0
+        assert left == 65535 or left > right * 1.9              # yavas motor (olcek 0,5) iki kat guc ister (en fazla tavan)
+    finally:
+        del sys.modules['calibration']
+        importlib.reload(main)
+    LOG.clear()
+    main.drive(0.2, 0.0)
+    d2 = [e[1] for e in LOG if e[0] == 'duty']
+    assert d2[-2] == d2[-1]                                      # kalibrasyon yokken iki motor esit
+
+
 if __name__ == '__main__':
     for name, fn in list(globals().items()):
         if name.startswith('test_'):

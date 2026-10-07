@@ -1,9 +1,9 @@
 """Pi 4 robot surucusu (TASLAK): /cmd_vel -> motorlar, ToF -> /tof_*/range.
 
 Gazebo ikiziyle ayni konulari yayinlar; boylece pai_robot.RosRobot ikisinde de calisir.
-DURUM: Pi 4 uzerinde henuz denenmedi, pin numaralari BELIRLENMEDI.
+DURUM: Pi 4 uzerinde henuz denenmedi. Pin numaralari ONERIDIR (sanal tasarim, docs/data/wiring.json);
+farkli kablolanirsa PINS sozlugunu gercege gore degistir.
 ToF okuma ve adres atama tof.py icinde (sahte sensorlerle test edildi, gercek sensorle degil).
-PINS sozlugunu gercek kablolamaya gore doldur (Pico pin planindan farkli olabilir).
 """
 import math
 import signal
@@ -22,11 +22,13 @@ WHEEL_SEPARATION = 0.115
 MAX_WHEEL_RAD_S = 31.0
 CMD_TIMEOUT = 0.5                    # sn: komut kesilirse dur
 
-# TB6612FNG BCM pinleri -- DOLDURULACAK (None = henuz atanmadi)
-PINS = {'pwma': None, 'ain1': None, 'ain2': None,
-        'pwmb': None, 'bin1': None, 'bin2': None, 'stby': None}
-# Her ToF'un XSHUT pini (I2C adres ataması için) -- DOLDURULACAK, sıra: sol, orta, sağ
-XSHUT_PINS = (None, None, None)
+# TB6612FNG BCM pinleri. ONERI (sanal tasarim, docs/data/wiring.json): kablolamadan once dogrula, degisirse
+# hem burayi hem wiring tablosunu (tools/design/build_all.py) guncelle. None = atanmadi (surucu baslamaz).
+PINS = {'pwma': 12, 'ain1': 23, 'ain2': 24,
+        'pwmb': 13, 'bin1': 25, 'bin2': 16, 'stby': 20}
+# Her ToF'un XSHUT pini (I2C adres atamasi icin), sira: sol, orta, sag. ONERI.
+XSHUT_PINS = (5, 6, 26)
+# Enkoder pinleri (sol A,B / sag A,B) = (17, 27) / (22, 4): surucu henuz okumuyor, yalnizca kablolama icin.
 TOF_NAMES = ('left', 'center', 'right')
 TOF_FOV = math.radians(27)
 TOF_MIN, TOF_MAX = 0.04, 4.0

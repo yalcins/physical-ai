@@ -5,6 +5,7 @@
     - Tekerlek capi 43 mm (yaricap 0.0215 m), genislik 19 mm
     - Tekerlek merkezleri arasi 115 mm
     - Sarhos teker: tekerlek aksinin 65 mm arkasinda
+    - Govde ayak izi 133 x 90 mm (design/design.py: x = -85 .. +48); detayli 3B tasarim design/ klasorunde
     - ToF sensorler: yerden ~5 cm yukseklikte, sol/sag +-30 derece
 -->
 <robot name="pai_bot">
@@ -20,16 +21,16 @@
   <!-- Sasi + elektronik kati (tek kutu olarak) -->
   <link name="base_link">
     <visual>
-      <origin xyz="-0.02 0 0.02" rpy="0 0 0"/>
-      <geometry><box size="0.13 0.09 0.04"/></geometry>
+      <origin xyz="-0.0185 0 0.02" rpy="0 0 0"/>
+      <geometry><box size="0.133 0.09 0.04"/></geometry>
       <material name="plate"><color rgba="0.85 0.6 0.3 1"/></material>
     </visual>
     <collision>
-      <origin xyz="-0.02 0 0.02" rpy="0 0 0"/>
-      <geometry><box size="0.13 0.09 0.04"/></geometry>
+      <origin xyz="-0.0185 0 0.02" rpy="0 0 0"/>
+      <geometry><box size="0.133 0.09 0.04"/></geometry>
     </collision>
     <inertial>
-      <origin xyz="-0.02 0 0.02" rpy="0 0 0"/>
+      <origin xyz="-0.0185 0 0.02" rpy="0 0 0"/>
       <mass value="0.35"/>
       <inertia ixx="0.000283" ixy="0" ixz="0" iyy="0.00054" iyz="0" izz="0.000729"/>
     </inertial>
@@ -143,7 +144,7 @@
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
-    <origin xyz="-0.02 0 0.02" rpy="0 0 0"/>
+    <origin xyz="-0.0185 0 0.02" rpy="0 0 0"/>
   </joint>
 
   <!-- ===================== Gazebo ayarlari ===================== -->

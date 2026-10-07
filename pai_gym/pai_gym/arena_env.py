@@ -37,7 +37,7 @@ class ArenaEnv(gym.Env):
                  random_start=True, sensor_noise=True, moving_obstacles=True,
                  frames=1, layout='front3', scenario=None,
                  motor_scale=(1.0, 1.0), latency=0, sensor_bias=0.0, sensor_dropout=0.0,
-                 randomize=False):
+                 randomize=False, robot_radius=None, sensor_noise_std=None, calibration=None):
         super().__init__()
         self.render_mode = render_mode
         self.dt = dt
@@ -56,6 +56,12 @@ class ArenaEnv(gym.Env):
         self.sensor_bias = sensor_bias
         self.sensor_dropout = sensor_dropout
         self.randomize = randomize
+        self.robot_radius = robot_radius    # None = world.ROBOT_RADIUS (0,075 m)
+        self.sensor_noise_std = sensor_noise_std   # None = world.TOF_NOISE (0,01 m)
+        self.pico_cal = {}
+        if calibration:                     # olculmus degerler: yalnizca varsayilanda kalan ayarlari doldurur
+            from .calibration import apply_calibration
+            apply_calibration(self, calibration)
         self.pending = []
         self.perturbation = {}
         self.sensors = SENSOR_LAYOUTS[layout]
@@ -99,7 +105,13 @@ class ArenaEnv(gym.Env):
         self.world = World(obstacles=obstacles, rng=self.np_random,
                            sensor_noise=self.sensor_noise, sensors=self.sensors,
                            motor_scale=pt['motor_scale'], sensor_bias=pt['sensor_bias'],
-                           sensor_dropout=pt['sensor_dropout'])
+                           sensor_dropout=pt['sensor_dropout'],
+                           **({} if self.robot_radius is None else {'robot_radius': self.robot_radius}),
+                           **({} if self.sensor_noise_std is None else {'sensor_noise_std': self.sensor_noise_std}))
+        for ob in obstacles:                # kalibre edilmis Pico boyutu/hizi
+            if isinstance(ob, PicoBot) and self.pico_cal:
+                ob.r = self.pico_cal.get('radius_m', ob.r)
+                ob.speed_scale = self.pico_cal.get('speed_scale', ob.speed_scale)
         if self.random_start:
             self.world.place_robot(*self.world.random_free_pose())
         else:

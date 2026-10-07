@@ -11,16 +11,17 @@ source install/setup.bash
 export CAPTURE_WORLD=/tmp/arena_cam.sdf
 python3 tools/capture_gazebo/make_world.py "$CAPTURE_WORLD"
 
-stop_gazebo() {
-  kill -INT "$LAUNCH" 2>/dev/null || true
+stop_gazebo() {            # launch kendi surec grubunda (setsid): grubun tamamini kapat, yetim surec kalmasin
+  [ -n "${LAUNCH:-}" ] || return 0
+  kill -INT -- "-$LAUNCH" 2>/dev/null || true
   sleep 6
-  pkill -x ruby 2>/dev/null || true
-  sleep 2
+  kill -KILL -- "-$LAUNCH" 2>/dev/null || true
+  LAUNCH=
 }
 
 run_mode() {              # $1: kip, $2: hareketli engeller (0/1)
   if [ "$2" = "0" ]; then export CAPTURE_NO_MOVING=1; else unset CAPTURE_NO_MOVING; fi
-  ros2 launch tools/capture_gazebo/capture.launch.py > "/tmp/capture_gz_$1.log" 2>&1 &
+  setsid ros2 launch tools/capture_gazebo/capture.launch.py > "/tmp/capture_gz_$1.log" 2>&1 &
   LAUNCH=$!
   sleep 22                # Gazebo ve kopruler acilsin
   python3 tools/capture_gazebo/record_views.py "$1" docs/media/sim

@@ -68,8 +68,9 @@ class PicoBot(Circle):
     TURN_W = 2.5             # rad/s
     HOLD_S = (1.0, 3.0)      # bir hareketi kac saniye surdurur
 
-    def __init__(self, x, y, theta=0.0):
-        super().__init__(x, y, ROBOT_RADIUS)
+    def __init__(self, x, y, theta=0.0, radius=ROBOT_RADIUS, speed_scale=1.0):
+        super().__init__(x, y, radius)
+        self.speed_scale = speed_scale      # gercek Pico'nun olculen hizi / komut hizi (kalibrasyon)
         self.theta = theta
         self.cmd = (0.0, 0.0)
         self.until = 0.0     # simulasyon saniyesi
@@ -92,7 +93,7 @@ class PicoBot(Circle):
     def step(self, world, dt):
         # Kendi sensorleri: baska engeller + duvarlar + ogrenen robot (kendisi haric)
         others = [o for o in world.obstacles if o is not self]
-        others.append(Circle(world.x, world.y, ROBOT_RADIUS))
+        others.append(Circle(world.x, world.y, world.robot_radius))
         ranges = []
         for _, fwd, side, ang in TOF_SENSORS:
             c, s_ = math.cos(self.theta), math.sin(self.theta)
@@ -100,6 +101,7 @@ class PicoBot(Circle):
             offsets = np.linspace(-TOF_FOV / 2, TOF_FOV / 2, TOF_RAYS)
             ranges.append(min(world.cast(ox, oy, self.theta + ang + o, others) for o in offsets))
         v, w = self.command(ranges, world.rng)
+        v *= self.speed_scale
         self.t += dt
         self.theta = (self.theta + w * dt + math.pi) % (2 * math.pi) - math.pi
         nx, ny = self.x + v * math.cos(self.theta) * dt, self.y + v * math.sin(self.theta) * dt
@@ -168,7 +170,8 @@ def ray_circle(ox, oy, dx, dy, c):
 class World:
 
     def __init__(self, obstacles=None, rng=None, sensor_noise=True, sensors=TOF_SENSORS,
-                 motor_scale=(1.0, 1.0), sensor_bias=0.0, sensor_dropout=0.0):
+                 motor_scale=(1.0, 1.0), sensor_bias=0.0, sensor_dropout=0.0, robot_radius=ROBOT_RADIUS,
+                 sensor_noise_std=TOF_NOISE):
         self.rng = rng if rng is not None else np.random.default_rng()
         self.obstacles = obstacles if obstacles is not None else default_obstacles()
         self.sensor_noise = sensor_noise
@@ -179,6 +182,8 @@ class World:
         self.motor_scale = motor_scale      # (sol, sag) tekerlek hizi carpani
         self.sensor_bias = sensor_bias      # m, tum ToF okumalarina eklenir
         self.sensor_dropout = sensor_dropout  # okumanin 'bos' (4 m) gelme olasiligi
+        self.sensor_noise_std = sensor_noise_std  # ToF gurultusu standart sapmasi (m)
+        self.robot_radius = robot_radius      # carpisma dairesi (m); tasarimda arka kose eksenden ~0,096 m
 
     # --- robot yerlestirme ---
     def place_robot(self, x, y, theta):
@@ -202,7 +207,7 @@ class World:
                 dx = max(abs(x - ob.x) - ob.w / 2, 0.0)
                 dy = max(abs(y - ob.y) - ob.h / 2, 0.0)
                 d = min(d, math.hypot(dx, dy))
-        return d - ROBOT_RADIUS
+        return d - self.robot_radius
 
     def collided(self):
         return self.clearance(self.x, self.y) <= 0.0
@@ -277,7 +282,7 @@ class World:
             offsets = np.linspace(-TOF_FOV / 2, TOF_FOV / 2, TOF_RAYS)
             d = min(self.cast(ox, oy, heading + o) for o in offsets)
             if self.sensor_noise:
-                d += self.rng.normal(0.0, TOF_NOISE)
+                d += self.rng.normal(0.0, self.sensor_noise_std)
             d += self.sensor_bias
             if self.sensor_dropout and self.rng.random() < self.sensor_dropout:
                 d = TOF_MAX                        # gecersiz okuma: sensor "bos" der

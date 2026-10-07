@@ -4,7 +4,7 @@
 #   tests/run_all.sh --ros    # + ROS 2 / Gazebo entegrasyon testi (1-2 dk, ROS kurulu olmali)
 cd "$(dirname "$0")/.."
 fail=0
-for t in test_pai_gym test_pai_robot test_pi4_tof test_pi4_run test_pico_tof test_pico_main test_pico_bench; do
+for t in test_pai_gym test_pai_robot test_pi4_tof test_pi4_run test_pico_tof test_pico_main test_pico_bench test_calibration test_design; do
   if out=$(.venv/bin/python "tests/$t.py" 2>&1); then
     echo "OK    $t ($(echo "$out" | grep -c '^ok') test)"
   else

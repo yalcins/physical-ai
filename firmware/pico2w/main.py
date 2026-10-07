@@ -26,6 +26,13 @@ MAX_WHEEL_RAD_S = 31.0      # ~300 RPM (JGA12-N20B, 6V)
 WATCHDOG_S = 0.5            # remote modda bu sure komut gelmezse dur
 WIFI_TIMEOUT_S = 20         # tek bir Wi-Fi baglanma denemesi icin en uzun sure
 PWM_FREQ = 1000
+MOTOR_SCALE_L = MOTOR_SCALE_R = 1.0   # motor hiz farki duzeltmesi (calibration.py varsa oradan gelir)
+try:                                  # tools/calibrate.py --firmware bu dosyayi uretir; yoksa varsayilanlar kalir
+    import calibration as _cal
+    MAX_WHEEL_RAD_S = _cal.MAX_WHEEL_RAD_S
+    MOTOR_SCALE_L, MOTOR_SCALE_R = _cal.MOTOR_SCALE_L, _cal.MOTOR_SCALE_R
+except ImportError:
+    pass
 
 # TB6612FNG pinleri (CLAUDE.md)
 STBY = Pin(22, Pin.OUT, value=0)    # acilista surucu bekleme modunda: motorlar kapali
@@ -46,8 +53,8 @@ def set_motor(motor, rad_s):
 
 def drive(v, w):
     """(v m/s, w rad/s) -> tekerlek hizlari. world.wheel_speeds ile ayni formul."""
-    left = (v - w * WHEEL_SEPARATION / 2) / WHEEL_RADIUS
-    right = (v + w * WHEEL_SEPARATION / 2) / WHEEL_RADIUS
+    left = (v - w * WHEEL_SEPARATION / 2) / WHEEL_RADIUS / MOTOR_SCALE_L     # olculen hiz farki telafi edilir
+    right = (v + w * WHEEL_SEPARATION / 2) / WHEEL_RADIUS / MOTOR_SCALE_R
     STBY.value(1)
     set_motor(MOTOR_L, left)
     set_motor(MOTOR_R, right)

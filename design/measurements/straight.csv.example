@@ -1,0 +1,3 @@
+commanded_v_m_s,seconds,distance_m,heading_change_deg
+0.2,5,0.92,4.0
+0.2,5,0.95,3.5

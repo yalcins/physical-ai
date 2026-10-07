@@ -46,19 +46,22 @@ def check(name, ok, detail=''):
 
 
 def kill_gazebo(proc):
-    proc.send_signal(signal.SIGINT)
+    """Gazebo'yu ve bagli tum ROS sureclerini (ayni surec grubu) kapatir. Ad ile aramak guvenilmez:
+    surec adlari 15 karaktere kesilir ('moving_obstacle', 'parameter_bridg'), eskiden yetim surecler kaliyordu."""
+    try:
+        pgid = os.getpgid(proc.pid)
+    except ProcessLookupError:
+        return
+    os.killpg(pgid, signal.SIGINT)
     try:
         proc.wait(timeout=15)
     except subprocess.TimeoutExpired:
-        proc.kill()
-    out = subprocess.run(['ps', '-eo', 'pid,comm'], capture_output=True, text=True).stdout
-    for line in out.splitlines()[1:]:
-        pid, comm = line.split(None, 1)
-        if comm.strip() in ('ruby', 'gz', 'parameter_bridge', 'tof_range_node', 'moving_obstacl'):
-            try:
-                os.kill(int(pid), signal.SIGTERM)
-            except ProcessLookupError:
-                pass
+        pass
+    time.sleep(1.5)
+    try:
+        os.killpg(pgid, signal.SIGKILL)          # hala yasayan varsa
+    except ProcessLookupError:
+        pass
 
 
 class Probe(Node):
@@ -117,16 +120,18 @@ def test_gazebo():
     # --- B: ToF mesafesi, robot dogma noktasinda yerinde donerek sol duvara bakarken (x = -1 m) ---
     # Yerinde donmek konumu degistirmez; bu yuzden dunya konumu = dogma noktasi, yon = /odom yonu + dogma yonu.
     SPAWN = (-0.6, -0.6, 0.785)               # sim.launch.py'deki dogma noktasi; /odom bu noktadan baslar
-    target = math.pi
-    for _ in range(600):
-        pump(probe)
-        _, _, oyaw = probe.pose()
-        err = angle_diff(target, oyaw + SPAWN[2])
-        if abs(err) < 0.03:
-            break
-        robot.drive(0.0, max(-1.5, min(1.5, 3.0 * err)))
-        robot.wait(0.05)
-        rclpy.spin_once(probe, timeout_sec=0.0)
+
+    def turn_to(target):                      # yerinde don: dunya yonu `target` (rad) olana kadar
+        for _ in range(600):
+            pump(probe)
+            _, _, oyaw = probe.pose()
+            err = angle_diff(target, oyaw + SPAWN[2])
+            if abs(err) < 0.03:
+                break
+            robot.drive(0.0, max(-1.5, min(1.5, 3.0 * err)))
+            robot.wait(0.05)
+        robot.stop()
+    turn_to(math.pi)
     robot.stop()
     spin_for(probe, 1.5)
     ox, oy, oyaw = probe.pose()
@@ -146,6 +151,8 @@ def test_gazebo():
     check('B3 ToF orta sensor duvarda: Gazebo ~ Python (+-5 cm)', abs(gz_center - py_center) < 0.05,
           f'Gazebo {gz_center:.3f} m, Python {py_center:.3f} m (yon {math.degrees(yaw):.0f} derece, odom kaymasi {math.hypot(ox, oy) * 100:.1f} cm)')
 
+    turn_to(SPAWN[2])                         # arenanin ortasina bak: duz gitme ve politika testi duvara carpmasin
+    spin_for(probe, 0.5)
     # --- A/B: duz gitme ---
     spin_for(probe, 0.5)
     x0, y0, _ = probe.pose()
@@ -197,7 +204,8 @@ def test_gazebo():
     except subprocess.TimeoutExpired:
         p.kill()
         code = None
-    check('C2 SIGTERM ile temiz cikis (kod 0)', code == 0, f'cikis kodu {code}')
+    out = p.stdout.read().decode(errors='ignore')[-600:] if p.stdout else ''
+    check('C2 SIGTERM ile temiz cikis (kod 0)', code == 0, f'cikis kodu {code}' + ('' if code == 0 else f'; cikti: {out}'))
     spin_for(probe, 1.0)
     xa, ya, _ = probe.pose()
     spin_for(probe, 1.0)
