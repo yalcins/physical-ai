@@ -51,7 +51,7 @@
       "name": "Kurallı kontrolcü, gerçek Pico engelleri",
       "kind": "baseline",
       "date": "2026-10-07",
-      "notes": "Hareketli engeller yerine 2 simüle Pico robot (yarıçap 7,5 cm, firmware'deki rastgele dolaşma)",
+      "notes": "Hareketli engeller yerine 2 simüle mikro Pico robot (yarıçap 4,8 cm, kendi mikro ToF'ları, firmware'deki rastgele dolaşma)",
       "layout": "front3",
       "params": {
         "steps": 0,
@@ -64,9 +64,9 @@
           "mean_return": 116.85
         },
         "moving": {
-          "crash_rate": 0.13,
-          "mean_steps": 930.6,
-          "mean_return": 111.39
+          "crash_rate": 0.1,
+          "mean_steps": 953.6,
+          "mean_return": 109.22
         }
       }
     },
@@ -95,9 +95,9 @@
           "mean_return": 179.6
         },
         "moving": {
-          "crash_rate": 0.23,
-          "mean_steps": 867.8,
-          "mean_return": 140.04
+          "crash_rate": 0.17,
+          "mean_steps": 910.9,
+          "mean_return": 146.62
         }
       }
     },
@@ -129,12 +129,12 @@
       "name": "PPO, 3 kare hafıza, gerçek Pico engelleri",
       "kind": "learned",
       "date": "2026-10-07",
-      "notes": "Eski hareketli engellerle eğitilmiş model, Pico engellerine karşı sınandı",
+      "notes": "Eski hareketli engellerle eğitilmiş model, mikro Pico engellerine karşı sınandı",
       "layout": "front3",
       "params": {
         "steps": 500000,
-        "frames": 3,
-        "scenario": "pico2"
+        "scenario": "pico2",
+        "frames": 3
       },
       "results": {
         "static": {
@@ -143,9 +143,9 @@
           "mean_return": 183.49
         },
         "moving": {
-          "crash_rate": 0.36,
-          "mean_steps": 807.1,
-          "mean_return": 145.85
+          "crash_rate": 0.31,
+          "mean_steps": 828.9,
+          "mean_return": 150.58
         }
       }
     },
@@ -158,7 +158,6 @@
       "layout": "front3",
       "params": {
         "steps": 500000,
-        "frames": 3,
         "scenario": "pico2",
         "motor_scale": [
           0.9,
@@ -166,7 +165,8 @@
         ],
         "latency": 1,
         "sensor_bias": 0.01,
-        "sensor_dropout": 0.02
+        "sensor_dropout": 0.02,
+        "frames": 3
       },
       "results": {
         "static": {
@@ -175,9 +175,9 @@
           "mean_return": 191.72
         },
         "moving": {
-          "crash_rate": 0.44,
-          "mean_steps": 725.4,
-          "mean_return": 129.83
+          "crash_rate": 0.37,
+          "mean_steps": 786.4,
+          "mean_return": 143.44
         }
       }
     },
@@ -210,12 +210,12 @@
       "name": "PPO, Pico engelleriyle ve bozukluklarla eğitilmiş",
       "kind": "learned",
       "date": "2026-10-07",
-      "notes": "Eğitimde: Pico senaryosu + her bölümde rastgele motor/gecikme/sensör bozukluğu",
+      "notes": "Eğitimde: eski (7,5 cm) Pico engelleri + her bölümde rastgele motor/gecikme/sensör bozukluğu; mikro engellerle yeniden eğitilmedi",
       "layout": "front3",
       "params": {
         "steps": 500000,
-        "frames": 3,
-        "scenario": "pico2"
+        "scenario": "pico2",
+        "frames": 3
       },
       "results": {
         "static": {
@@ -224,9 +224,9 @@
           "mean_return": 183.76
         },
         "moving": {
-          "crash_rate": 0.29,
-          "mean_steps": 843.1,
-          "mean_return": 152.75
+          "crash_rate": 0.25,
+          "mean_steps": 868.1,
+          "mean_return": 158.75
         }
       }
     },
@@ -239,7 +239,6 @@
       "layout": "front3",
       "params": {
         "steps": 500000,
-        "frames": 3,
         "scenario": "pico2",
         "motor_scale": [
           0.9,
@@ -247,7 +246,8 @@
         ],
         "latency": 1,
         "sensor_bias": 0.01,
-        "sensor_dropout": 0.02
+        "sensor_dropout": 0.02,
+        "frames": 3
       },
       "results": {
         "static": {
@@ -256,9 +256,9 @@
           "mean_return": 191.45
         },
         "moving": {
-          "crash_rate": 0.29,
-          "mean_steps": 832.1,
-          "mean_return": 152.9
+          "crash_rate": 0.28,
+          "mean_steps": 837.9,
+          "mean_return": 155.26
         }
       }
     },
@@ -311,5 +311,5 @@
     }
   ],
   "episodes": 100,
-  "updated": "2026-10-07T00:17"
+  "updated": "2026-10-07T15:58"
 }

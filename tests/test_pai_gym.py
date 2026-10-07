@@ -180,7 +180,7 @@ def test_picobot_rules_match_firmware():
     firmware_cmds = tuple((float(a), float(b)) for a, b in nums[:5])
     assert firmware_cmds == W.PicoBot.COMMANDS
     assert W.PicoBot.CENTER_STOP == 0.20 and W.PicoBot.SIDE_STOP == 0.10 and W.PicoBot.TURN_W == 2.5
-    assert 'WHEEL_RADIUS = 0.0215' in src and abs(W.WHEEL_RADIUS - 0.0215) < 1e-12
+    assert f'WHEEL_RADIUS = {W.PICO_WHEEL_RADIUS}' in src and f'WHEEL_SEPARATION = {W.PICO_TRACK}' in src       # mikro robot olculeri
 
 
 def test_picobot_turns_when_blocked_and_stays_in_arena():
@@ -200,7 +200,7 @@ def test_picobot_is_seen_by_learner_and_collides():
     w = W.World(obstacles=[W.PicoBot(0.5, 0.0, math.pi)], sensor_noise=False)
     w.place_robot(0.0, 0.0, 0.0)
     assert w.read_tof()[1] < 0.5                                           # orta sensor Pico'yu gordu
-    w.place_robot(0.5 - W.ROBOT_RADIUS * 2 + 0.01, 0.0, 0.0)
+    w.place_robot(0.5 - W.ROBOT_RADIUS - W.PICO_RADIUS + 0.01, 0.0, 0.0)           # daireler ic ice
     assert w.collided()
 
 

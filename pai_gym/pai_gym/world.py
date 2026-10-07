@@ -38,6 +38,18 @@ TOF_MIN = 0.04               # m
 TOF_MAX = 4.0                # m
 TOF_NOISE = 0.01             # m (standart sapma)
 
+# ---------------- Mikro Pico robot (hareketli engel) ----------------
+# Sanal tasarim design/design.py 'pico' varyanti ile AYNI olmali (tests/test_design.py denetler).
+# Referans noktasi = iki tekerlegin orta noktasi. Tekerlek O22, iz 65 mm, plaka 65 x 55 mm.
+PICO_RADIUS = 0.048          # m: referans noktasindan en uzak kose (arka PCB kosesi, yuvarlak kose payi ile)
+PICO_WHEEL_RADIUS = 0.011    # m
+PICO_TRACK = 0.065           # m (tekerlek merkezleri arasi)
+PICO_TOF = (
+    ('left',   0.026,  0.0165,  math.radians(30)),
+    ('center', 0.030,  0.0,     0.0),
+    ('right',  0.026, -0.0165, -math.radians(30)),
+)
+
 # ---------------- Arena ----------------
 HALF = 1.0                   # arena ic olcusu 2 x 2 m, merkez (0, 0)
 
@@ -68,9 +80,11 @@ class PicoBot(Circle):
     TURN_W = 2.5             # rad/s
     HOLD_S = (1.0, 3.0)      # bir hareketi kac saniye surdurur
 
-    def __init__(self, x, y, theta=0.0, radius=ROBOT_RADIUS, speed_scale=1.0):
+    def __init__(self, x, y, theta=0.0, radius=None, speed_scale=1.0, sensors=None):
+        radius = PICO_RADIUS if radius is None else radius
         super().__init__(x, y, radius)
         self.speed_scale = speed_scale      # gercek Pico'nun olculen hizi / komut hizi (kalibrasyon)
+        self.sensors = sensors or PICO_TOF  # mikro Pico'nun KENDI ToF konumlari (ogrenen robotunkinden farkli)
         self.theta = theta
         self.cmd = (0.0, 0.0)
         self.until = 0.0     # simulasyon saniyesi
@@ -95,7 +109,7 @@ class PicoBot(Circle):
         others = [o for o in world.obstacles if o is not self]
         others.append(Circle(world.x, world.y, world.robot_radius))
         ranges = []
-        for _, fwd, side, ang in TOF_SENSORS:
+        for _, fwd, side, ang in self.sensors:
             c, s_ = math.cos(self.theta), math.sin(self.theta)
             ox, oy = self.x + fwd * c - side * s_, self.y + fwd * s_ + side * c
             offsets = np.linspace(-TOF_FOV / 2, TOF_FOV / 2, TOF_RAYS)

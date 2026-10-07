@@ -1,7 +1,7 @@
 {
   "version": 1,
   "status": "nominal",
-  "note": "Henuz olcum yok: degerler simulasyonun varsayilanlari. Olcumler gelince tools/calibrate.py bunu gunceller.",
+  "note": "Henuz olcum yok: degerler simulasyonun varsayilanlari (mikro Pico robot dahil). Olcumler gelince tools/calibrate.py bunu gunceller.",
   "motor_scale": [
     1.0,
     1.0
@@ -12,11 +12,11 @@
   "sensor_dropout": 0.0,
   "robot_radius_m": 0.075,
   "pico": {
-    "radius_m": 0.075,
+    "radius_m": 0.048,
     "speed_scale": 1.0
   },
   "firmware": {
-    "max_wheel_rad_s": 31.0,
+    "max_wheel_rad_s": 19.0,
     "motor_scale": [
       1.0,
       1.0

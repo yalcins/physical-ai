@@ -20,9 +20,9 @@ import secrets   # WIFI_SSID, WIFI_PASSWORD (git'e girmez, .gitignore'da)
 from tof import read_ranges_m, setup_tof
 
 PORT = 5005
-WHEEL_RADIUS = 0.0215
-WHEEL_SEPARATION = 0.115
-MAX_WHEEL_RAD_S = 31.0      # ~300 RPM (JGA12-N20B, 6V)
+WHEEL_RADIUS = 0.011         # mikro robot: tekerlek O22 (sanal tasarim design.py 'pico')
+WHEEL_SEPARATION = 0.065     # tekerlek merkezleri arasi (m)
+MAX_WHEEL_RAD_S = 19.0      # ~300 RPM (6 V) motorun 1S LiPo (3,7 V) ile hizi; olculunce calibration.py ile degisir
 WATCHDOG_S = 0.5            # remote modda bu sure komut gelmezse dur
 WIFI_TIMEOUT_S = 20         # tek bir Wi-Fi baglanma denemesi icin en uzun sure
 PWM_FREQ = 1000
@@ -137,7 +137,7 @@ def main():
             drive(*cmd)
 
         if host and time.ticks_diff(time.ticks_ms(), last_tx) >= 50:   # 20 Hz telemetri
-            bat = battery.read_u16() / 65535 * 3.3 * 3   # bolucu orani montaja gore ayarlanmali
+            bat = battery.read_u16() / 65535 * 3.3 * 2   # LiPo bolucusu 100 k / 100 k: oran 2 (karttaki R1, R2)
             sock.sendto(json.dumps({'r': ranges, 'bat': round(bat, 2), 'mode': mode}).encode(), host)
             last_tx = time.ticks_ms()
 
